@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Personal Interview Training</title>
+  <meta name="description" content="Why this site exists: one platform combining LeetCPU, LeetGPU, LeetSilicon, Project Euler and quant-firm puzzles.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html"><span class="prompt">pit&gt;</span> Personal_Interview_Training</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="problems.html">Problems</a></li>
+          <li><a href="leaderboard.html">Leaderboard</a></li>
+          <li><a href="submit.html">Contribute</a></li>
+          <li><a href="about.html" aria-current="page">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+
+    <div class="page-head">
+      <h1>About</h1>
+      <p>A small project that combines multiple tools into one global platform — to navigate my interests and do random puzzles when I'm bored.</p>
+    </div>
+
+    <div class="prose">
+      <h2>Why this exists</h2>
+      <p>
+        Interview prep is fragmented. CPU performance lives on
+        <a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a>,
+        GPU kernels on <a href="https://leetgpu.com/challenges" target="_blank" rel="noopener">LeetGPU</a>,
+        hardware design on <a href="https://leetsilicon.com/" target="_blank" rel="noopener">LeetSilicon</a>,
+        math on <a href="https://projecteuler.net/archives" target="_blank" rel="noopener">Project Euler</a>,
+        and quant brainteasers are scattered across firm archives like
+        <a href="https://janestreet.com/puzzles/archive/" target="_blank" rel="noopener">Jane Street's puzzle page</a>.
+        This site is the map on top of all of them: one selection page, one progress
+        tracker, one leaderboard.
+      </p>
+
+      <h2>The tracks</h2>
+      <ul>
+        <li><strong>CPU Programming</strong> — branch prediction, cache optimization, memory hierarchy, ILP &amp; pipelining, prefetching. Backed by LeetCPU's ChampSim simulations.</li>
+        <li><strong>GPU Programming</strong> — CUDA basics, memory optimization, parallel algorithms, ML kernels. Backed by LeetGPU challenges.</li>
+        <li><strong>Silicon &amp; RTL</strong> — RTL design, verification, computer architecture, clock-domain crossing &amp; timing. Backed by LeetSilicon.</li>
+        <li><strong>Mathematics</strong> — number theory, combinatorics &amp; DP, sequences, from the Project Euler archive.</li>
+        <li><strong>Probability &amp; Quant</strong> — expected value, dice &amp; coins, games &amp; strategy, optimal stopping and brainteasers in the style of Jane Street, SIG, Optiver and Citadel interviews.</li>
+        <li><strong>Interview Questions</strong> — frequently asked questions from real company interviews (NVIDIA, AMD, Intel, Apple, Qualcomm, Jane Street, Citadel, Optiver), each one <strong>community-voted</strong> as accurate or not.</li>
+      </ul>
+
+      <h2>How new puzzles get in</h2>
+      <p>
+        Two pipelines feed the database (details on the
+        <a href="submit.html">Contribute page</a>):
+      </p>
+      <ul>
+        <li><strong>Scout agent</strong> — <code>agent/scrape_agent.py</code> runs weekly via GitHub Actions, scrapes the source platforms for newly published problems, and files candidates as a GitHub issue.</li>
+        <li><strong>Manual submissions</strong> — anyone can propose a puzzle; it lands in the <strong>review queue</strong> where the community votes, and the admin merges approved entries.</li>
+      </ul>
+
+      <h2>Scoring</h2>
+      <p>
+        Points are weighted by difficulty so grinding hard problems beats farming easy ones:
+        <strong>Easy = 1, Medium = 3, Hard = 5</strong>. Ties break on hard problems solved.
+      </p>
+
+      <h2>Privacy</h2>
+      <p>
+        This is a static website. Your solved problems, votes and leaderboard entries live in your
+        browser's <code>localStorage</code> — nothing is sent anywhere, no accounts, no cookies.
+        Community vote counts seeded in the data are sample data until a shared backend is wired in.
+      </p>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <span>pit&gt; built for training, <span data-year>2025</span>. Progress is stored locally in your browser.</span>
+      <nav aria-label="Footer">
+        <ul>
+          <li><a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a></li>
+          <li><a href="https://leetgpu.com/challenges" target="_blank" rel="noopener">LeetGPU</a></li>
+          <li><a href="https://leetsilicon.com/" target="_blank" rel="noopener">LeetSilicon</a></li>
+          <li><a href="https://projecteuler.net/archives" target="_blank" rel="noopener">Project Euler</a></li>
+          <li><a href="https://janestreet.com/puzzles/archive/" target="_blank" rel="noopener">Jane Street Puzzles</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

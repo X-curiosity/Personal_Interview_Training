@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Problems — Personal Interview Training</title>
+  <meta name="description" content="Browse all training problems: CPU, GPU, Silicon/RTL, Mathematics and Probability & Quant — filter by track, sub-branch and difficulty.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html"><span class="prompt">pit&gt;</span> Personal_Interview_Training</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="problems.html" aria-current="page">Problems</a></li>
+          <li><a href="leaderboard.html">Leaderboard</a></li>
+          <li><a href="submit.html">Contribute</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+
+    <div class="page-head">
+      <h1>Problems</h1>
+      <p>Pick a track on the left — or a sub-branch to go deep. Mark problems solved to earn weighted points: Easy 1 · Medium 3 · Hard 5.</p>
+    </div>
+
+    <div class="problems-layout">
+
+      <aside class="sidebar" aria-label="Tracks">
+        <ul class="side-list" data-track-list></ul>
+      </aside>
+
+      <section class="problems-main" aria-label="Problem list">
+
+        <div class="problems-toolbar">
+          <input type="search" class="search" data-search
+                 placeholder="Search problems, tags, branches…" aria-label="Search problems">
+          <button class="chip" type="button" data-diff-filter="all" aria-pressed="true">All</button>
+          <button class="chip" type="button" data-diff-filter="easy" aria-pressed="false">Easy</button>
+          <button class="chip" type="button" data-diff-filter="medium" aria-pressed="false">Medium</button>
+          <button class="chip" type="button" data-diff-filter="hard" aria-pressed="false">Hard</button>
+          <button class="btn ghost" type="button" data-roll-selection>🎲 Roll one</button>
+        </div>
+
+        <div class="selection-head">
+          <h2 data-selection-heading>All tracks</h2>
+          <span class="sub"><span data-selection-count></span> · <span data-selection-progress></span></span>
+          <span class="sr-only" data-roll-announce aria-live="polite"></span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Status</th>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col" class="col-tags">Tags</th>
+                <th scope="col">Difficulty</th>
+                <th scope="col">Link</th>
+              </tr>
+            </thead>
+            <tbody data-problem-rows></tbody>
+          </table>
+        </div>
+
+        <div class="empty-state" data-empty-row hidden>
+          // no problems match this selection — loosen the filters
+        </div>
+
+      </section>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <span>pit&gt; built for training, <span data-year>2025</span>. Progress is stored locally in your browser.</span>
+      <nav aria-label="Footer">
+        <ul>
+          <li><a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a></li>
+          <li><a href="https://leetgpu.com/challenges" target="_blank" rel="noopener">LeetGPU</a></li>
+          <li><a href="https://leetsilicon.com/" target="_blank" rel="noopener">LeetSilicon</a></li>
+          <li><a href="https://projecteuler.net/archives" target="_blank" rel="noopener">Project Euler</a></li>
+          <li><a href="https://janestreet.com/puzzles/archive/" target="_blank" rel="noopener">Jane Street Puzzles</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/problems.js"></script>
+</body>
+</html>

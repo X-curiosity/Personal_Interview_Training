@@ -1,0 +1,41 @@
+name: scout-agent
+
+# Weekly run of the scout agent: scrapes the source platforms for new
+# problems and files a GitHub issue with the candidates for admin review.
+# Nothing is merged automatically — a human always reviews.
+
+on:
+  schedule:
+    - cron: "0 8 * * 1"   # Mondays 08:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+
+jobs:
+  scout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run scout agent
+        run: python3 agent/scrape_agent.py
+
+      - name: File candidates as an issue
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COUNT=$(python3 -c "import json;print(json.load(open('agent/candidates.json'))['new_candidates'])")
+          if [ "$COUNT" -gt 0 ]; then
+            gh issue create \
+              --title "🤖 Scout agent: $COUNT new puzzle candidate(s)" \
+              --label "agent-candidates" \
+              --body-file agent/candidates.json || true
+          else
+            echo "No new candidates this week."
+          fi

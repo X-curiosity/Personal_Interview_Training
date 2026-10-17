@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Interview Training — One platform. Every hard interview.</title>
+  <meta name="description" content="A personal training platform combining LeetCPU, LeetGPU, LeetSilicon, Project Euler and quant-firm puzzles into one place — with a weighted leaderboard.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html"><span class="prompt">pit&gt;</span> Personal_Interview_Training</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="problems.html">Problems</a></li>
+          <li><a href="leaderboard.html">Leaderboard</a></li>
+          <li><a href="submit.html">Contribute</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+
+    <section class="hero">
+      <p class="kicker">// leetcpu · leetgpu · leetsilicon · project euler · quant puzzles</p>
+      <h1>One platform.<br>Every hard interview.</h1>
+      <p class="lead">
+        A single home base for everything worth training: CPU microarchitecture,
+        GPU kernels, RTL design, mathematics, and the probability puzzles quant
+        firms love. Pick a track, solve problems, climb the leaderboard —
+        or roll a random one when you're bored.
+      </p>
+      <div class="hero-cta">
+        <a class="btn" href="problems.html">Browse problems</a>
+        <a class="btn ghost" href="#bored">I'm bored — roll a puzzle</a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="stats-heading">
+      <div class="section-head">
+        <h2 id="stats-heading">Your progress</h2>
+      </div>
+      <div class="stats-strip" data-your-stats>
+        <div class="stat"><div class="stat-value" data-stat="solved">0</div><div class="stat-label">Solved</div></div>
+        <div class="stat"><div class="stat-value" data-stat="total">0</div><div class="stat-label">Problems</div></div>
+        <div class="stat"><div class="stat-value pts" data-stat="points">0</div><div class="stat-label">Points</div></div>
+        <div class="stat"><div class="stat-value diff-easy" data-stat="easy">0</div><div class="stat-label">Easy</div></div>
+        <div class="stat"><div class="stat-value diff-medium" data-stat="medium">0</div><div class="stat-label">Medium</div></div>
+        <div class="stat"><div class="stat-value diff-hard" data-stat="hard">0</div><div class="stat-label">Hard</div></div>
+        <div class="stat"><div class="stat-value" data-stat="pct">0%</div><div class="stat-label">Complete</div></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="tracks-heading">
+      <div class="section-head">
+        <h2 id="tracks-heading">Training tracks</h2>
+        <p>Six tracks, each backed by a real platform or real company question styles. Every problem links out so you train where it counts.</p>
+      </div>
+      <div class="grid">
+        <a class="card accent-cpu" href="problems.html#cpu">
+          <div class="glyph" aria-hidden="true">⌘</div>
+          <h3>CPU Programming</h3>
+          <p>Branch prediction, caches, prefetching and ILP — ChampSim-backed microarchitecture training on LeetCPU.</p>
+          <span class="card-meta">10 problems · leetcpu.com</span>
+        </a>
+        <a class="card accent-gpu" href="problems.html#gpu">
+          <div class="glyph" aria-hidden="true">▦</div>
+          <h3>GPU Programming</h3>
+          <p>CUDA kernels from vector addition to attention: tiling, coalescing, reductions and ML primitives on LeetGPU.</p>
+          <span class="card-meta">12 problems · leetgpu.com</span>
+        </a>
+        <a class="card accent-silicon" href="problems.html#silicon">
+          <div class="glyph" aria-hidden="true">⚡</div>
+          <h3>Silicon &amp; RTL</h3>
+          <p>RTL design, verification, CDC and computer architecture — hardware interview prep on LeetSilicon.</p>
+          <span class="card-meta">10 problems · leetsilicon.com</span>
+        </a>
+        <a class="card accent-math" href="problems.html#math">
+          <div class="glyph" aria-hidden="true">∑</div>
+          <h3>Mathematics</h3>
+          <p>Number theory, combinatorics and sequences hand-picked from the Project Euler archive.</p>
+          <span class="card-meta">11 problems · projecteuler.net</span>
+        </a>
+        <a class="card accent-quant" href="problems.html#quant">
+          <div class="glyph" aria-hidden="true">🎲</div>
+          <h3>Probability &amp; Quant</h3>
+          <p>Expected value, games and brainteasers in the style of Jane Street, SIG, Optiver and Citadel interviews.</p>
+          <span class="card-meta">15 problems · firm-style</span>
+        </a>
+        <a class="card accent-interview" href="problems.html#interview">
+          <div class="glyph" aria-hidden="true">💼</div>
+          <h3>Interview Questions</h3>
+          <p>Frequently asked questions from real company interviews — community-voted for accuracy.</p>
+          <span class="card-meta">15 questions · NVIDIA · AMD · JS · Citadel…</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section" id="bored" aria-labelledby="bored-heading">
+      <div class="random-machine" data-random-machine>
+        <div class="machine-head">
+          <h2 id="bored-heading">Bored? Roll a puzzle.</h2>
+          <button class="btn" type="button" data-roll>🎲 Random puzzle</button>
+        </div>
+        <div class="puzzle-result" data-result aria-live="polite">
+          <p class="placeholder">// press the button — get one random problem from all 73 across every track</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <span>pit&gt; built for training, <span data-year>2025</span>. Progress is stored locally in your browser.</span>
+      <nav aria-label="Footer">
+        <ul>
+          <li><a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a></li>
+          <li><a href="https://leetgpu.com/challenges" target="_blank" rel="noopener">LeetGPU</a></li>
+          <li><a href="https://leetsilicon.com/" target="_blank" rel="noopener">LeetSilicon</a></li>
+          <li><a href="https://projecteuler.net/archives" target="_blank" rel="noopener">Project Euler</a></li>
+          <li><a href="https://janestreet.com/puzzles/archive/" target="_blank" rel="noopener">Jane Street Puzzles</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

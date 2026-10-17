@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard — Personal Interview Training</title>
+  <meta name="description" content="Weighted leaderboard: Easy = 1 pt, Medium = 3 pts, Hard = 5 pts. Your row is computed live from your solved problems — add friends to compete.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html"><span class="prompt">pit&gt;</span> Personal_Interview_Training</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="problems.html">Problems</a></li>
+          <li><a href="leaderboard.html" aria-current="page">Leaderboard</a></li>
+          <li><a href="submit.html">Contribute</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+
+    <div class="page-head">
+      <h1>Leaderboard</h1>
+      <p>Ranked by weighted points — a hard problem is worth five easies. Your row updates live as you solve; add friends to make it a race.</p>
+    </div>
+
+    <div class="board-layout">
+
+      <section aria-label="Rankings">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Name</th>
+                <th scope="col">Solved</th>
+                <th scope="col" class="col-d"><span class="diff diff-easy">Easy</span></th>
+                <th scope="col" class="col-d"><span class="diff diff-medium">Med</span></th>
+                <th scope="col" class="col-d"><span class="diff diff-hard">Hard</span></th>
+                <th scope="col">Points</th>
+                <th scope="col"><span class="sr-only">Remove</span></th>
+              </tr>
+            </thead>
+            <tbody data-board-rows></tbody>
+          </table>
+        </div>
+        <p class="empty-state" data-board-note hidden>
+          // just you so far — add a rival on the right to start the race
+        </p>
+      </section>
+
+      <aside>
+        <div class="panel">
+          <h2>Scoring</h2>
+          <ul class="weights">
+            <li><span class="diff diff-easy">Easy</span><span>1 pt</span></li>
+            <li><span class="diff diff-medium">Medium</span><span>3 pts</span></li>
+            <li><span class="diff diff-hard">Hard</span><span>5 pts</span></li>
+          </ul>
+          <p class="hint" style="margin-top: 0.9rem;">
+            Ties break on hard problems solved, then total solved.
+          </p>
+        </div>
+
+        <div class="panel" style="margin-top: 1.25rem;">
+          <h2>Add a rival</h2>
+          <p class="hint">Enter how many problems they've solved per difficulty — same weights apply.</p>
+          <form class="rival-form" data-rival-form>
+            <label for="rival-name">Name</label>
+            <input id="rival-name" name="name" type="text" maxlength="24" required
+                   placeholder="e.g. Ada" autocomplete="off">
+            <div class="diff-inputs">
+              <div>
+                <label for="rival-easy">Easy</label>
+                <input id="rival-easy" name="easy" type="number" min="0" max="999" value="0">
+              </div>
+              <div>
+                <label for="rival-medium">Med</label>
+                <input id="rival-medium" name="medium" type="number" min="0" max="999" value="0">
+              </div>
+              <div>
+                <label for="rival-hard">Hard</label>
+                <input id="rival-hard" name="hard" type="number" min="0" max="999" value="0">
+              </div>
+            </div>
+            <p class="form-error" data-name-error hidden>Name is required.</p>
+            <button class="btn" type="submit">Add to leaderboard</button>
+          </form>
+        </div>
+      </aside>
+
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <span>pit&gt; built for training, <span data-year>2025</span>. Progress is stored locally in your browser.</span>
+      <nav aria-label="Footer">
+        <ul>
+          <li><a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a></li>
+          <li><a href="https://leetgpu.com/challenges" target="_blank" rel="noopener">LeetGPU</a></li>
+          <li><a href="https://leetsilicon.com/" target="_blank" rel="noopener">LeetSilicon</a></li>
+          <li><a href="https://projecteuler.net/archives" target="_blank" rel="noopener">Project Euler</a></li>
+          <li><a href="https://janestreet.com/puzzles/archive/" target="_blank" rel="noopener">Jane Street Puzzles</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/leaderboard.js"></script>
+</body>
+</html>
