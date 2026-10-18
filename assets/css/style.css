@@ -17,7 +17,6 @@
   --medium: #ffc01e;
   --hard: #ff375f;
   --track-cpu: #ffa116;
-  --track-gpu: #39d353;
   --track-silicon: #b78bff;
   --track-math: #58a6ff;
   --track-quant: #ff7b72;
@@ -146,7 +145,6 @@ a:hover { text-decoration: underline; }
   border: 1px solid var(--border); color: var(--text-dim); white-space: nowrap;
 }
 .badge.track-cpu     { color: var(--track-cpu);     border-color: var(--track-cpu); }
-.badge.track-gpu     { color: var(--track-gpu);     border-color: var(--track-gpu); }
 .badge.track-silicon { color: var(--track-silicon); border-color: var(--track-silicon); }
 .badge.track-math    { color: var(--track-math);    border-color: var(--track-math); }
 .badge.track-quant   { color: var(--track-quant);   border-color: var(--track-quant); }
@@ -187,7 +185,6 @@ a.card:hover, .card.hoverable:hover {
   color: var(--card-accent, var(--accent));
 }
 .accent-cpu     { --card-accent: var(--track-cpu); }
-.accent-gpu     { --card-accent: var(--track-gpu); }
 .accent-silicon { --card-accent: var(--track-silicon); }
 .accent-math    { --card-accent: var(--track-math); }
 .accent-quant   { --card-accent: var(--track-quant); }

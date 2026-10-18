@@ -3,7 +3,7 @@
 Implements the frontend runner contract (assets/js/config.js):
 
     POST /execute
-    { "language": "cuda"|"verilog", "code": "...", "tests": "..." }
+    { "language": "verilog", "code": "...", "tests": "..." }
     -> 200 { "stdout": "...", "stderr": "...", "code": 0 }
 
 Security properties:
@@ -130,7 +130,7 @@ async def require_api_key(
 # --------------------------------------------------------------------------
 
 class ExecuteRequest(BaseModel):
-    language: Literal["cuda", "verilog"]
+    language: Literal["verilog"]
     # byte-level bounds are enforced in the handler (combined code+tests)
     code: str = ""
     tests: str = ""
@@ -186,21 +186,12 @@ def _execute(language: str, code: str, tests: str, config: Config) -> ExecuteRes
     with tempfile.TemporaryDirectory(prefix="pit-runner-") as workdir:
         work = Path(workdir)
 
-        if language == "cuda":
-            source = work / "main.cu"
-            source.write_text(code + ("\n" + tests if tests else "") + "\n")
-            compile_argv = [
-                "nvcc", "-O2", "-std=c++17",
-                str(source.name), "-o", "main",
-            ]
-            run_argv = ["./main"]
-        else:  # verilog
-            source = work / "main.v"
-            source.write_text(code + ("\n" + tests if tests else "") + "\n")
-            compile_argv = [
-                "iverilog", "-g2012", "-o", "sim", str(source.name),
-            ]
-            run_argv = ["vvp", "sim"]
+        source = work / "main.v"
+        source.write_text(code + ("\n" + tests if tests else "") + "\n")
+        compile_argv = [
+            "iverilog", "-g2012", "-o", "sim", str(source.name),
+        ]
+        run_argv = ["vvp", "sim"]
 
         compiled = _run_argv(compile_argv, config.compile_timeout, workdir)
         if compiled.code != 0:

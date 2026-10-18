@@ -265,7 +265,7 @@
 
     buildSidebar();
 
-    /* Deep links: problems.html#gpu preselects a track (used by home cards). */
+    /* Deep links such as problems.html#cpu preselect a track (used by home cards). */
     (function initFromHash() {
       var key = window.location.hash.replace("#", "");
       if (key && TRACKS[key]) {

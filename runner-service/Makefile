@@ -17,7 +17,7 @@ build:
 	docker build -t pit-runner .
 
 run: build
-	docker run --rm --gpus all -p 8080:8080 --env-file .env pit-runner
+	docker run --rm -p 8080:8080 --env-file .env pit-runner
 
 up:
 	docker compose up -d --build

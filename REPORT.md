@@ -2,291 +2,171 @@
 
 ## 1. Result
 
-The repository began with a one-paragraph README. It now contains a complete multi-page interview-training website with a hard-capped **400-problem database**, on-platform problem statements, code/answer execution flows, timed role preparation, weighted progress, community review, and a deployable CUDA/Verilog runner.
+The repository contains a complete multi-page interview-training platform with exactly **400 on-platform problems**, role-based mock interviews, weighted progress, community review, and code execution for Python, C, C++, and Verilog.
 
-The frontend remains a build-free static website. The optional execution service is isolated in `runner-service/`.
+The former GPU/CUDA track and its interview material were removed at the user's request. They were replaced one-for-one by **38 CPU problems, 37 LeetSilicon-style problems, and 16 CPU/RTL interview questions**, preserving the 400 cap while focusing the platform on the remaining domains.
 
----
+## 2. Database
 
-## 2. Requirements implemented
-
-| Requirement | Implementation |
-|---|---|
-| Full website, not a single dashboard | Seven HTML pages with shared navigation, footer, responsive design, and direct URLs |
-| LeetSilicon-style selection UI | Track/sub-branch sidebar, searchable problem table, difficulty filters, solved state, random filtered problem |
-| Problems must appear on this platform | Every row opens `problem.html?id=<id>` with the complete local statement and interaction |
-| Python support | Pyodide/WASM, lazily loaded and executed in-browser |
-| C and C++ support | Judge0 CE adapter with compile/run output and tests; optional self-hosted Piston fallback |
-| CUDA support | Editor plus configurable remote runner; deployable NVIDIA CUDA FastAPI service included |
-| Verilog support | Editor plus the same runner service using Icarus Verilog |
-| Non-coding questions | Numeric/text answer box with grading, or model-answer reveal for open-ended questions |
-| Prepare for a role | Timed randomized sessions for five roles using medium/hard role-relevant questions |
-| Large database | Exactly 400 validated problems, enforced by the validator |
-| Weighted leaderboard | Easy 1, Medium 3, Hard 5; ties break on hard solves then total solves |
-| Company interview questions | 60 company-style questions with model answers and community-accuracy seeds |
-| Community/admin review | Voting widgets, pending queue, GitHub-issue submission workflow |
-| Internet scouting | Weekly scout agent for candidate discovery; candidates replace entries because the cap is fixed |
-| Internal documentation | `README.md`, this `REPORT.md`, code comments, runner-service README |
-
----
-
-## 3. Final database
-
-| Track | Count | Main content |
+| Track | Count | Main coverage |
 |---|---:|---|
-| CPU Programming | 85 | Branch prediction, caches, memory hierarchy, ILP/pipelines, prefetching |
-| GPU Programming | 75 | CUDA basics, memory optimization, parallel algorithms, ML kernels |
-| Silicon & RTL | 75 | RTL design, verification, architecture, CDC/timing |
-| Systems C/C++ | 32 | Bit manipulation, pointers/memory, data structures, concurrency/OS |
-| Mathematics | 36 | Number theory, combinatorics/DP, sequences |
-| Probability & Quant | 37 | EV, dice/coins, games, Markov/stopping, brainteasers |
-| Interview Questions | 60 | Hardware, CPU, GPU/CUDA, quant/trading |
-| **Total** | **400** | **136 code tasks (9 Python) + 264 answer/reveal tasks** |
+| CPU Programming | 123 | branch prediction, caches, hierarchy, ILP/pipelining, prefetching |
+| Silicon & RTL | 112 | RTL design, verification, architecture, CDC/timing |
+| Systems C/C++ | 32 | bits, memory, data structures, concurrency/OS |
+| Mathematics | 36 | number theory, combinatorics/DP, sequences |
+| Probability & Quant | 37 | expected value, games, stopping, brainteasers |
+| Interview Questions | 60 | hardware/RTL, CPU architecture, quant/trading |
+| **Total** | **400** | **121 code + 279 answer/model-solution tasks** |
 
-The total is enforced in `tools/validate_data.js`; a full validation fails unless it is exactly 400. Future additions must replace or consolidate an existing entry.
+The registry in `assets/js/data.js` normalizes every item. `tools/validate_data.js` rejects duplicate IDs, unknown tracks/branches/languages, malformed tags, missing statements, incomplete coding metadata, invalid answer tasks, and any total other than 400. Runtime tests also assert that the removed track and language cannot return.
 
-### Data schema
+## 3. Website architecture
 
-`assets/js/data.js` defines `registerProblems()` and normalizes each pack entry to:
+The product is intentionally multi-page:
 
-```js
-{
-  id, track, branch, title, difficulty, tags,
-  summary, statement,
-  kind: "answer" | "code",
-  languages: ["python" | "c" | "cpp" | "cuda" | "verilog"],
-  starter: {}, tests: {},
-  answer, tolerance, solution, source, votes
-}
-```
+- `index.html` — overview, progress, tracks, random problem
+- `problems.html` — searchable/filterable table and community voting
+- `problem.html?id=...` — statement, answer/editor interface, navigation
+- `interview.html` — timed role sessions and scored review
+- `leaderboard.html` — weighted local rivals
+- `submit.html` — contribution workflow and review queue
+- `about.html` — product, execution, privacy, and sourcing explanation
 
-Data is split across `assets/js/data/pack_*.js`. Every pack is a single `registerProblems([...])` call.
+All pages load the same normalized registry and use plain HTML, CSS, and classic JavaScript. There is no frontend build requirement.
 
-The 32 Systems C/C++ tasks were generated with a reference implementation and compiled under `-Wall -Wextra -Werror`; all reference test harnesses passed before the pack was written.
+## 4. Solving and grading
 
----
+### Answer tasks
 
-## 4. Frontend architecture
+- Exact integers require exact equality.
+- Decimal problems use the tolerance configured by the problem.
+- Decimal commas are accepted without breaking standard thousands separators.
+- Conceptual questions reveal a model solution rather than pretending to have a unique short answer.
 
-### Selection and progress
+### Coding tasks
 
-- `problems.html` + `assets/js/problems.js`
-- Track/sub-branch sidebar generated from the registry
-- Combined track, branch, difficulty, and text search filters
-- Solved checkboxes persisted to `pit.solved.v1`
-- Random selection respects current filters
-- Deep links such as `problems.html#gpu`
-- Internal problem links; external URLs are attribution only
+- **Python:** lazy-loaded Pyodide/WASM in the browser.
+- **C/C++:** Judge0 CE, with optional configured Piston fallback.
+- **Verilog:** the included FastAPI/Icarus service.
 
-### Problem page
+Network calls have abort timeouts. HTTP-level Judge0 failures enter fallback/error handling rather than being treated as judge responses. Language tabs and reset controls are disabled while an execution is active, preventing stale runs from repainting another editor state.
 
-- `problem.html` + `assets/js/problem.js`
-- Full local statement, metadata, tags, difficulty, and language badges
-- Previous/next navigation within the same track
-- Code tasks receive language tabs, starter code, Run/Reset controls, status, and output console
-- Answer tasks receive an input, Enter/check support, live feedback, and optional solution reveal
-- Integer answers are exact even when decimal questions in the same pack use relative tolerance
-- A successful answer/test run marks the problem solved
+A code problem earns completion only when its tests pass. For Verilog entries without a testbench, successful compilation is neutral feedback and never automatic credit. The new RTL replacement set includes 15 deterministic self-checking testbenches.
 
-### Timed role preparation
+## 5. Role preparation
 
-- `interview.html` + `assets/js/interview.js`
-- Roles: ML Engineer, CPU Architecture Engineer, GPU Engineer, RTL/Silicon Engineer, Quant Researcher
-- Random medium/hard questions selected from matching tracks
-- Unsolved questions preferred
-- Countdown timer and low-time state
-- Skip/next/end controls
-- Debrief with solved count, weighted points, time used, and per-question review links
+Timed medium/hard sessions are available for four roles:
 
-### Leaderboard and voting
+| Role | Source tracks |
+|---|---|
+| ML Engineer | systems, mathematics, quant |
+| CPU Architecture Engineer | CPU, systems, mathematics |
+| RTL / Silicon Engineer | silicon, interview |
+| Quant Researcher | quant, mathematics |
 
-`assets/js/store.js` is the only persistence boundary. It stores:
+Sessions prefer unsolved questions, show timer and position, support skip/next/end-early actions, and finish with weighted points and separate solved/skipped/incorrect review states.
 
-- `pit.solved.v1`
-- `pit.rivals.v1`
-- `pit.votes.v1.interview`
-- `pit.votes.v1.pending`
+## 6. Progress, leaderboard, and review
 
-Rival names are HTML-escaped before insertion. Rival counts are normalized and clamped. Community counts in static data are seed/demo values; a shared voting backend is not included.
+`assets/js/store.js` persists solved IDs, votes, and rivals in browser `localStorage`.
 
----
+- easy = 1 point
+- medium = 3 points
+- hard = 5 points
+- ties break on hard-problem count, then medium count
 
-## 5. Execution architecture
+Interview-question and pending-submission votes can be cast and retracted. Seeded vote totals are demonstration data until a shared backend is added. Manual submissions generate a copyable registry snippet and pre-filled GitHub issue URL. The weekly scout checks Jane Street, Project Euler, LeetSilicon, and LeetCPU sources.
 
-### Python
+## 7. Verilog service
 
-`assets/js/runner.js` lazily loads pinned Pyodide from jsDelivr. Code and tests run inside the browser. Standard output/error are captured and shown in the console.
-
-### C / C++
-
-The default adapter submits combined source + tests to Judge0 CE:
-
-- C language id 50
-- C++ language id 54
-- `wait=true` synchronous response
-- Compile output, stderr, runtime output, and status are normalized for the UI
-
-A configurable self-hosted Piston URL can act as fallback. During implementation the former public Piston endpoint returned a whitelist-only notice, so Judge0 became the verified default.
-
-### CUDA / Verilog
-
-`assets/js/config.js` accepts runner URLs. `assets/js/runner.js` posts:
+`runner-service/` implements:
 
 ```json
-{ "language": "cuda", "code": "...", "tests": "..." }
+POST /execute
+{"language":"verilog","code":"...","tests":"..."}
 ```
 
-and expects:
-
-```json
-{ "stdout": "...", "stderr": "...", "code": 0 }
-```
-
-If no URL is configured, the UI clearly explains that a cloud GPU or HDL simulator must be connected; it does not pretend execution occurred.
-
-The current 50 CUDA and 45 Verilog tasks do not ship per-problem automated testbenches. A successful remote compile/run is therefore reported as compile-only feedback and does **not** auto-mark the problem solved. Users can mark completion manually after reviewing output. This preserves grading integrity until isolated test harnesses are added.
-
-### Runner service
-
-`runner-service/` provides the contract:
-
-- FastAPI `GET /health`, `POST /execute`
-- CUDA: `nvcc -O2 -std=c++17`, then execute
-- Verilog: `iverilog -g2012`, then `vvp`
-- Optional `X-Runner-Key`
-- CORS allow-list
-- 128 KiB request limit
-- Compile/run timeouts with safe upper bounds
-- 64 KiB output limits
-- Concurrency semaphore
-- Per-request temporary directories
-- Argument-array subprocess calls only; no `shell=True`
-- Non-root CUDA Docker image and hardened Compose defaults
-
-A single shared runner container is not strong public multi-tenant isolation. The included README recommends one per-submission Kubernetes Job with gVisor/Kata, network isolation, quotas, and external rate limiting.
-
-A browser-embedded runner key is not secret; it is only suitable for private/internal deployment.
-
----
-
-## 6. Content pipeline
-
-### Manual submissions
-
-`submit.html` turns a proposal into a pre-filled GitHub issue and can copy a normalized JS object. Pending entries live in `assets/js/pending.js`, display source/status metadata, and support local community voting.
-
-### Scout agent
-
-`agent/scrape_agent.py` uses only Python standard-library networking/parsing. It checks Jane Street, Project Euler, LeetGPU, LeetSilicon, and LeetCPU, deduplicates against current/pending content, and emits candidates. `.github/workflows/scout.yml` runs weekly and files an issue.
-
-The 400 cap changes the policy: the agent proposes replacements; it must not append beyond 400.
-
----
-
-## 7. Design and accessibility
-
-`assets/css/style.css` provides:
-
-- Dark LeetCode/LeetSilicon-inspired interface
-- Track-specific accents and standard easy/medium/hard colors
-- Responsive grids, stacked mobile layouts, horizontal table containment
-- Mobile pruning for dense leaderboard/table columns
-- Visible keyboard focus
-- Screen-reader-only utility
-- Skip links, semantic landmarks, labels, `aria-live`, and `aria-pressed`
-- Reduced-motion support
-- Editor, output, answer, solution, timer, and results states
-
----
-
-## 8. Verification evidence
-
-### Frontend/data
+Execution flow:
 
 ```text
-npm test
-packs: pack_cpu.js, pack_gpu.js, pack_interview.js,
-       pack_math_quant_cap.js, pack_silicon.js, pack_systems_cap.js
+write main.v in a fresh temporary directory
+  → iverilog -g2012 -o sim main.v
+  → vvp sim
+  → return stdout/stderr/code
+  → delete temporary directory
+```
+
+Safety measures include:
+
+- optional constant-time API-key checking;
+- CORS allow-list;
+- bounded body and output sizes;
+- compile/run timeouts;
+- safe argument-array subprocess calls without a shell;
+- bounded concurrency;
+- non-root container;
+- read-only root filesystem, `noexec` temporary storage, dropped capabilities, `no-new-privileges`, and PID limits.
+
+This is appropriate for private/internal use. A public untrusted service still requires authentication, rate limiting, and a separate sandbox/job or microVM for every submission.
+
+The service now uses a standard Python slim image and needs no specialized hardware.
+
+## 8. Accessibility and responsive behavior
+
+Implemented details include semantic landmarks, skip links, labeled controls, table headers, visible `:focus-visible` states, `aria-live` status regions, `aria-pressed` state, reduced-motion handling, responsive grids, mobile column pruning, and horizontally contained tables/editors.
+
+Dynamic dataset fields rendered through HTML templates are escaped. User-provided contribution values are escaped in generated JavaScript snippets.
+
+## 9. Verification
+
+Expected frontend/data result:
+
+```text
 total problems: 400
-per track: {"cpu":85,"gpu":75,"interview":60,"math":36,
-            "quant":37,"silicon":75,"systems":32}
+per track: {"cpu":123,"interview":60,"math":36,"quant":37,"silicon":112,"systems":32}
 dataset OK
-runtime OK — 400 problems, 136 code tasks, 5 role pools
+runtime OK — 400 problems, 121 code tasks, 4 role pools
 ```
 
-Runtime smoke tests cover:
+The release gate includes:
 
-- exact integer grading
-- decimal tolerance
-- answer/editor rendering
-- starter code population
-- role pool sufficiency
-- weighted scoring
-- every referenced local script existing
-- valid track/branch registry
+- `npm test`
+- JavaScript syntax checks
+- schema/ID/title/statement validation
+- role-pool sufficiency
+- exact/tolerant grading smoke tests
+- referenced-script existence checks
+- C/C++ replacement starter/test compilation
+- Verilog testbench compilation/execution checks where supported
+- runner-service pytest suite
+- Docker Compose configuration validation
+- representative HTTP page/problem checks
+- stale-reference and secret-pattern scans
 
-All seven pages and representative assets returned HTTP 200 from the local server.
+## 10. Deployment
 
-### Runner service
-
-Independent test run in a temporary Python environment:
-
-```text
-18 passed, 1 warning in 0.16s
-```
-
-Tests cover auth, CORS-related configuration, language validation, body limits, compile failure, compile/run timeouts, success, output truncation, safe argument arrays, compile commands, and test-source append behavior.
-
-Judge0 C execution was tested against the live public endpoint and returned `ALL TESTS PASSED`.
-
-Verilog was exercised with real local Icarus Verilog by the backend agent; the unit suite was independently rerun. CUDA was not hardware-tested because this machine has no NVIDIA GPU/nvcc.
-
-### Final review team
-
-Four read-only reviewers covered UI/UX, frontend runtime, data integrity, and backend security. Confirmed findings and outcomes:
-
-- **P0:** systems-pack tags were strings and crashed the Problems table — fixed in source, normalized defensively in `data.js`, and asserted by validation/runtime tests.
-- **P1:** CUDA/Verilog compile-only success could award a solve — fixed; no testbench means feedback only, never automatic credit.
-- **P1:** Compose mounted `/tmp` as `noexec`, blocking CUDA binaries — fixed while retaining `nosuid,nodev`, read-only rootfs, dropped capabilities, and the documented public-isolation warning.
-- Backend key comparison now uses constant-time `hmac.compare_digest`; runner HTTP error details are shown in the UI.
-- Judge/runner network requests now have abort timeouts; Judge0 HTTP errors can trigger configured Piston fallback.
-- Rendered dataset text is escaped; decimal-comma answers, skipped-session labels, and editor in-flight controls were improved.
-- Nine tested Python problems were added without changing the 400 cap.
-- The final data reviewer found 400 unique ids, titles, and statements; all numeric-answer tasks matched their solution text. Nine were subsequently converted into tested Python tasks, leaving 204 numeric-answer and 60 solution-only tasks. No final P0/P1 remained.
-- UI/UX re-verification rendered all 400 table rows and exercised problem, interview, leaderboard, submission, voting, responsive, and accessibility flows. Its two final copy/navigation P2s were fixed.
-
----
-
-## 9. Deployment
-
-### Static website
+Frontend:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-It can be hosted on GitHub Pages, Netlify, Cloudflare Pages, or any static host.
-
-### Runner
-
-Follow `runner-service/README.md`. On a Linux GPU host with NVIDIA Container Toolkit:
+Runner:
 
 ```bash
 cd runner-service
 cp .env.example .env
-# configure origin/key
+# Configure ALLOWED_ORIGINS and RUNNER_API_KEY.
 docker compose up --build -d
 ```
 
-Set both `cuda` and `verilog` URLs in `assets/js/config.js` to the deployed `/execute` endpoint.
+Then set `PIT_CONFIG.runners.verilog` in `assets/js/config.js` to the deployed `/execute` URL.
 
----
+## 11. Known limitations
 
-## 10. Known limitations
-
-- CUDA execution needs a deployed NVIDIA GPU runner; it cannot run on static hosting alone.
-- CUDA/Verilog tasks currently provide compile/run feedback rather than automated correctness grading because per-problem testbenches are not yet included.
 - Judge0 is a third-party service with fair-use/rate limits unless self-hosted.
-- Community votes and the rival leaderboard are local per browser until a shared backend is added.
-- The reference runner is not sufficient isolation for an untrusted public multi-tenant service without per-submission sandboxing.
-- Seeded community vote counts are demonstration data.
+- The Pyodide runtime is loaded from a CDN on first Python execution.
+- Votes, progress, and rivals are local to one browser.
+- Seeded community counts are sample data.
+- The included execution service is not, by itself, sufficient isolation for a hostile public multi-tenant judge.
+- Some legacy RTL tasks provide compile/manual-review practice rather than a self-checking testbench; those tasks cannot auto-award completion.

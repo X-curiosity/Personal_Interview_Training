@@ -55,6 +55,9 @@ const { PROBLEMS, TRACKS, ROLES } = window.__TEST_EXPORTS;
 const { PIT_STORE, PIT_PROBLEM } = window;
 assert.strictEqual(PROBLEMS.length, 400, `database cap requires exactly 400 problems; got ${PROBLEMS.length}`);
 assert.strictEqual(new Set(PROBLEMS.map(p => p.id)).size, PROBLEMS.length, "problem ids must be unique");
+assert(!TRACKS.gpu, "GPU track must remain removed");
+assert(PROBLEMS.every(p => !p.languages.includes("cuda")), "CUDA tasks must remain removed");
+assert(!/gpu|cuda|nvidia/i.test(JSON.stringify(PROBLEMS)), "GPU/CUDA content must remain removed");
 
 // Exact integer answers: no relative tolerance for count answers.
 const exact = PROBLEMS.find(p => p.id === "cpu-110");

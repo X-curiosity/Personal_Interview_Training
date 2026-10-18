@@ -6,21 +6,13 @@ services:
       - "8080:8080"
     env_file:
       - .env
-    # Reserve one GPU for the container (requires nvidia-container-toolkit).
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
     # Defense in depth: read-only rootfs, scratch /tmp only, no extra caps.
-    # /tmp must permit execution because nvcc writes the compiled CUDA binary
-    # there; nosuid+nodev remain enabled. Public deployments should isolate
-    # every submission in its own sandbox/job (see README).
+    # Icarus emits vvp bytecode consumed by the vvp interpreter, so /tmp can
+    # remain noexec. Public deployments should still isolate every submission
+    # in its own sandbox/job (see README).
     read_only: true
     tmpfs:
-      - /tmp:rw,nosuid,nodev,size=256m
+      - /tmp:rw,nosuid,nodev,noexec,size=256m
     cap_drop:
       - ALL
     security_opt:

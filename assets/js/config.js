@@ -1,20 +1,18 @@
 /* ==========================================================================
    config.js — runtime configuration.
-   CUDA and Verilog need real hardware (GPU / simulator), which a static
-   site cannot ship. Point these URLs at your own runners (same contract as
-   the judge below) to enable them. Contract:
+   Verilog needs a simulator, which a static site cannot ship. Point this URL
+   at the included Icarus runner to enable it. Contract:
 
      POST <url>
-     { "language": "cuda"|"verilog", "code": "...", "tests": "..." }
+     { "language": "verilog", "code": "...", "tests": "..." }
      → 200 { "stdout": "...", "stderr": "...", "code": 0 }
 
-   Leave null to show the "runner not connected" guidance on those problems.
+   Leave null to show the "simulator not connected" guidance.
    ========================================================================== */
 
 window.PIT_CONFIG = {
   runners: {
-    cuda: null,     // e.g. "https://your-runner.example.com/execute"
-    verilog: null   // the same service can handle both languages
+    verilog: null   // e.g. "https://your-runner.example.com/execute"
   },
   /* Optional X-Runner-Key header. A value in browser JS is NOT a secret;
      use it only for private/internal deployments. Public deployments should

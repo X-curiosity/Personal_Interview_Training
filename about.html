@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About — Personal Interview Training</title>
-  <meta name="description" content="Why this site exists: one platform combining LeetCPU, LeetGPU, LeetSilicon, Project Euler and quant-firm puzzles.">
+  <meta name="description" content="Why this site exists: one platform combining LeetCPU, LeetSilicon, systems programming, Project Euler, and quant-firm puzzles.">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
 </head>
@@ -39,7 +39,6 @@
       <p>
         Interview prep is fragmented. CPU performance lives on
         <a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a>,
-        GPU kernels on <a href="https://leetgpu.com/challenges" target="_blank" rel="noopener">LeetGPU</a>,
         hardware design on <a href="https://leetsilicon.com/" target="_blank" rel="noopener">LeetSilicon</a>,
         math on <a href="https://projecteuler.net/archives" target="_blank" rel="noopener">Project Euler</a>,
         and quant brainteasers are scattered across firm archives like
@@ -51,12 +50,11 @@
       <h2>The tracks</h2>
       <ul>
         <li><strong>CPU Programming</strong> — branch prediction, cache optimization, memory hierarchy, ILP &amp; pipelining, prefetching. Backed by LeetCPU's ChampSim simulations.</li>
-        <li><strong>GPU Programming</strong> — CUDA basics, memory optimization, parallel algorithms, ML kernels. Backed by LeetGPU challenges.</li>
         <li><strong>Silicon &amp; RTL</strong> — RTL design, verification, computer architecture, clock-domain crossing &amp; timing, with an on-platform Verilog editor.</li>
         <li><strong>Systems C/C++</strong> — bit manipulation, pointers, allocators, data structures, concurrency and OS fundamentals, compiled by the online judge.</li>
         <li><strong>Mathematics</strong> — number theory, combinatorics &amp; DP, sequences, with instant-checked numeric answers.</li>
         <li><strong>Probability &amp; Quant</strong> — expected value, dice &amp; coins, games &amp; strategy, optimal stopping and brainteasers in the style of Jane Street, SIG, Optiver and Citadel interviews.</li>
-        <li><strong>Interview Questions</strong> — frequently asked questions from real company interviews (NVIDIA, AMD, Intel, Apple, Qualcomm, Jane Street, Citadel, Optiver), each one <strong>community-voted</strong> as accurate or not.</li>
+        <li><strong>Interview Questions</strong> — CPU, RTL, silicon, and quant questions from company-style interviews, each one <strong>community-voted</strong> as accurate or not.</li>
       </ul>
 
       <h2>How new puzzles get in</h2>
@@ -73,14 +71,14 @@
       <p>
         Problems are solved directly on this platform. <strong>Python</strong> runs locally in your browser through Pyodide/WASM.
         <strong>C and C++</strong> submissions are compiled by the configured Judge0 service.
-        <strong>CUDA and Verilog</strong> use the runner URL configured in <code>assets/js/config.js</code>;
-        the repository includes a deployable GPU/HDL runner service for infrastructure you control.
+        <strong>Verilog</strong> uses the simulator URL configured in <code>assets/js/config.js</code>;
+        the repository includes a deployable Icarus Verilog service for infrastructure you control.
       </p>
 
       <h2>Prepare for a role</h2>
       <p>
         The <a href="interview.html">Mock Interview</a> page assembles a timed set of random medium-to-hard
-        questions for ML Engineering, CPU Architecture, GPU Engineering, RTL/Silicon, or Quant Research.
+        questions for ML Engineering, CPU Architecture, RTL/Silicon, or Quant Research.
         It prefers unsolved questions and ends with a scored review.
       </p>
 
@@ -93,8 +91,8 @@
       <h2>Privacy</h2>
       <p>
         Your solved problems, votes and leaderboard entries live in your browser's <code>localStorage</code>.
-        Python code remains in-browser. C/C++ code is sent to Judge0 when you press Run; CUDA/Verilog code
-        is sent only when you configure a runner URL. No account or tracking cookie is required.
+        Python code remains in-browser. C/C++ code is sent to Judge0 when you press Run; Verilog code
+        is sent only when you configure a simulator URL. No account or tracking cookie is required.
         Community vote counts seeded in the data are sample data until a shared voting backend is wired in.
       </p>
     </div>
@@ -107,7 +105,6 @@
       <nav aria-label="Footer">
         <ul>
           <li><a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a></li>
-          <li><a href="https://leetgpu.com/challenges" target="_blank" rel="noopener">LeetGPU</a></li>
           <li><a href="https://leetsilicon.com/" target="_blank" rel="noopener">LeetSilicon</a></li>
           <li><a href="https://projecteuler.net/archives" target="_blank" rel="noopener">Project Euler</a></li>
           <li><a href="https://janestreet.com/puzzles/archive/" target="_blank" rel="noopener">Jane Street Puzzles</a></li>
@@ -120,10 +117,12 @@
   <script src="assets/js/data.js"></script>
   <script src="assets/js/data/pack_math_quant_cap.js"></script>
   <script src="assets/js/data/pack_cpu.js"></script>
-  <script src="assets/js/data/pack_gpu.js"></script>
+  <script src="assets/js/data/pack_cpu_expansion.js"></script>
   <script src="assets/js/data/pack_silicon.js"></script>
+  <script src="assets/js/data/pack_silicon_expansion.js"></script>
   <script src="assets/js/data/pack_systems_cap.js"></script>
   <script src="assets/js/data/pack_interview.js"></script>
+  <script src="assets/js/data/pack_interview_expansion.js"></script>
   <script src="assets/js/store.js"></script>
   <script src="assets/js/main.js"></script>
 </body>

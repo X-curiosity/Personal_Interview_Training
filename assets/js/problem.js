@@ -9,7 +9,7 @@
   "use strict";
 
   var LANG_LABELS = {
-    python: "Python", c: "C", cpp: "C++", verilog: "Verilog", cuda: "CUDA"
+    python: "Python", c: "C", cpp: "C++", verilog: "Verilog"
   };
 
   function esc(s) {

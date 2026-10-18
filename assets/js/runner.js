@@ -1,7 +1,7 @@
 /* ==========================================================================
    runner.js — code execution engine.
    python → Pyodide (WASM, in-browser) · c/cpp → Judge0 (optional Piston fallback) ·
-   cuda/verilog → user-configured remote runner (see config.js).
+   verilog → user-configured Icarus runner (see config.js).
    ========================================================================== */
 
 (function () {
@@ -141,9 +141,7 @@
     if (!url) {
       return Promise.resolve({
         ok: false, stdout: "", code: -1,
-        stderr: (lang === "cuda"
-          ? "No GPU runner connected. CUDA needs a cloud GPU (LeetGPU-style) — set PIT_CONFIG.runners.cuda in assets/js/config.js to your runner (contract documented there). Until then, write the kernel here and paste it into leetgpu.com to execute."
-          : "No HDL runner connected. Verilog needs a simulator backend (Icarus/Verilator) — set PIT_CONFIG.runners.verilog in assets/js/config.js. Until then, paste the module into your local simulator or EDA Playground.")
+        stderr: "No HDL runner connected. Verilog needs a simulator backend (Icarus/Verilator) — set PIT_CONFIG.runners.verilog in assets/js/config.js. Until then, paste the module into your local simulator or EDA Playground."
       });
     }
     onStatus("Sending to " + lang + " runner…");
@@ -165,8 +163,8 @@
       var hasTests = String(tests || "").trim().length > 0;
       var compileOnly = res.code === 0 && !hasTests;
       return {
-        /* Never award a solve for compile-only CUDA/Verilog. Without a
-           testbench, successful compilation is useful feedback—not proof. */
+        /* Never award a solve for compile-only Verilog. Without a testbench,
+           successful compilation is useful feedback—not proof. */
         ok: res.code === 0 && hasTests,
         compileOnly: compileOnly,
         stdout: res.stdout || "",

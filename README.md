@@ -1,152 +1,157 @@
 # Personal Interview Training
 
-A multi-page interview-training website combining CPU architecture, GPU programming, RTL design, systems C/C++, mathematics, probability/quant, and company-style interview questions in one place.
+A multi-page interview-training website focused on CPU architecture, systems C/C++, silicon/RTL, mathematics, probability/quant, and company-style interview questions.
 
-The problems live **on this website**. Coding problems open in an editor with test execution; non-coding problems use an answer box or model-answer reveal. A timed **Prepare for the Role** mode builds randomized medium/hard mock interviews.
+Every problem has a local statement and is solved on-platform. External links are attribution only.
 
-## Database
+## Problem database
 
-The database is intentionally capped at **400 problems**.
+The database is capped at exactly **400 problems**.
 
 | Track | Problems |
 |---|---:|
-| CPU Programming | 85 |
-| GPU Programming | 75 |
-| Silicon & RTL | 75 |
+| CPU Programming | 123 |
+| Silicon & RTL | 112 |
 | Systems C/C++ | 32 |
 | Mathematics | 36 |
 | Probability & Quant | 37 |
 | Interview Questions | 60 |
 | **Total** | **400** |
 
-Of these, **136 are code tasks** (including 9 Python tasks) and **264 use answer checking or solution reveal**.
+There are **121 coding tasks** and **279 answer/model-solution tasks**. The replacement packs add 38 CPU problems, 37 LeetSilicon-style problems, and 16 CPU/RTL interview questions. The platform intentionally contains no GPU track or GPU programming problems.
 
-## Main features
+## Features
 
-- LeetSilicon/LeetCode-style selection page with tracks, sub-branches, search, difficulty filters, solve status, and random selection.
-- Individual `problem.html?id=...` pages with the full problem statement on-platform.
-- Editors and execution support for Python, C, C++, CUDA, and Verilog.
-- Numeric/text answer checking with exact integer grading and configurable decimal tolerance.
-- Model-answer reveal for open-ended interview questions.
+- Multi-page LeetCode-style interface rather than a single-page app.
+- Searchable/filterable 400-problem table with persisted solve status.
+- Local problem pages with full statements, previous/next navigation, and source attribution.
+- Editors for Python, C, C++, and Verilog.
+- Exact/tolerant answer checking and model-solution reveal.
 - Timed role preparation for:
   - ML Engineer
   - CPU Architecture Engineer
-  - GPU Engineer
   - RTL / Silicon Engineer
   - Quant Researcher
-- Weighted leaderboard: Easy = 1 point, Medium = 3, Hard = 5.
-- Community accuracy voting for company-style questions and pending submissions.
-- Manual puzzle submission and admin/community review queue.
-- Weekly scout agent for finding new candidates. Because the database is capped at 400, candidates must replace weaker entries rather than increase the total.
+- Weighted scoring: easy 1, medium 3, hard 5.
+- Local rival leaderboard, community voting, submission review queue, and weekly scout workflow.
+- Browser-local progress using `localStorage`.
 
 ## Code execution
 
 | Language | Execution path |
 |---|---|
-| Python | Pyodide/WASM, loaded lazily and run in the browser |
-| C / C++ | Judge0 CE by default; optional self-hosted Piston fallback |
-| CUDA | The included `runner-service`, deployed on an NVIDIA GPU host; current tasks are compile/run practice without automatic testbenches |
-| Verilog | The included `runner-service`, using Icarus Verilog; current tasks are compile/run practice without automatic testbenches |
+| Python | Pyodide/WASM in the browser |
+| C / C++ | Judge0 CE; optional Piston fallback |
+| Verilog | Included FastAPI/Icarus service configured in `assets/js/config.js` |
 
-Configure external runners in `assets/js/config.js`:
+Configure the Verilog endpoint:
 
 ```js
 window.PIT_CONFIG = {
   runners: {
-    cuda: "https://runner.example.com/execute",
     verilog: "https://runner.example.com/execute"
   },
   runnerKey: null,
   judge0Url: "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",
+  requestTimeoutMs: 90000,
   pistonUrl: null,
   pyodideUrl: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"
 };
 ```
 
-A browser-side runner key is not secret. Public deployments should put proper authentication, rate limiting, and isolation in front of the execution service.
+A browser-side runner key is not a secret. Public deployments need real authentication, rate limiting, and per-submission isolation in front of the runner.
 
-CUDA/Verilog tasks currently do not include per-problem automated testbenches. Successful compilation is shown as feedback but **does not automatically mark a problem solved**; users may mark it manually after reviewing their output. This prevents compile-only submissions from receiving false credit.
-
-## Pages
-
-| Page | Purpose |
-|---|---|
-| `index.html` | Home, progress, seven tracks, random problem |
-| `problems.html` | Track/sub-branch selection and searchable problem table |
-| `problem.html?id=...` | Full statement, editor or answer box, previous/next navigation |
-| `interview.html` | Timed role-based mock interviews |
-| `leaderboard.html` | Weighted local leaderboard and rivals |
-| `submit.html` | Manual submissions and community review queue |
-| `about.html` | Product explanation, execution/privacy notes |
+Verilog problems with a self-checking testbench can earn automatic credit. Compile-only success is feedback—not proof—and never marks a problem solved automatically.
 
 ## Run locally
 
-No build step is required for the website:
+No frontend build step is required:
 
 ```bash
-make serve
-# http://localhost:8000
-```
-
-Or:
-
-```bash
+cd Personal_Interview_Training
 python3 -m http.server 8000
 ```
 
-## Validate and test
+Open <http://localhost:8000>.
 
-The website remains build-free; npm is used only for the test dependency (`jsdom`).
+Do not open the HTML through `file://`; Pyodide, module assets, and browser security policies expect HTTP.
+
+## Verification
+
+Install the test dependency and run frontend/data checks:
 
 ```bash
 npm install
 npm test
 ```
 
-This runs:
+Run all root checks:
 
-- `tools/validate_data.js` — schema, unique IDs, valid tracks/branches, code starters/tests, role references, and the exact 400-problem cap.
-- `tools/test_runtime.js` — answer grading, editor/answer rendering, local scoring, role pool sizes, script references, and registry integrity.
+```bash
+make test
+```
 
-## CUDA / Verilog runner
+The validator checks schema, unique IDs, track/branch consistency, starter code, test harnesses, role references, forbidden removed-track content, and the exact 400-problem cap.
 
-See [`runner-service/README.md`](runner-service/README.md).
-
-Quick development setup:
+Runner-service tests:
 
 ```bash
 cd runner-service
 python3 -m venv .venv
-. .venv/bin/activate
-pip install -r requirements-dev.txt
-PYTHONPATH=. pytest -q
+.venv/bin/pip install -r requirements.txt -r requirements-dev.txt
+.venv/bin/python -m pytest -q
 ```
 
-Deployment uses the provided NVIDIA CUDA Dockerfile and Compose configuration. The reference runner is appropriate for private/internal use. A public multi-tenant deployment should use one isolated job/container per submission with gVisor or Kata Containers.
+## Verilog runner
 
-## Repository layout
+The optional service exposes:
+
+```json
+POST /execute
+{"language":"verilog","code":"...","tests":"..."}
+```
+
+and returns:
+
+```json
+{"stdout":"...","stderr":"...","code":0}
+```
+
+Deploy it on an ordinary CPU host:
+
+```bash
+cd runner-service
+cp .env.example .env
+# Edit origin/key settings.
+docker compose up --build -d
+```
+
+See [`runner-service/README.md`](runner-service/README.md) for the execution contract and security boundary.
+
+## Repository map
 
 ```text
-├── index.html / problems.html / problem.html / interview.html
-├── leaderboard.html / submit.html / about.html
+.
+├── index.html, problems.html, problem.html
+├── interview.html, leaderboard.html, submit.html, about.html
 ├── assets/
 │   ├── css/style.css
 │   └── js/
-│       ├── data.js                 # schema, tracks, roles, registry
-│       ├── data/pack_*.js          # 400-problem database
-│       ├── problem.js              # answer/editor renderer
-│       ├── runner.js               # execution adapters
+│       ├── data.js                 # track/role registry and normalization
+│       ├── data/pack_*.js          # exactly 400 problems
+│       ├── problem.js, runner.js   # solving UI and execution adapters
 │       ├── interview.js            # timed role sessions
-│       ├── problems.js             # selection page
-│       ├── store.js                # local progress/votes/leaderboard
-│       └── config.js               # judge/runner configuration
-├── runner-service/                 # FastAPI CUDA + Verilog runner
-├── agent/scrape_agent.py           # candidate discovery agent
-├── tools/validate_data.js
-├── tools/test_runtime.js
-└── REPORT.md                       # full implementation report
+│       └── store.js                # local progress/votes/rivals
+├── runner-service/                 # FastAPI + Icarus Verilog
+├── tools/                          # data and runtime validators
+├── agent/scrape_agent.py           # source discovery
+└── REPORT.md                       # implementation and QA report
 ```
 
-## Privacy
+## Privacy and persistence
 
-Progress, votes, and leaderboard data use browser `localStorage`. Python runs locally in the browser. C/C++ source is sent to Judge0 when Run is pressed. CUDA and Verilog source is sent only to the runner URLs you configure.
+Progress, votes, and rivals remain in browser `localStorage`. Python executes locally. C/C++ is sent to the configured judge only when Run is pressed. Verilog is sent only when a simulator endpoint is configured. No account, analytics, or tracking cookie is required.
+
+## License and attribution
+
+This repository is licensed under the [MIT License](LICENSE). External source links identify inspiration/reference platforms; linked third-party content remains subject to its respective terms.

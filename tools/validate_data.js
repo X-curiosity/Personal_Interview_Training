@@ -24,7 +24,7 @@ const { PROBLEMS, TRACKS, TRACK_ORDER, ROLES } = globalThis.__R;
 const errors = [];
 const MAX_PROBLEMS = 400;
 const DIFFS = ["easy", "medium", "hard"];
-const LANGS = ["python", "c", "cpp", "verilog", "cuda"];
+const LANGS = ["python", "c", "cpp", "verilog"];
 
 const ids = new Set();
 for (const p of PROBLEMS) {
@@ -46,7 +46,7 @@ for (const p of PROBLEMS) {
     }
     // At least one runnable-in-browser language should carry tests
     const tested = ["python", "c", "cpp"].filter((l) => p.languages.includes(l) && p.tests[l]);
-    if (!tested.length && !p.languages.includes("cuda") && !p.languages.includes("verilog"))
+    if (!tested.length && !p.languages.includes("verilog"))
       errors.push(`${at}: code kind but no tests for python/c/cpp`);
   } else {
     if (p.answer === null && !p.solution)

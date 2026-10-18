@@ -37,7 +37,7 @@
     <section class="section" aria-labelledby="pipeline-heading">
       <div class="section-head"><h2 id="pipeline-heading">How a puzzle gets in</h2></div>
       <ol class="pipeline">
-        <li><strong>Scout agent.</strong> <code>agent/scrape_agent.py</code> runs on a schedule (GitHub Actions, weekly) and scrapes Jane Street, Project Euler, LeetGPU, LeetSilicon and LeetCPU for newly published problems. New finds are filed as candidates in a GitHub issue.</li>
+        <li><strong>Scout agent.</strong> <code>agent/scrape_agent.py</code> runs weekly and checks Jane Street, Project Euler, LeetSilicon, and LeetCPU for new candidates.</li>
         <li><strong>Manual submission.</strong> Anyone can propose a puzzle with the form below — it opens a pre-filled GitHub issue on the repo.</li>
         <li><strong>Community review.</strong> Candidates land in the review queue at the bottom of this page, where the community votes: worth adding or not.</li>
         <li><strong>Admin merge.</strong> The admin reviews votes and sources, then moves approved entries from <code>assets/js/pending.js</code> into <code>assets/js/data.js</code> — live on the next deploy.</li>
@@ -60,7 +60,6 @@
               <label for="f-track">Track</label>
               <select id="f-track" name="track">
                 <option value="cpu">CPU Programming</option>
-                <option value="gpu">GPU Programming</option>
                 <option value="silicon">Silicon &amp; RTL</option>
                 <option value="systems">Systems C/C++</option>
                 <option value="math">Mathematics</option>
@@ -119,7 +118,6 @@
       <nav aria-label="Footer">
         <ul>
           <li><a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a></li>
-          <li><a href="https://leetgpu.com/challenges" target="_blank" rel="noopener">LeetGPU</a></li>
           <li><a href="https://leetsilicon.com/" target="_blank" rel="noopener">LeetSilicon</a></li>
           <li><a href="https://projecteuler.net/archives" target="_blank" rel="noopener">Project Euler</a></li>
           <li><a href="https://janestreet.com/puzzles/archive/" target="_blank" rel="noopener">Jane Street Puzzles</a></li>
@@ -132,10 +130,12 @@
   <script src="assets/js/data.js"></script>
   <script src="assets/js/data/pack_math_quant_cap.js"></script>
   <script src="assets/js/data/pack_cpu.js"></script>
-  <script src="assets/js/data/pack_gpu.js"></script>
+  <script src="assets/js/data/pack_cpu_expansion.js"></script>
   <script src="assets/js/data/pack_silicon.js"></script>
+  <script src="assets/js/data/pack_silicon_expansion.js"></script>
   <script src="assets/js/data/pack_systems_cap.js"></script>
   <script src="assets/js/data/pack_interview.js"></script>
+  <script src="assets/js/data/pack_interview_expansion.js"></script>
   <script src="assets/js/pending.js"></script>
   <script src="assets/js/store.js"></script>
   <script src="assets/js/main.js"></script>

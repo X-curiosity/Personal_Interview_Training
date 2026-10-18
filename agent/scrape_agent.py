@@ -2,7 +2,7 @@
 """Scout agent for Personal Interview Training.
 
 Scrapes the source platforms (Jane Street puzzles, Project Euler archives,
-LeetGPU challenges, LeetSilicon problems, LeetCPU) for published problems,
+LeetSilicon problems, and LeetCPU) for published problems,
 deduplicates them against the site's dataset (assets/js/data.js +
 assets/js/pending.js), and writes new candidates to agent/candidates.json.
 
@@ -95,26 +95,6 @@ def scout_project_euler():
     return items[-10:]  # the tail of the list = newest problems
 
 
-def scout_leetgpu():
-    """Challenge links exposed by leetgpu.com (JS-rendered; best effort)."""
-    src = fetch("https://leetgpu.com/challenges")
-    items = []
-    for m in re.finditer(r'href="(/challenges/[a-z0-9-]+)"', src):
-        slug = m.group(1).rsplit("/", 1)[-1]
-        title = clean(slug.replace("-", " ")).title()
-        items.append({
-            "track": "gpu", "branch": "CUDA Basics",
-            "title": title,
-            "url": "https://leetgpu.com/challenges/" + slug,
-        })
-    seen, out = set(), []
-    for it in items:
-        if it["url"] not in seen:
-            seen.add(it["url"])
-            out.append(it)
-    return out
-
-
 def scout_leetsilicon():
     """Problem links exposed by leetsilicon.com (JS-rendered; best effort)."""
     src = fetch("https://leetsilicon.com/problems")
@@ -153,7 +133,6 @@ def scout_leetcpu():
 SOURCES = [
     ("janestreet", scout_jane_street),
     ("projecteuler", scout_project_euler),
-    ("leetgpu", scout_leetgpu),
     ("leetsilicon", scout_leetsilicon),
     ("leetcpu", scout_leetcpu),
 ]

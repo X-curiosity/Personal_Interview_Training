@@ -14,15 +14,6 @@ const TRACKS = {
     blurb: "Microarchitecture performance: branch prediction, caches, prefetching, ILP.",
     branches: ["Branch Prediction", "Cache Optimization", "Memory Hierarchy", "ILP & Pipelining", "Prefetching"]
   },
-  "gpu": {
-    name: "GPU Programming",
-    short: "GPU",
-    glyph: "▦",
-    platform: "LeetGPU-style",
-    home: "https://leetgpu.com/challenges",
-    blurb: "CUDA kernel challenges: tiling, coalescing, reductions, ML primitives.",
-    branches: ["CUDA Basics", "Memory Optimization", "Parallel Algorithms", "ML Kernels"]
-  },
   "silicon": {
     name: "Silicon & RTL",
     short: "RTL",
@@ -66,20 +57,20 @@ const TRACKS = {
     platform: "Company Interviews",
     home: "https://leetsilicon.com/problems",
     blurb: "Frequently asked questions from real company interviews, community-voted.",
-    branches: ["Hardware & RTL", "CPU & Architecture", "GPU & CUDA", "Quant & Trading"]
+    branches: ["Hardware & RTL", "CPU & Architecture", "Quant & Trading"]
   }
 };
 
-const TRACK_ORDER = ["cpu", "gpu", "silicon", "systems", "math", "quant", "interview"];
+const TRACK_ORDER = ["cpu", "silicon", "systems", "math", "quant", "interview"];
 
 /* Mock-interview roles: which tracks feed them, how many questions, how long. */
 const ROLES = {
   "ml-engineer": {
     name: "ML Engineer", icon: "🧠",
-    tracks: ["gpu", "math", "quant"],
+    tracks: ["systems", "math", "quant"],
     difficulties: ["medium", "hard"],
     count: 6, minutes: 45,
-    blurb: "CUDA kernels, ML math and the probability questions ML interviews love."
+    blurb: "Numerical reasoning, production systems and the probability questions ML interviews love."
   },
   "cpu-architect": {
     name: "CPU Architecture Engineer", icon: "⌘",
@@ -87,13 +78,6 @@ const ROLES = {
     difficulties: ["medium", "hard"],
     count: 6, minutes: 60,
     blurb: "Caches, pipelines, branch prediction and the C/C++ to back it up."
-  },
-  "gpu-engineer": {
-    name: "GPU Engineer", icon: "▦",
-    tracks: ["gpu", "systems"],
-    difficulties: ["medium", "hard"],
-    count: 5, minutes: 45,
-    blurb: "Kernel optimization, memory hierarchy and parallel algorithms."
   },
   "rtl-engineer": {
     name: "RTL / Silicon Engineer", icon: "⚡",
@@ -126,7 +110,7 @@ const ROLES = {
      summary: "...",             // 1-line; derived from statement if missing
      statement: "...",           // full on-platform problem text
      kind: "answer",             // "answer" (box) | "code" (editor + run)
-     languages: [],              // code kind: subset of python|c|cpp|verilog|cuda
+     languages: [],              // code kind: subset of python|c|cpp|verilog
      starter: {},                // code kind: { python: "def solve():\n    ..." }
      tests: {},                  // code kind: { python: "assert solve() == 42" }
      answer: null,               // answer kind: expected answer (string/number)

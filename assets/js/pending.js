@@ -22,19 +22,6 @@ const PENDING_PROBLEMS = [
     submittedAt: "2025-10-12"
   },
   {
-    id: "pend-02",
-    track: "gpu",
-    branch: "ML Kernels",
-    title: "Flash-Style Tiled Attention",
-    difficulty: "hard",
-    tags: ["attention", "tiling", "manual-submission"],
-    summary: "Manual submission: online-softmax attention with SRAM tiling — compute the whole forward pass without materializing N×N scores.",
-    url: "https://leetgpu.com/challenges",
-    votes: { up: 9, down: 0 },
-    submittedBy: "community",
-    submittedAt: "2025-10-15"
-  },
-  {
     id: "pend-03",
     track: "interview",
     branch: "Quant & Trading",
