@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Problem — Personal Interview Training</title>
+  <meta name="description" content="Solve the problem right here: code editor with online judge (Python, C, C++, CUDA, Verilog) or answer box with instant check.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html"><span class="prompt">pit&gt;</span> Personal_Interview_Training</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="problems.html" aria-current="page">Problems</a></li>
+          <li><a href="interview.html">Mock Interview</a></li>
+          <li><a href="leaderboard.html">Leaderboard</a></li>
+          <li><a href="submit.html">Contribute</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container container-problem">
+
+    <nav class="problem-nav" aria-label="Problem navigation">
+      <a href="problems.html" class="back-link">← All problems</a>
+      <span class="problem-nav-right">
+        <button type="button" class="btn ghost small" data-prev>← Prev</button>
+        <button type="button" class="check-nav" data-solve-toggle aria-pressed="false"></button>
+        <button type="button" class="btn ghost small" data-next>Next →</button>
+      </span>
+    </nav>
+
+    <div data-problem-root>
+      <p class="empty-state">// loading…</p>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <span>pit&gt; built for training, <span data-year>2025</span>. Progress is stored locally in your browser.</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/data/pack_math_quant_cap.js"></script>
+  <script src="assets/js/data/pack_cpu.js"></script>
+  <script src="assets/js/data/pack_gpu.js"></script>
+  <script src="assets/js/data/pack_silicon.js"></script>
+  <script src="assets/js/data/pack_systems_cap.js"></script>
+  <script src="assets/js/data/pack_interview.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/runner.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/problem.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var root = document.querySelector("[data-problem-root]");
+      var id = new URLSearchParams(location.search).get("id");
+      var p = id && typeof findProblem === "function" ? findProblem(id) : null;
+
+      if (!p) {
+        root.innerHTML =
+          '<p class="empty-state">// problem not found — <a href="problems.html">browse all problems</a></p>';
+        document.querySelector(".problem-nav-right").style.visibility = "hidden";
+        return;
+      }
+
+      document.title = p.title + " — Personal Interview Training";
+
+      var solveBtn = document.querySelector("[data-solve-toggle]");
+      function paintSolveBtn() {
+        var on = PIT_STORE.isSolved(p.id);
+        solveBtn.className = "check-nav check" + (on ? " on" : "");
+        solveBtn.textContent = on ? "✓" : "";
+        solveBtn.setAttribute("aria-pressed", String(on));
+        solveBtn.setAttribute("aria-label", on ? "Mark as unsolved" : "Mark as solved");
+      }
+      solveBtn.addEventListener("click", function () {
+        PIT_STORE.toggleSolved(p.id);
+        paintSolveBtn();
+      });
+
+      PIT_PROBLEM.render(root, p, { onSolved: paintSolveBtn });
+      paintSolveBtn();
+
+      /* prev/next within the same track */
+      var siblings = PROBLEMS.filter(function (x) { return x.track === p.track; });
+      var idx = siblings.findIndex(function (x) { return x.id === p.id; });
+      function go(d) {
+        var next = siblings[(idx + d + siblings.length) % siblings.length];
+        if (next) location.href = "problem.html?id=" + next.id;
+      }
+      document.querySelector("[data-prev]").addEventListener("click", function () { go(-1); });
+      document.querySelector("[data-next]").addEventListener("click", function () { go(1); });
+    });
+  </script>
+</body>
+</html>

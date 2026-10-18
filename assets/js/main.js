@@ -7,6 +7,12 @@
 (function () {
   "use strict";
 
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
   function pickRandom(pool, avoidId) {
     if (!pool.length) return null;
     if (pool.length === 1) return pool[0];
@@ -26,15 +32,15 @@
     var t = trackMeta(p.track);
     container.innerHTML =
       '<div class="meta">' +
-        '<span class="badge track-' + p.track + '">' + t.name + "</span>" +
-        '<span class="badge">' + p.branch + "</span>" +
-        '<span class="diff diff-' + p.difficulty + '">' +
-          p.difficulty.charAt(0).toUpperCase() + p.difficulty.slice(1) + "</span>" +
+        '<span class="badge track-' + esc(p.track) + '">' + esc(t.name) + "</span>" +
+        '<span class="badge">' + esc(p.branch) + "</span>" +
+        '<span class="diff diff-' + esc(p.difficulty) + '">' +
+          esc(p.difficulty.charAt(0).toUpperCase() + p.difficulty.slice(1)) + "</span>" +
       "</div>" +
-      "<h3>" + p.title + "</h3>" +
-      '<p class="summary">' + p.summary + "</p>" +
-      '<a class="go" href="' + p.url + '" target="_blank" rel="noopener">' +
-        "Train on " + t.platform + " →</a>";
+      "<h3>" + esc(p.title) + "</h3>" +
+      '<p class="summary">' + esc(p.summary) + "</p>" +
+      '<a class="go" href="problem.html?id=' + encodeURIComponent(p.id) + '">' +
+        "Solve it here →</a>";
   }
 
   function initRandomMachines() {
@@ -89,9 +95,23 @@
     });
   }
 
+  /* Dynamic per-track problem counts: [data-track-count="cpu"] etc. */
+  function initTrackCounts() {
+    if (typeof PROBLEMS === "undefined") return;
+    document.querySelectorAll("[data-track-count]").forEach(function (el) {
+      var track = el.getAttribute("data-track-count");
+      var n = PROBLEMS.filter(function (p) { return p.track === track; }).length;
+      el.textContent = n + (el.getAttribute("data-suffix") || " problems");
+    });
+    document.querySelectorAll("[data-total-count]").forEach(function (el) {
+      el.textContent = String(PROBLEMS.length);
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initRandomMachines();
     initYourStats();
+    initTrackCounts();
     initYear();
   });
 

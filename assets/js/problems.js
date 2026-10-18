@@ -8,6 +8,12 @@
 (function () {
   "use strict";
 
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     var trackList = document.querySelector("[data-track-list]");
     var tbody = document.querySelector("[data-problem-rows]");
@@ -129,19 +135,23 @@
           "</td>" +
           '<td class="col-num">' + (index + 1) + "</td>" +
           '<td class="col-title">' +
-            '<span class="p-title" title="' + p.summary + '">' + p.title + "</span>" +
-            '<span class="p-branch">' + t.short + " · " + p.branch + "</span>" +
+            '<a class="p-title" href="problem.html?id=' + encodeURIComponent(p.id) + '" title="' + esc(p.summary) + '">' + esc(p.title) + "</a>" +
+            '<span class="p-branch">' + esc(t.short) + " · " + esc(p.branch) + "</span>" +
             (p.track === "interview"
               ? '<span class="vote" data-vote-widget="' + p.id + '">' + voteHtml(p) + "</span>"
               : "") +
           "</td>" +
           '<td class="col-tags">' +
-            p.tags.map(function (tag) { return '<span class="tag">' + tag + "</span>"; }).join("") +
+            p.tags.map(function (tag) { return '<span class="tag">' + esc(tag) + "</span>"; }).join("") +
           "</td>" +
           '<td class="col-diff"><span class="diff diff-' + p.difficulty + '">' +
             p.difficulty.charAt(0).toUpperCase() + p.difficulty.slice(1) + "</span></td>" +
-          '<td class="col-link"><a href="' + p.url + '" target="_blank" rel="noopener" ' +
-            'class="solve-link" aria-label="Open ' + p.title + " on " + t.platform + '">↗</a></td>' +
+          '<td class="col-link">' +
+            (p.source
+              ? '<a href="' + esc(p.source) + '" target="_blank" rel="noopener" ' +
+                'class="solve-link" aria-label="Open ' + esc(p.title) + ' source on ' + esc(t.platform) + '">↗</a>'
+              : "") +
+          "</td>" +
         "</tr>"
       );
     }

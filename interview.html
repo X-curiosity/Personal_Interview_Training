@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Interview — Personal Interview Training</title>
+  <meta name="description" content="Prepare for a role: timed mock interview with random medium/hard questions from the database — ML Engineer, CPU Architect, GPU Engineer, RTL Engineer, Quant Researcher.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html"><span class="prompt">pit&gt;</span> Personal_Interview_Training</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="problems.html">Problems</a></li>
+          <li><a href="interview.html" aria-current="page">Mock Interview</a></li>
+          <li><a href="leaderboard.html">Leaderboard</a></li>
+          <li><a href="submit.html">Contribute</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+
+    <div class="page-head">
+      <h1>Prepare for the role</h1>
+      <p>A timed mock interview: several medium-to-hard questions drawn at random from the full database, matched to the role you're targeting.</p>
+    </div>
+
+    <!-- Role selection -->
+    <section data-stage="pick">
+      <div class="grid" data-role-grid></div>
+    </section>
+
+    <!-- Live session -->
+    <section data-stage="run" hidden>
+      <div class="mock-hud">
+        <div class="hud-item"><span class="hud-label">Role</span><span class="hud-value" data-hud-role></span></div>
+        <div class="hud-item"><span class="hud-label">Question</span><span class="hud-value" data-hud-pos></span></div>
+        <div class="hud-item"><span class="hud-label">Time left</span><span class="hud-value hud-timer" data-hud-timer></span></div>
+        <button type="button" class="btn ghost small" data-end-early>End session</button>
+      </div>
+      <div data-mock-problem></div>
+      <div class="mock-controls">
+        <button type="button" class="btn ghost" data-skip>Skip →</button>
+        <button type="button" class="btn" data-next-q>Next question →</button>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section data-stage="done" hidden>
+      <div class="panel mock-results">
+        <h2>Session complete</h2>
+        <div class="stats-strip" data-your-stats>
+          <div class="stat"><div class="stat-value" data-res-solved>0</div><div class="stat-label">Solved</div></div>
+          <div class="stat"><div class="stat-value" data-res-total>0</div><div class="stat-label">Questions</div></div>
+          <div class="stat"><div class="stat-value pts" data-res-points>0</div><div class="stat-label">Points</div></div>
+          <div class="stat"><div class="stat-value" data-res-time>0</div><div class="stat-label">Time used</div></div>
+        </div>
+        <ul class="mock-review" data-res-review></ul>
+        <div class="hero-cta">
+          <button type="button" class="btn" data-again>Run another session</button>
+          <a class="btn ghost" href="problems.html">Back to problems</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <span>pit&gt; built for training, <span data-year>2025</span>. Progress is stored locally in your browser.</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/data/pack_math_quant_cap.js"></script>
+  <script src="assets/js/data/pack_cpu.js"></script>
+  <script src="assets/js/data/pack_gpu.js"></script>
+  <script src="assets/js/data/pack_silicon.js"></script>
+  <script src="assets/js/data/pack_systems_cap.js"></script>
+  <script src="assets/js/data/pack_interview.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/runner.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/problem.js"></script>
+  <script src="assets/js/interview.js"></script>
+</body>
+</html>

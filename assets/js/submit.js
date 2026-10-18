@@ -39,7 +39,7 @@
         '  title: "' + jsEsc(d.title) + '", difficulty: "' + d.difficulty + '",\n' +
         '  tags: ["manual-submission"],\n' +
         '  summary: "' + jsEsc(d.summary) + '",\n' +
-        '  url: "' + d.url + '" },'
+        '  url: "' + jsEsc(d.url) + '" },'
       );
     }
 

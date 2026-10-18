@@ -18,6 +18,7 @@
         <ul>
           <li><a href="index.html" aria-current="page">Home</a></li>
           <li><a href="problems.html">Problems</a></li>
+          <li><a href="interview.html">Mock Interview</a></li>
           <li><a href="leaderboard.html">Leaderboard</a></li>
           <li><a href="submit.html">Contribute</a></li>
           <li><a href="about.html">About</a></li>
@@ -39,6 +40,7 @@
       </p>
       <div class="hero-cta">
         <a class="btn" href="problems.html">Browse problems</a>
+        <a class="btn ghost" href="interview.html">🎯 Prepare for a role</a>
         <a class="btn ghost" href="#bored">I'm bored — roll a puzzle</a>
       </div>
     </section>
@@ -61,44 +63,50 @@
     <section class="section" aria-labelledby="tracks-heading">
       <div class="section-head">
         <h2 id="tracks-heading">Training tracks</h2>
-        <p>Six tracks, each backed by a real platform or real company question styles. Every problem links out so you train where it counts.</p>
+        <p>Seven tracks, every problem lives right here — in-browser Python, judged C/C++, cloud-runner-ready CUDA and Verilog editors, or instant-check answer boxes for math and concept questions.</p>
       </div>
       <div class="grid">
         <a class="card accent-cpu" href="problems.html#cpu">
           <div class="glyph" aria-hidden="true">⌘</div>
           <h3>CPU Programming</h3>
-          <p>Branch prediction, caches, prefetching and ILP — ChampSim-backed microarchitecture training on LeetCPU.</p>
-          <span class="card-meta">10 problems · leetcpu.com</span>
+          <p>Branch prediction, caches, prefetching and ILP — microarchitecture training in LeetCPU style, with instant-checked calculations.</p>
+          <span class="card-meta" data-track-count="cpu" data-suffix=" problems · leetcpu-style">…</span>
         </a>
         <a class="card accent-gpu" href="problems.html#gpu">
           <div class="glyph" aria-hidden="true">▦</div>
           <h3>GPU Programming</h3>
-          <p>CUDA kernels from vector addition to attention: tiling, coalescing, reductions and ML primitives on LeetGPU.</p>
-          <span class="card-meta">12 problems · leetgpu.com</span>
+          <p>Write real CUDA kernels in the built-in editor — from vector addition to tiled attention, LeetGPU-style.</p>
+          <span class="card-meta" data-track-count="gpu" data-suffix=" problems · CUDA">…</span>
         </a>
         <a class="card accent-silicon" href="problems.html#silicon">
           <div class="glyph" aria-hidden="true">⚡</div>
           <h3>Silicon &amp; RTL</h3>
-          <p>RTL design, verification, CDC and computer architecture — hardware interview prep on LeetSilicon.</p>
-          <span class="card-meta">10 problems · leetsilicon.com</span>
+          <p>Write Verilog modules to spec — FSMs, FIFOs, CDC and architecture, with timing math answer-boxes.</p>
+          <span class="card-meta" data-track-count="silicon" data-suffix=" problems · Verilog">…</span>
         </a>
         <a class="card accent-math" href="problems.html#math">
           <div class="glyph" aria-hidden="true">∑</div>
           <h3>Mathematics</h3>
-          <p>Number theory, combinatorics and sequences hand-picked from the Project Euler archive.</p>
-          <span class="card-meta">11 problems · projecteuler.net</span>
+          <p>Verified Euler-style puzzles and Python tasks — number theory, combinatorics, sequences, and instant-checked answers.</p>
+          <span class="card-meta" data-track-count="math" data-suffix=" problems · euler-style">…</span>
         </a>
         <a class="card accent-quant" href="problems.html#quant">
           <div class="glyph" aria-hidden="true">🎲</div>
           <h3>Probability &amp; Quant</h3>
-          <p>Expected value, games and brainteasers in the style of Jane Street, SIG, Optiver and Citadel interviews.</p>
-          <span class="card-meta">15 problems · firm-style</span>
+          <p>Expected value, games and brainteasers in the style of Jane Street, SIG, Optiver and Citadel — every answer verified.</p>
+          <span class="card-meta" data-track-count="quant" data-suffix=" problems · firm-style">…</span>
         </a>
         <a class="card accent-interview" href="problems.html#interview">
           <div class="glyph" aria-hidden="true">💼</div>
           <h3>Interview Questions</h3>
-          <p>Frequently asked questions from real company interviews — community-voted for accuracy.</p>
-          <span class="card-meta">15 questions · NVIDIA · AMD · JS · Citadel…</span>
+          <p>Frequently asked questions from real company interviews — with model answers and community accuracy votes.</p>
+          <span class="card-meta" data-track-count="interview" data-suffix=" questions · company-tagged">…</span>
+        </a>
+        <a class="card accent-systems" href="problems.html#systems">
+          <div class="glyph" aria-hidden="true">⚙</div>
+          <h3>Systems C/C++</h3>
+          <p>Bit manipulation, pointers, allocators and data structures — compiled and judged online, LeetCode-style.</p>
+          <span class="card-meta" data-track-count="systems" data-suffix=" problems · judged C/C++">…</span>
         </a>
       </div>
     </section>
@@ -110,7 +118,7 @@
           <button class="btn" type="button" data-roll>🎲 Random puzzle</button>
         </div>
         <div class="puzzle-result" data-result aria-live="polite">
-          <p class="placeholder">// press the button — get one random problem from all 73 across every track</p>
+          <p class="placeholder">// press the button — get one random problem from all <span data-total-count>…</span> across every track</p>
         </div>
       </div>
     </section>
@@ -132,7 +140,14 @@
     </div>
   </footer>
 
+  <script src="assets/js/config.js"></script>
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/data/pack_math_quant_cap.js"></script>
+  <script src="assets/js/data/pack_cpu.js"></script>
+  <script src="assets/js/data/pack_gpu.js"></script>
+  <script src="assets/js/data/pack_silicon.js"></script>
+  <script src="assets/js/data/pack_systems_cap.js"></script>
+  <script src="assets/js/data/pack_interview.js"></script>
   <script src="assets/js/store.js"></script>
   <script src="assets/js/main.js"></script>
 </body>

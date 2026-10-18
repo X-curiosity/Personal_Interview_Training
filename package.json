@@ -1,0 +1,14 @@
+{
+  "name": "personal-interview-training",
+  "version": "2.0.0",
+  "private": true,
+  "description": "A build-free, multi-track interview training website with 400 problems and optional execution runners.",
+  "scripts": {
+    "validate": "node tools/validate_data.js",
+    "test": "node tools/validate_data.js && node tools/test_runtime.js",
+    "serve": "python3 -m http.server 8000"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1"
+  }
+}
