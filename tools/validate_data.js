@@ -22,7 +22,7 @@ eval(src);
 
 const { PROBLEMS, TRACKS, TRACK_ORDER, ROLES } = globalThis.__R;
 const errors = [];
-const MAX_PROBLEMS = 400;
+const MAX_PROBLEMS = 502;
 const DIFFS = ["easy", "medium", "hard"];
 const LANGS = ["python", "c", "cpp", "verilog"];
 

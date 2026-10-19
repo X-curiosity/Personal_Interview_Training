@@ -6,19 +6,19 @@ Every problem has a local statement and is solved on-platform. External links ar
 
 ## Problem database
 
-The database is capped at exactly **400 problems**.
+The database is capped at exactly **502 problems**.
 
 | Track | Problems |
 |---|---:|
-| CPU Programming | 123 |
-| Silicon & RTL | 112 |
-| Systems C/C++ | 32 |
-| Mathematics | 36 |
-| Probability & Quant | 37 |
-| Interview Questions | 60 |
-| **Total** | **400** |
+| CPU Programming | 143 |
+| Silicon & RTL | 132 |
+| Systems C/C++ | 50 |
+| Mathematics (incl. Signal Processing) | 54 |
+| Probability & Quant | 53 |
+| Interview Questions | 70 |
+| **Total** | **502** |
 
-There are **121 coding tasks** and **279 answer/model-solution tasks**. The replacement packs add 38 CPU problems, 37 LeetSilicon-style problems, and 16 CPU/RTL interview questions. The platform intentionally contains no GPU track or GPU programming problems.
+There are **159 coding tasks** across Python, C, C++, and Verilog, and **343 answer/model-solution tasks**. The math track includes a **Signal Processing** branch (Nyquist, aliasing, DFT, quantization, decimation) and an **AI Traps** branch. The platform intentionally contains no GPU track or GPU programming problems.
 
 ## Features
 

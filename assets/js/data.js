@@ -39,7 +39,7 @@ const TRACKS = {
     platform: "Project Euler-style",
     home: "https://projecteuler.net/archives",
     blurb: "Mathematical and computational puzzles, Euler-style.",
-    branches: ["Number Theory", "Combinatorics & DP", "Sequences", "AI Traps"]
+    branches: ["Number Theory", "Combinatorics & DP", "Sequences", "AI Traps", "Signal Processing"]
   },
   "quant": {
     name: "Probability & Quant",

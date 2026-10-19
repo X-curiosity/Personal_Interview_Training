@@ -2,7 +2,7 @@
 
 ## 1. Result
 
-The repository contains a complete multi-page interview-training platform with exactly **400 on-platform problems**, role-based mock interviews, weighted progress, community review, and code execution for Python, C, C++, and Verilog.
+The repository contains a complete multi-page interview-training platform with exactly **502 on-platform problems**, role-based mock interviews, weighted progress, community review, and code execution for Python, C, C++, and Verilog.
 
 The former GPU/CUDA track and its interview material were removed at the user's request. They were replaced one-for-one by **38 CPU problems, 37 LeetSilicon-style problems, and 16 CPU/RTL interview questions**, preserving the 400 cap while focusing the platform on the remaining domains.
 
@@ -10,13 +10,13 @@ The former GPU/CUDA track and its interview material were removed at the user's 
 
 | Track | Count | Main coverage |
 |---|---:|---|
-| CPU Programming | 123 | branch prediction, caches, hierarchy, ILP/pipelining, prefetching |
-| Silicon & RTL | 112 | RTL design, verification, architecture, CDC/timing |
-| Systems C/C++ | 32 | bits, memory, data structures, concurrency/OS |
-| Mathematics | 36 | number theory, combinatorics/DP, sequences |
-| Probability & Quant | 37 | expected value, games, stopping, brainteasers |
-| Interview Questions | 60 | hardware/RTL, CPU architecture, quant/trading |
-| **Total** | **400** | **121 code + 279 answer/model-solution tasks** |
+| CPU Programming | 143 | branch prediction, caches, hierarchy, ILP/pipelining, prefetching |
+| Silicon & RTL | 132 | RTL design, verification, architecture, CDC/timing |
+| Systems C/C++ | 50 | bits, memory, data structures, concurrency/OS |
+| Mathematics | 54 | number theory, combinatorics/DP, sequences, AI traps, signal processing |
+| Probability & Quant | 53 | expected value, games, stopping, brainteasers |
+| Interview Questions | 70 | hardware/RTL, CPU architecture, quant/trading |
+| **Total** | **502** | **159 code + 343 answer/model-solution tasks** |
 
 The registry in `assets/js/data.js` normalizes every item. `tools/validate_data.js` rejects duplicate IDs, unknown tracks/branches/languages, malformed tags, missing statements, incomplete coding metadata, invalid answer tasks, and any total other than 400. Runtime tests also assert that the removed track and language cannot return.
 
@@ -172,10 +172,10 @@ A web page **cannot** prevent OS-level screenshots. macOS and Windows consume th
 Expected frontend/data result:
 
 ```text
-total problems: 400
-per track: {"cpu":123,"interview":60,"math":36,"quant":37,"silicon":112,"systems":32}
+total problems: 502
+per track: {"cpu":143,"interview":70,"math":54,"quant":53,"silicon":132,"systems":50}
 dataset OK
-runtime OK — 400 problems, 121 code tasks, 4 role pools
+runtime OK — 502 problems, 159 code tasks, 4 role pools
 ```
 
 The release gate includes:
