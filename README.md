@@ -1,5 +1,7 @@
 # Personal Interview Training
 
+**Live site: <https://personal-interview-training.vercel.app>**
+
 A multi-page interview-training website focused on CPU architecture, systems C/C++, silicon/RTL, mathematics, probability/quant, and company-style interview questions.
 
 Every problem has a local statement and is solved on-platform. External links are attribution only.
@@ -64,6 +66,10 @@ window.PIT_CONFIG = {
 A browser-side runner key is not a secret. Public deployments need real authentication, rate limiting, and per-submission isolation in front of the runner.
 
 Verilog problems with a self-checking testbench can earn automatic credit. Compile-only success is feedback—not proof—and never marks a problem solved automatically.
+
+## Hosting
+
+The static frontend is deployed on Vercel (`vercel deploy --prod` from the repo root, or the GitHub Pages workflow in `.github/workflows/pages.yml`). The optional Verilog runner deploys on Render via `runner-service/render.yaml`; point `PIT_CONFIG.runners.verilog` in `assets/js/config.js` at it.
 
 ## Run locally
 

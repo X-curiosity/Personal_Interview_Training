@@ -6,3 +6,6 @@ __pycache__/
 .pytest_cache/
 .DS_Store
 agent/candidates.json
+.vercel/
+.env
+.env.local
