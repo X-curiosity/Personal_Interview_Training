@@ -308,8 +308,15 @@ a.card:hover, .card.hoverable:hover {
   border: 2px solid var(--ink); padding: 0.05rem 0.45rem;
 }
 .side-list button.active .side-count { color: var(--ink); background: var(--bg-panel); }
-.side-branches { list-style: none; margin: 0.1rem 0 0.3rem; padding-left: 1.6rem; }
+/* branches hidden until their track is clicked (see syncExpanded in problems.js) */
+.side-branches { list-style: none; margin: 0.1rem 0 0.3rem; padding-left: 1.6rem; display: none; }
+.side-track.expanded .side-branches { display: block; }
 .side-branches button { font-size: 0.8rem; padding: 0.3rem 0.55rem; }
+.side-track > .side-link::before {
+  content: "\25B8"; /* ▸ */
+  color: var(--text-dim); font-size: 0.8rem; width: 0.9rem; flex-shrink: 0;
+}
+.side-track.expanded > .side-link::before { content: "\25BE"; /* ▾ */ }
 
 .problems-main { min-width: 0; }
 

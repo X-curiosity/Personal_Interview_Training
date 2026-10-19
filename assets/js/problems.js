@@ -72,6 +72,9 @@
         state.branch = btn.getAttribute("data-branch") || null;
         render();
       });
+
+      /* Sub-subjects stay hidden until their subject (track) is clicked. */
+      syncExpanded();
     }
 
     function paintSidebar() {
@@ -81,6 +84,16 @@
           (b.getAttribute("data-branch") || null) === state.branch;
         b.classList.toggle("active", active);
         b.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
+
+    /* Expand exactly the selected track's branch list; collapse the rest. */
+    function syncExpanded() {
+      trackList.querySelectorAll(".side-track").forEach(function (li) {
+        var key = li.querySelector(".side-link").getAttribute("data-track");
+        var open = state.track === key;
+        li.classList.toggle("expanded", open);
+        li.querySelector(".side-link").setAttribute("aria-expanded", open ? "true" : "false");
       });
     }
 
@@ -170,6 +183,7 @@
       if (emptyRow) emptyRow.hidden = pool.length !== 0;
 
       paintSidebar();
+      syncExpanded();
       if (headingEl) headingEl.textContent = heading();
       if (countEl) countEl.textContent = pool.length + (pool.length === 1 ? " problem" : " problems");
 
