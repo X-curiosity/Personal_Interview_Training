@@ -1,0 +1,27 @@
+# Render Blueprint — free-tier deployment of the Verilog runner service.
+# Usage: Render dashboard → New → Blueprint → point at this repo.
+# Render reads this file and provisions the web service from the Dockerfile.
+services:
+  - type: web
+    name: pit-verilog-runner
+    runtime: docker
+    dockerfilePath: ./runner-service/Dockerfile
+    dockerContext: ./runner-service
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: ALLOWED_ORIGINS
+        # Fill in after the Vercel domain is known, e.g.
+        # https://personal-interview-training.vercel.app
+        sync: false
+      - key: RUNNER_API_KEY
+        # Set a strong random value in the dashboard, then mirror it into
+        # assets/js/config.js (runnerKey) so the frontend can authenticate.
+        sync: false
+      - key: COMPILE_TIMEOUT
+        value: "60"
+      - key: RUN_TIMEOUT
+        value: "10"
+      - key: MAX_CONCURRENT
+        value: "2"
