@@ -52,7 +52,7 @@
         <li><strong>CPU Programming</strong> — branch prediction, cache optimization, memory hierarchy, ILP &amp; pipelining, prefetching. Backed by LeetCPU's ChampSim simulations.</li>
         <li><strong>Silicon &amp; RTL</strong> — RTL design, verification, computer architecture, clock-domain crossing &amp; timing, with an on-platform Verilog editor.</li>
         <li><strong>Systems C/C++</strong> — bit manipulation, pointers, allocators, data structures, concurrency and OS fundamentals, compiled by the online judge.</li>
-        <li><strong>Mathematics</strong> — number theory, combinatorics &amp; DP, sequences, with instant-checked numeric answers.</li>
+        <li><strong>Mathematics</strong> — number theory, combinatorics &amp; DP, sequences, and an <strong>AI Traps</strong> set (ambiguity, false premises, Unicode impostors, prompt injection) that punishes careless AI-assisted solving.</li>
         <li><strong>Probability &amp; Quant</strong> — expected value, dice &amp; coins, games &amp; strategy, optimal stopping and brainteasers in the style of Jane Street, SIG, Optiver and Citadel interviews.</li>
         <li><strong>Interview Questions</strong> — CPU, RTL, silicon, and quant questions from company-style interviews, each one <strong>community-voted</strong> as accurate or not.</li>
       </ul>
@@ -93,6 +93,8 @@
         Your solved problems, votes and leaderboard entries live in your browser's <code>localStorage</code>.
         Python code remains in-browser. C/C++ code is sent to Judge0 when you press Run; Verilog code
         is sent only when you configure a simulator URL. No account or tracking cookie is required.
+        A screenshot-deterrence shield blanks the screen on capture shortcuts and when the window loses
+        focus; it is best-effort only — the operating system can always capture the screen.
         Community vote counts seeded in the data are sample data until a shared voting backend is wired in.
       </p>
     </div>
@@ -114,6 +116,7 @@
   </footer>
 
   <script src="assets/js/config.js"></script>
+  <script src="assets/js/shield.js"></script>
   <script src="assets/js/data.js"></script>
   <script src="assets/js/data/pack_math_quant_cap.js"></script>
   <script src="assets/js/data/pack_cpu.js"></script>

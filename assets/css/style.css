@@ -683,6 +683,25 @@ tr.row-flash { animation: rowflash 1.8s steps(6); }
   .rival-form .btn { width: 100%; }
 }
 
+/* ---------- Screenshot shield ---------- */
+
+.shield-overlay {
+  position: fixed; inset: 0; z-index: 99999;
+  background: #000;
+  display: none;
+  align-items: center; justify-content: center;
+  cursor: not-allowed;
+}
+.shield-overlay.on { display: flex; }
+.shield-card { text-align: center; color: var(--accent); padding: 2rem; }
+.shield-glyph { font-size: 3rem; margin-bottom: 1rem; }
+.shield-title {
+  font-family: var(--font-display); font-size: 1rem;
+  letter-spacing: 0.1em; margin-bottom: 0.75rem;
+}
+.shield-msg { font-family: var(--font-ui); font-size: 0.85rem; color: var(--text-dim); }
+body.shielded > *:not(.shield-overlay) { filter: blur(14px); }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }

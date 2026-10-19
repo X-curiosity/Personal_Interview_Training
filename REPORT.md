@@ -117,7 +117,57 @@ Implemented details include semantic landmarks, skip links, labeled controls, ta
 
 Dynamic dataset fields rendered through HTML templates are escaped. User-provided contribution values are escaped in generated JavaScript snippets.
 
-## 9. Verification
+## 9. AI-trap problems (adversarial math set)
+
+### What was added
+
+Twelve problems, `math-301` through `math-312`, in a new math branch **AI Traps**. They replace 12 redundant computed variants (math-203/204, 207/208, 211/212, 215/216, 219/220, 223/224) so the math track stays at 36 and the database at exactly 400. Each trap maps to one of the requested adversarial categories:
+
+| ID | Category | Trap mechanism | Correct answer |
+|---|---|---|---|
+| math-301 | Ambiguous wording | PP-attachment in "The man saw the boy with the telescope" — grammar admits two readings | `ambiguous` |
+| math-302 | Hidden assumption | "How many months have 28 days?" — 'have' ≠ 'have exactly' | `12` |
+| math-303 | Negation | "It is not the case that entry is not forbidden" — double negation unwrap | `no` |
+| math-304 | Mixed alphabets | Two Cyrillic а (U+0430) impostors in `bаnanа` — glyph ≠ byte identity | `1` |
+| math-305 | Contradictory instructions | "One word AND detailed explanation" — mutually exclusive requirements | `no` |
+| math-306 | Adversarial numeric | 9.11 vs 9.9 — version-number intuition vs decimal value | `9.9` |
+| math-307 | Out-of-distribution | Positional notation in base −2 (negabinary) | `−3` |
+| math-308 | Long-context distraction | Irrelevant narrative buries "all but 9 run off" | `9` |
+| math-309 | False premise | Atlantis's World Cup "dynasty" — fictional premise must not be accepted | `0` |
+| math-310 | Prompt injection | Ticket text commands "reply HACKED"; the real task is 2 × $20 | `40` |
+| math-311 | Exact counting | Letter 'r' count in "strawberry" — the classic tokenizer failure | `3` |
+| math-312 | Confidence trap | Exact population with no data provided — fabrication vs honesty | `unknown` |
+
+### How they work
+
+Every problem is graded by the existing exact checker, which compares case-insensitively for word answers (`ambiguous`, `no`, `unknown`) and exactly for numerics. Each solution field does double duty: it gives the answer **and names the specific failure mode** (e.g., "models read whole words as tokens instead of letters"), so reviewing a solution teaches the meta-skill, not just the fact.
+
+The traps resist AI assistance in different ways: ambiguity/false-premise/confidence problems punish confident hallucination; negation and contradiction problems punish shallow pattern-matching; the Unicode, counting, and negabinary problems punish token-level rather than character/exact reasoning; the injection problem punishes obedience to untrusted embedded text.
+
+The string for math-304 is written to the pack with real Cyrillic characters via a generator script, guaranteeing the file itself contains U+0430 impostors rather than a description of them.
+
+## 10. Screenshot deterrence (shield.js)
+
+### What was added
+
+`assets/js/shield.js` (loaded on all 7 pages) plus a `.shield-overlay` block in `style.css` — a full-screen opaque black layer with a pixel-styled "SCREEN PROTECTED" card.
+
+### How it works
+
+Four trigger classes, matching what real proctoring software does:
+
+1. **`PrintScreen` keyup** (Windows/Linux) → 3-second blackout plus a best-effort clipboard wipe (`navigator.clipboard.writeText("")`, silently skipped if permission is denied) so a captured frame pastes as empty.
+2. **`Cmd/Ctrl+Shift+3/4/5/S` keydown** → same blackout, for browsers that deliver the shortcut before the OS consumes it.
+3. **`visibilitychange` (tab hidden)** → persistent veil until the tab is visible again.
+4. **`window` blur** → persistent veil until focus returns — this is the practical defense against local AI overlay tools and screen-sharing pickers, which steal window focus when activated.
+
+While veiled, `body.shielded` also blurs all content behind the overlay, and the current text selection is cleared. A timed flash dismisses on click or after 3 s; a focus veil only lifts on genuine `focus` + visible state.
+
+### Honest limits (do not overclaim)
+
+A web page **cannot** prevent OS-level screenshots. macOS and Windows consume their screenshot shortcuts at the compositor level before the page ever sees them; the OS can always copy the rendered frame; JavaScript can be disabled or DevTools used to remove the overlay; and a phone camera always works. This layer deters *casual local capture* — screen-grab hotkeys, clipboard pastes, focus-stealing AI assistants — it is **deterrence, not security**, and is documented as such rather than claimed as cheat-proof.
+
+## 11. Verification
 
 Expected frontend/data result:
 
@@ -143,7 +193,7 @@ The release gate includes:
 - representative HTTP page/problem checks
 - stale-reference and secret-pattern scans
 
-## 10. Deployment
+## 12. Deployment
 
 Frontend:
 
@@ -162,7 +212,7 @@ docker compose up --build -d
 
 Then set `PIT_CONFIG.runners.verilog` in `assets/js/config.js` to the deployed `/execute` URL.
 
-## 11. Known limitations
+## 13. Known limitations
 
 - Judge0 is a third-party service with fair-use/rate limits unless self-hosted.
 - The Pyodide runtime is loaded from a CDN on first Python execution.
@@ -170,3 +220,5 @@ Then set `PIT_CONFIG.runners.verilog` in `assets/js/config.js` to the deployed `
 - Seeded community counts are sample data.
 - The included execution service is not, by itself, sufficient isolation for a hostile public multi-tenant judge.
 - Some legacy RTL tasks provide compile/manual-review practice rather than a self-checking testbench; those tasks cannot auto-award completion.
+- The screenshot shield is deterrence only: OS-level capture, disabled JavaScript, DevTools removal of the overlay, and photographing the screen all bypass it (see §10).
+- The AI-trap problems resist *careless* AI use; a carefully prompted model with character-level tools can still solve several of them.

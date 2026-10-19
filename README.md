@@ -32,6 +32,8 @@ There are **121 coding tasks** and **279 answer/model-solution tasks**. The repl
   - CPU Architecture Engineer
   - RTL / Silicon Engineer
   - Quant Researcher
+- **AI-trap problems** — 12 adversarial math problems (ambiguity, false premises, negation, Unicode impostors, prompt injection, counting traps) that punish careless AI-assisted solving.
+- **Screenshot deterrence** — blackout on PrintScreen/screenshot shortcuts and an automatic veil when the window loses focus (best-effort; see Known Limits in `REPORT.md`).
 - Weighted scoring: easy 1, medium 3, hard 5.
 - Local rival leaderboard, community voting, submission review queue, and weekly scout workflow.
 - Browser-local progress using `localStorage`.
