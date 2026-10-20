@@ -2,7 +2,7 @@
 "use strict";
 
 const { bearerToken, cors, json } = require("./_util");
-const { sql, dbConfigured, ensureSchema, userForToken } = require("./_db");
+const { query, dbConfigured, ensureSchema, userForToken, parseSolved } = require("./_db");
 const { pointsFor } = require("./_points");
 
 module.exports = async (req, res) => {
@@ -15,8 +15,8 @@ module.exports = async (req, res) => {
     const user = await userForToken(bearerToken(req));
     if (!user) return json(res, 401, { error: "not signed in" });
 
-    const { rows } = await sql`SELECT solved, updated_at FROM progress WHERE user_id = ${user.id}`;
-    const solved = Array.isArray(rows[0] && rows[0].solved) ? rows[0].solved : [];
+    const { rows } = await query(`SELECT solved, updated_at FROM progress WHERE user_id = ?`, [user.id]);
+    const solved = rows[0] ? parseSolved(rows[0].solved) : [];
     return json(res, 200, {
       user,
       solved,

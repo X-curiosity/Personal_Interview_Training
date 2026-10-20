@@ -759,3 +759,10 @@ body.shielded > *:not(.shield-overlay) { filter: blur(14px); }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Brand logo */
+.brand img {
+  image-rendering: pixelated;
+  margin-right: 8px;
+  vertical-align: -6px;
+}

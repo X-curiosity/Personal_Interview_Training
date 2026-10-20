@@ -2,7 +2,7 @@
 "use strict";
 
 const { cleanEmail, cleanPassword, verifyPassword, newToken, cors, json, readBody } = require("./_util");
-const { sql, dbConfigured, ensureSchema } = require("./_db");
+const { query, dbConfigured, ensureSchema, nowSec, SESSION_TTL_SEC } = require("./_db");
 
 module.exports = async (req, res) => {
   if (cors(req, res)) return;
@@ -18,17 +18,20 @@ module.exports = async (req, res) => {
 
   try {
     await ensureSchema();
-    const { rows } = await sql`
-      SELECT id, email, name, password_hash FROM users WHERE email = ${email} LIMIT 1`;
+    const { rows } = await query(
+      `SELECT id, email, name, password_hash FROM users WHERE email = ? LIMIT 1`,
+      [email]
+    );
     const user = rows[0];
     /* Uniform failure to avoid leaking which emails exist. */
     if (!user || !verifyPassword(password, user.password_hash)) {
       return json(res, 401, { error: "invalid email or password" });
     }
     const token = newToken();
-    await sql`
-      INSERT INTO sessions (token, user_id, expires_at)
-      VALUES (${token}, ${user.id}, now() + interval '30 days')`;
+    await query(
+      `INSERT INTO sessions (token, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)`,
+      [token, user.id, nowSec(), nowSec() + SESSION_TTL_SEC]
+    );
     return json(res, 200, { token, user: { id: user.id, email: user.email, name: user.name } });
   } catch {
     return json(res, 500, { error: "login failed" });

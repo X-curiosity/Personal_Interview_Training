@@ -12,6 +12,6 @@
     "jsdom": "^25.0.1"
   },
   "dependencies": {
-    "@vercel/postgres": "^0.10.0"
+    "@libsql/client": "^0.18.0"
   }
 }

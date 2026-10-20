@@ -2,7 +2,7 @@
 "use strict";
 
 const { cleanEmail, cleanName, cleanPassword, hashPassword, newToken, cors, json, readBody } = require("./_util");
-const { sql, dbConfigured, ensureSchema } = require("./_db");
+const { query, dbConfigured, ensureSchema, nowSec, newId, SESSION_TTL_SEC } = require("./_db");
 
 module.exports = async (req, res) => {
   if (cors(req, res)) return;
@@ -21,19 +21,20 @@ module.exports = async (req, res) => {
 
   try {
     await ensureSchema();
-    const { rows } = await sql`
-      INSERT INTO users (email, name, password_hash)
-      VALUES (${email}, ${name}, ${hashPassword(password)})
-      RETURNING id, email, name`;
-    const user = rows[0];
+    const id = newId();
+    await query(
+      `INSERT INTO users (id, email, name, password_hash, created_at) VALUES (?, ?, ?, ?, ?)`,
+      [id, email, name, hashPassword(password), nowSec()]
+    );
     const token = newToken();
-    await sql`
-      INSERT INTO sessions (token, user_id, expires_at)
-      VALUES (${token}, ${user.id}, now() + interval '30 days')`;
-    await sql`INSERT INTO progress (user_id) VALUES (${user.id}) ON CONFLICT DO NOTHING`;
-    return json(res, 201, { token, user: { id: user.id, email: user.email, name: user.name } });
+    await query(
+      `INSERT INTO sessions (token, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)`,
+      [token, id, nowSec(), nowSec() + SESSION_TTL_SEC]
+    );
+    await query(`INSERT INTO progress (user_id, solved, updated_at) VALUES (?, '[]', ?) ON CONFLICT DO NOTHING`, [id, nowSec()]);
+    return json(res, 201, { token, user: { id, email, name } });
   } catch (e) {
-    if (String(e && e.message).includes("users_email_key") || String(e && e.code) === "23505") {
+    if (String(e && e.message).includes("UNIQUE constraint failed")) {
       return json(res, 409, { error: "an account with this email already exists" });
     }
     return json(res, 500, { error: "registration failed" });

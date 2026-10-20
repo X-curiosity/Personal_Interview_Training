@@ -2,7 +2,7 @@
 "use strict";
 
 const { bearerToken, cors, json, readBody } = require("./_util");
-const { sql, dbConfigured, ensureSchema, userForToken } = require("./_db");
+const { query, dbConfigured, ensureSchema, userForToken, nowSec, parseSolved } = require("./_db");
 const { pointsFor, VALID_IDS } = require("./_points");
 
 module.exports = async (req, res) => {
@@ -15,8 +15,8 @@ module.exports = async (req, res) => {
     if (!user) return json(res, 401, { error: "not signed in" });
 
     if (req.method === "GET") {
-      const { rows } = await sql`SELECT solved, updated_at FROM progress WHERE user_id = ${user.id}`;
-      const solved = Array.isArray(rows[0] && rows[0].solved) ? rows[0].solved : [];
+      const { rows } = await query(`SELECT solved, updated_at FROM progress WHERE user_id = ?`, [user.id]);
+      const solved = rows[0] ? parseSolved(rows[0].solved) : [];
       return json(res, 200, { solved, stats: pointsFor(solved), updatedAt: rows[0] ? rows[0].updated_at : null });
     }
 
@@ -29,14 +29,15 @@ module.exports = async (req, res) => {
       for (const id of body.solved) {
         if (typeof id === "string" && VALID_IDS.has(id)) incoming.add(id);
       }
-      const { rows } = await sql`SELECT solved FROM progress WHERE user_id = ${user.id}`;
-      const current = new Set(Array.isArray(rows[0] && rows[0].solved) ? rows[0].solved : []);
+      const { rows } = await query(`SELECT solved FROM progress WHERE user_id = ?`, [user.id]);
+      const current = new Set(rows[0] ? parseSolved(rows[0].solved) : []);
       for (const id of incoming) current.add(id);
       const merged = Array.from(current).slice(0, VALID_IDS.size);
-      await sql`
-        INSERT INTO progress (user_id, solved, updated_at)
-        VALUES (${user.id}, ${JSON.stringify(merged)}, now())
-        ON CONFLICT (user_id) DO UPDATE SET solved = EXCLUDED.solved, updated_at = now()`;
+      await query(
+        `INSERT INTO progress (user_id, solved, updated_at) VALUES (?, ?, ?)
+         ON CONFLICT (user_id) DO UPDATE SET solved = excluded.solved, updated_at = excluded.updated_at`,
+        [user.id, JSON.stringify(merged), nowSec()]
+      );
       return json(res, 200, { solved: merged, stats: pointsFor(merged) });
     }
 

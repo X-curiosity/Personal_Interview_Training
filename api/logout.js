@@ -2,7 +2,7 @@
 "use strict";
 
 const { bearerToken, cors, json } = require("./_util");
-const { sql, dbConfigured, ensureSchema } = require("./_db");
+const { query, dbConfigured, ensureSchema } = require("./_db");
 
 module.exports = async (req, res) => {
   if (cors(req, res)) return;
@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
 
   try {
     await ensureSchema();
-    await sql`DELETE FROM sessions WHERE token = ${token}`;
+    await query(`DELETE FROM sessions WHERE token = ?`, [token]);
     return json(res, 200, { ok: true });
   } catch {
     return json(res, 500, { error: "logout failed" });

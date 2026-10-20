@@ -2,7 +2,7 @@
 "use strict";
 
 const { cors, json } = require("./_util");
-const { sql, dbConfigured, ensureSchema } = require("./_db");
+const { query, dbConfigured, ensureSchema, parseSolved } = require("./_db");
 const { pointsFor } = require("./_points");
 
 module.exports = async (req, res) => {
@@ -12,13 +12,12 @@ module.exports = async (req, res) => {
 
   try {
     await ensureSchema();
-    const { rows } = await sql`
-      SELECT u.name, p.solved
-      FROM progress p JOIN users u ON u.id = p.user_id`;
+    const { rows } = await query(
+      `SELECT u.name, p.solved FROM progress p JOIN users u ON u.id = p.user_id`
+    );
     const board = rows
       .map((r) => {
-        const solved = Array.isArray(r.solved) ? r.solved : [];
-        const s = pointsFor(solved);
+        const s = pointsFor(parseSolved(r.solved));
         return { name: r.name, points: s.points, solved: s.solved, hard: s.hard, medium: s.medium, easy: s.easy };
       })
       .filter((r) => r.solved > 0)
