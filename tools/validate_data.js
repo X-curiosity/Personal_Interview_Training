@@ -22,7 +22,7 @@ eval(src);
 
 const { PROBLEMS, TRACKS, TRACK_ORDER, ROLES } = globalThis.__R;
 const errors = [];
-const MAX_PROBLEMS = 502;
+const MAX_PROBLEMS = 514;
 const DIFFS = ["easy", "medium", "hard"];
 const LANGS = ["python", "c", "cpp", "verilog"];
 
@@ -56,6 +56,8 @@ for (const p of PROBLEMS) {
     errors.push(`${at}: non-numeric answer too long for the answer box`);
   if (p.image && (!p.image.url || !/^https?:\/\//.test(p.image.url)))
     errors.push(`${at}: image must be an object with an http(s) url`);
+  if (!Array.isArray(p.hints) || p.hints.some((h) => typeof h !== "string" || !h))
+    errors.push(`${at}: hints must be an array of non-empty strings`);
   for (const r of p.references || [])
     if (!r.label || !/^https?:\/\//.test(r.url))
       errors.push(`${at}: bad reference ${JSON.stringify(r)}`);

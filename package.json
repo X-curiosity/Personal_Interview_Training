@@ -10,5 +10,8 @@
   },
   "devDependencies": {
     "jsdom": "^25.0.1"
+  },
+  "dependencies": {
+    "@vercel/postgres": "^0.10.0"
   }
 }

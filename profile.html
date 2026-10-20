@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile · Personal Interview Training</title>
+  <meta name="description" content="Create your profile, sync your progress across devices, and join the global leaderboard.">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html"><span class="prompt">pit&gt;</span> interview trainer</a>
+      <nav class="site-nav" aria-label="Main">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="problems.html">Problems</a></li>
+          <li><a href="interview.html">Mock Interview</a></li>
+          <li><a href="leaderboard.html">Leaderboard</a></li>
+          <li><a href="submit.html">Contribute</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="profile.html" aria-current="page">Profile</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <div class="page-head">
+      <h1>Profile</h1>
+      <p>Register with an email address to sync your solved problems across devices and appear on the global leaderboard. Your password is stored only as a scrypt hash on the server.</p>
+    </div>
+
+    <!-- Signed out: register / login -->
+    <div class="board-layout" data-signed-out>
+      <section class="panel" aria-labelledby="register-heading">
+        <h2 id="register-heading">Create account</h2>
+        <form class="rival-form" data-register-form novalidate>
+          <label for="reg-name">Display name</label>
+          <input id="reg-name" name="name" maxlength="40" required autocomplete="nickname">
+          <label for="reg-email">Email</label>
+          <input id="reg-email" name="email" type="email" required autocomplete="email">
+          <label for="reg-password">Password (8+ characters)</label>
+          <input id="reg-password" name="password" type="password" minlength="8" required autocomplete="new-password">
+          <button class="btn" type="submit">Register</button>
+          <p class="form-error" data-register-error role="alert"></p>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="login-heading">
+        <h2 id="login-heading">Sign in</h2>
+        <form class="rival-form" data-login-form novalidate>
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" required autocomplete="email">
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" required autocomplete="current-password">
+          <button class="btn" type="submit">Sign in</button>
+          <p class="form-error" data-login-error role="alert"></p>
+        </form>
+      </section>
+    </div>
+
+    <!-- Signed in: account panel -->
+    <div class="board-layout" data-signed-in hidden>
+      <section class="panel" aria-labelledby="account-heading">
+        <h2 id="account-heading">Your account</h2>
+        <p><strong data-profile-name></strong><br><span class="hint" data-profile-email></span></p>
+        <ul class="weights" data-profile-stats></ul>
+        <div class="submit-form actions">
+          <button class="btn small" type="button" data-sync>Sync progress now</button>
+          <button class="btn ghost small" type="button" data-logout>Sign out</button>
+        </div>
+        <p class="hint" data-sync-status aria-live="polite"></p>
+      </section>
+      <section class="panel">
+        <h2>How syncing works</h2>
+        <p class="hint">Solving a problem queues a sync automatically. The server keeps the union of every device you sign in on, so nothing is ever un solved by syncing. The global leaderboard is scored on the server from your synced solves.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-wrap">
+      <span>pit&gt; built for training, <span data-year>2025</span>. Progress is stored locally in your browser.</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/shield.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/data/pack_math_quant_cap.js"></script>
+  <script src="assets/js/data/pack_cpu.js"></script>
+  <script src="assets/js/data/pack_cpu_expansion.js"></script>
+  <script src="assets/js/data/pack_silicon.js"></script>
+  <script src="assets/js/data/pack_silicon_expansion.js"></script>
+  <script src="assets/js/data/pack_systems_cap.js"></script>
+  <script src="assets/js/data/pack_interview.js"></script>
+  <script src="assets/js/data/pack_interview_expansion.js"></script>
+  <script src="assets/js/data/pack_cpu_expansion2.js"></script>
+  <script src="assets/js/data/pack_silicon_expansion2.js"></script>
+  <script src="assets/js/data/pack_systems_expansion2.js"></script>
+  <script src="assets/js/data/pack_math_quant_expansion2.js"></script>
+  <script src="assets/js/data/pack_interview_expansion2.js"></script>
+  <script src="assets/js/data/pack_projects.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var outPanel = document.querySelector("[data-signed-out]");
+      var inPanel = document.querySelector("[data-signed-in]");
+      var syncStatus = document.querySelector("[data-sync-status]");
+
+      function paint() {
+        var u = window.PIT_AUTH.user();
+        outPanel.hidden = !!u;
+        inPanel.hidden = !u;
+        if (u) {
+          document.querySelector("[data-profile-name]").textContent = u.name;
+          document.querySelector("[data-profile-email]").textContent = u.email;
+          refreshStats();
+        }
+      }
+
+      function refreshStats() {
+        window.PIT_AUTH.pullToLocal();
+        var stats = PIT_STORE.statsFor(PROBLEMS, PIT_STORE.getSolved());
+        document.querySelector("[data-profile-stats]").innerHTML =
+          "<li><span>Solved</span><span>" + stats.solved + " / " + stats.total + "</span></li>" +
+          "<li><span>Points</span><span>" + stats.points + "</span></li>" +
+          "<li><span>Hard</span><span>" + stats.hard + "</span></li>" +
+          "<li><span>Medium</span><span>" + stats.medium + "</span></li>" +
+          "<li><span>Easy</span><span>" + stats.easy + "</span></li>";
+      }
+
+      document.querySelector("[data-register-form]").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var f = e.target, err = document.querySelector("[data-register-error]");
+        err.textContent = "";
+        window.PIT_AUTH.register(f.elements.email.value, f.elements.name.value, f.elements.password.value)
+          .then(function (r) {
+            if (r.ok) { paint(); }
+            else err.textContent = r.body.error || "Registration failed. Is the database configured?";
+          })
+          .catch(function () { err.textContent = "Network error. The API may not be deployed yet."; });
+      });
+
+      document.querySelector("[data-login-form]").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var f = e.target, err = document.querySelector("[data-login-error]");
+        err.textContent = "";
+        window.PIT_AUTH.login(f.elements.email.value, f.elements.password.value)
+          .then(function (r) {
+            if (r.ok) { paint(); }
+            else err.textContent = r.body.error || "Sign in failed.";
+          })
+          .catch(function () { err.textContent = "Network error. The API may not be deployed yet."; });
+      });
+
+      document.querySelector("[data-sync]").addEventListener("click", function () {
+        syncStatus.textContent = "Syncing…";
+        window.PIT_AUTH.syncNow().then(function (r) {
+          syncStatus.textContent = r
+            ? "Synced " + r.solved.length + " solved problems (" + r.stats.points + " pts on the board)."
+            : "Sync failed. Try again in a moment.";
+          refreshStats();
+        });
+      });
+
+      document.querySelector("[data-logout]").addEventListener("click", function () {
+        window.PIT_AUTH.logout().then(paint);
+      });
+
+      paint();
+    });
+  </script>
+</body>
+</html>

@@ -61,10 +61,74 @@
     return given.toLowerCase() === expected.toLowerCase();
   }
 
+  /* Progressive free hints + two-step forfeit reveal, shared by both
+     answer-box and editor problem types. Returns a hints/reveal fragment. */
+  function hintsHtml(p) {
+    if (!p.hints || !p.hints.length) return "";
+    return (
+      '<button type="button" class="btn ghost small" data-hint>Show hint</button>' +
+      '<div class="hints" data-hints hidden></div>'
+    );
+  }
+
+  function attachHints(container, p) {
+    var hintBtn = container.querySelector("[data-hint]");
+    if (!hintBtn) return;
+    var box = container.querySelector("[data-hints]");
+    var shown = 0;
+    hintBtn.addEventListener("click", function () {
+      if (shown >= p.hints.length) return;
+      box.hidden = false;
+      var div = document.createElement("div");
+      div.className = "hint";
+      div.innerHTML = "<strong>Hint " + (shown + 1) + "/" + p.hints.length + ":</strong> " + esc(p.hints[shown]);
+      box.appendChild(div);
+      shown++;
+      hintBtn.textContent = shown < p.hints.length ? "Show next hint" : "No more hints";
+      if (shown >= p.hints.length) hintBtn.disabled = true;
+    });
+  }
+
+  /* Two-step reveal: first click arms the warning, second forfeits credit.
+     Already forfeited problems show the solution freely. */
+  function attachReveal(container, p, label) {
+    var revealBtn = container.querySelector("[data-reveal]");
+    if (!revealBtn) return;
+    var armed = false;
+    revealBtn.addEventListener("click", function () {
+      var sol = container.querySelector("[data-solution]");
+      var forfeited = PIT_STORE.isForfeited(p.id);
+      if (sol.hidden && !forfeited && !armed) {
+        armed = true;
+        revealBtn.classList.add("armed");
+        revealBtn.textContent = "Sure? Viewing it forfeits credit";
+        return;
+      }
+      if (sol.hidden && !forfeited) {
+        PIT_STORE.addForfeit(p.id);
+        container.classList.add("forfeited");
+      }
+      armed = false;
+      revealBtn.classList.remove("armed");
+      sol.hidden = !sol.hidden;
+      revealBtn.textContent = sol.hidden ? label : "Hide solution";
+    });
+  }
+
+  function revealHtml(p, label) {
+    return (
+      '<button type="button" class="btn ghost small" data-reveal>' + label + "</button>" +
+      '<div class="solution" data-solution hidden>' +
+        "<h3>Solution</h3><p>" + esc(p.solution).replace(/\n{2,}/g, "</p><p>").replace(/\n/g, "<br>") + "</p>" +
+      "</div>"
+    );
+  }
+
   /* Renders the answer box / solution reveal into container. */
   function attachAnswerBox(container, p, hooks) {
     hooks = hooks || {};
-    var html = '<div class="answer-box">';
+    var forfeited = PIT_STORE.isForfeited(p.id);
+    var html = '<div class="answer-box' + (forfeited ? " forfeited" : "") + '">';
     if (p.answer !== null) {
       html +=
         '<label class="answer-label" for="ans-' + p.id + '">Your answer</label>' +
@@ -74,14 +138,8 @@
         "</div>" +
         '<p class="answer-feedback" data-feedback aria-live="polite"></p>';
     }
-    if (p.solution) {
-      html +=
-        '<button type="button" class="btn ghost small" data-reveal>' +
-          (p.answer !== null ? "Show solution" : "Show expected answer") + "</button>" +
-        '<div class="solution" data-solution hidden>' +
-          "<h3>Solution</h3><p>" + esc(p.solution).replace(/\n{2,}/g, "</p><p>").replace(/\n/g, "<br>") + "</p>" +
-        "</div>";
-    }
+    html += hintsHtml(p);
+    if (p.solution) html += revealHtml(p, p.answer !== null ? "Show solution" : "Show expected answer");
     html += "</div>";
     container.innerHTML = html;
 
@@ -97,7 +155,16 @@
     }
 
     if (input) {
+      if (forfeited && feedback) {
+        feedback.className = "answer-feedback ko";
+        feedback.textContent = "Solution viewed. Credit forfeited for this problem.";
+      }
       function doCheck() {
+        if (PIT_STORE.isForfeited(p.id)) {
+          feedback.className = "answer-feedback ko";
+          feedback.textContent = "Solution viewed. Credit forfeited for this problem.";
+          return;
+        }
         var ok = checkAnswer(p, input.value);
         feedback.className = "answer-feedback " + (ok ? "ok" : "ko");
         feedback.textContent = ok
@@ -110,14 +177,8 @@
         if (e.key === "Enter") doCheck();
       });
     }
-    var revealBtn = container.querySelector("[data-reveal]");
-    if (revealBtn) {
-      revealBtn.addEventListener("click", function () {
-        var sol = container.querySelector("[data-solution]");
-        sol.hidden = !sol.hidden;
-        revealBtn.textContent = sol.hidden ? "Show solution" : "Hide solution";
-      });
-    }
+    attachHints(container, p);
+    attachReveal(container, p, p.answer !== null ? "Show solution" : "Show expected answer");
   }
 
   /* Renders the code editor + run console into container. */
@@ -150,6 +211,22 @@
     var runBtn = container.querySelector("[data-run]");
     var resetBtn = container.querySelector("[data-reset]");
     var tabs = container.querySelectorAll(".editor-tab");
+    var actions = container.querySelector(".editor-actions");
+
+    /* hints and forfeit reveal for code problems too */
+    if (p.hints && p.hints.length) {
+      var hintFrag = document.createElement("span");
+      hintFrag.innerHTML = hintsHtml(p);
+      while (hintFrag.firstChild) actions.appendChild(hintFrag.firstChild);
+    }
+    if (p.solution) {
+      var revFrag = document.createElement("span");
+      revFrag.innerHTML = revealHtml(p, "Show solution");
+      while (revFrag.firstChild) container.appendChild(revFrag.firstChild);
+    }
+    attachHints(container, p);
+    attachReveal(container, p, "Show solution");
+    if (PIT_STORE.isForfeited(p.id)) container.classList.add("forfeited");
 
     function starterFor(lang) {
       return p.starter[lang] || "// no starter for " + lang + ". Write from scratch\n";
@@ -190,9 +267,12 @@
         resetBtn.disabled = false;
         tabs.forEach(function (tab) { tab.disabled = false; });
         var text = res.stdout + (res.stderr ? "\n" + res.stderr : "");
-        output.textContent = text.trim() || "(no output)";
-        output.classList.add(res.ok ? "ok" : (res.compileOnly ? "neutral" : "ko"));
-        if (res.ok) {
+        var forfeitNote = PIT_STORE.isForfeited(p.id)
+          ? "\nSolution viewed. Credit forfeited for this problem."
+          : "";
+        output.textContent = (text.trim() || "(no output)") + forfeitNote;
+        output.classList.add(res.ok && !forfeitNote ? "ok" : (res.compileOnly ? "neutral" : "ko"));
+        if (res.ok && !forfeitNote) {
           if (!PIT_STORE.isSolved(p.id)) PIT_STORE.toggleSolved(p.id);
           if (hooks.onSolved) hooks.onSolved();
         }

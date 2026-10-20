@@ -147,6 +147,7 @@ function registerProblems(arr) {
       answer: p.answer != null ? String(p.answer) : null,
       tolerance: typeof p.tolerance === "number" ? p.tolerance : 0,
       solution: p.solution || null,
+      hints: Array.isArray(p.hints) ? p.hints.map(String) : [],  // free progressive hints
       image: p.image || null,             // optional { url, alt } illustration
       references: Array.isArray(p.references)   // optional [{ label, url }]
         ? p.references.map(function (r) {

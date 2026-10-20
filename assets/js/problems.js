@@ -139,11 +139,14 @@
       return (
         "<tr" + (solved ? ' class="row-solved"' : "") + ' data-id="' + p.id + '">' +
           '<td class="col-status">' +
-            '<span class="check' + (solved ? " on" : "") + '" role="img"' +
-              ' aria-label="' + (solved ? "Solved" : "Not solved yet") + '"' +
-              ' title="Solved only by a correct submission">' +
-              (solved ? "✓" : "") +
-            "</span>" +
+            (PIT_STORE.isForfeited(p.id)
+              ? '<span class="check forfeit" role="img" aria-label="Credit forfeited, solution viewed"' +
+                ' title="Solution viewed, no credit">✗</span>'
+              : '<span class="check' + (solved ? " on" : "") + '" role="img"' +
+                ' aria-label="' + (solved ? "Solved" : "Not solved yet") + '"' +
+                ' title="Solved only by a correct submission">' +
+                (solved ? "✓" : "") +
+              "</span>") +
           "</td>" +
           '<td class="col-num">' + (index + 1) + "</td>" +
           '<td class="col-title">' +

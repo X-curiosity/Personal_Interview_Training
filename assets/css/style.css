@@ -697,6 +697,25 @@ tr.row-flash { animation: rowflash 1.8s steps(6); }
 .mock-review li.ko { border-left: 6px solid var(--hard); }
 .mock-review li.skipped { border-left: 6px solid var(--medium); }
 
+/* ---------- hints & forfeit ---------- */
+
+.hints { display: grid; gap: 0.4rem; margin: 0.5rem 0 0.9rem; }
+.hint {
+  background: var(--bg-raised); border: 2px solid var(--ink);
+  border-left: 6px solid var(--track-systems);
+  padding: 0.45rem 0.7rem; font-size: 0.85rem; color: var(--text-dim);
+}
+.hint strong { color: var(--track-systems); font-family: var(--font-ui); }
+.btn.armed {
+  background: var(--hard); color: var(--text);
+  animation: blink 1s steps(2) infinite;
+}
+.forfeited .answer-row input,
+.forfeited .editor { opacity: 0.55; }
+.check.forfeit, span.check.forfeit {
+  background: var(--hard); border-color: var(--ink); color: var(--text);
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 900px) {

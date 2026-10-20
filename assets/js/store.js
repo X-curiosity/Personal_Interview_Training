@@ -9,6 +9,7 @@
 
   var SOLVED_KEY = "pit.solved.v1";
   var RIVALS_KEY = "pit.rivals.v1";
+  var FORFEITS_KEY = "pit.forfeits.v1";
 
   var POINTS = { easy: 1, medium: 3, hard: 5 };
 
@@ -40,6 +41,34 @@
     if (set.has(id)) set.delete(id); else set.add(id);
     saveSolved(set);
     return set.has(id);
+  }
+
+  /* ---------- forfeits (solution viewed: no credit, sticky) ---------- */
+
+  function getForfeits() {
+    try {
+      var raw = localStorage.getItem(FORFEITS_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return new Set(Array.isArray(arr) ? arr : []);
+    } catch (e) {
+      return new Set();
+    }
+  }
+
+  function isForfeited(id) {
+    return getForfeits().has(id);
+  }
+
+  /* Viewing the solution forfeits credit permanently. If the problem was
+     already solved, it becomes unsolved (the stored rule). */
+  function addForfeit(id) {
+    var set = getForfeits();
+    set.add(id);
+    try {
+      localStorage.setItem(FORFEITS_KEY, JSON.stringify(Array.from(set)));
+    } catch (e) { /* ignore */ }
+    if (isSolved(id)) toggleSolved(id); // auto un-solve
+    if (window.PIT && window.PIT.refreshStats) window.PIT.refreshStats();
   }
 
   /* ---------- scoring ---------- */
@@ -127,6 +156,9 @@
     getSolved: getSolved,
     isSolved: isSolved,
     toggleSolved: toggleSolved,
+    getForfeits: getForfeits,
+    isForfeited: isForfeited,
+    addForfeit: addForfeit,
     statsFor: statsFor,
     pointsFor: pointsFor,
     getRivals: getRivals,

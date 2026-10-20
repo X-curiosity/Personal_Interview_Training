@@ -123,5 +123,43 @@
     });
 
     render();
+
+    /* ---------- global board (registered players) ---------- */
+
+    var globalSection = document.querySelector("[data-global-section]");
+    var globalRows = document.querySelector("[data-global-rows]");
+    var globalNote = document.querySelector("[data-global-note]");
+
+    var API_BASE = /github\.io$/.test(location.hostname)
+      ? "https://personal-interview-training.vercel.app/api/"
+      : "/api/";
+
+    fetch(API_BASE + "leaderboard")
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (!data || !Array.isArray(data.board) || !data.board.length) return;
+        globalSection.hidden = false;
+        var me = window.PIT_AUTH && window.PIT_AUTH.user && window.PIT_AUTH.user();
+        globalRows.innerHTML = data.board.map(function (e) {
+          var mine = me && me.name === e.name;
+          var total = e.easy + e.medium + e.hard;
+          return (
+            "<tr" + (mine ? ' class="row-you"' : "") + ">" +
+              '<td class="col-rank">' + medal(e.rank) + "</td>" +
+              '<td class="col-name">' + esc(e.name) + (mine ? ' <span class="you-pill">you</span>' : "") + "</td>" +
+              '<td class="col-num">' + total + "</td>" +
+              '<td class="col-num diff-easy">' + e.easy + "</td>" +
+              '<td class="col-num diff-medium">' + e.medium + "</td>" +
+              '<td class="col-num diff-hard">' + e.hard + "</td>" +
+              '<td class="col-num col-pts">' + e.points + "</td>" +
+            "</tr>"
+          );
+        }).join("");
+        if (globalNote && !me) {
+          globalNote.innerHTML =
+            'Registered players, scored on the server. <a href="profile.html">Create a profile</a> to join the board.';
+        }
+      })
+      .catch(function () { /* API not deployed yet: local board only */ });
   });
 })();
