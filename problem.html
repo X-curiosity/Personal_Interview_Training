@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Problem — Personal Interview Training</title>
-  <meta name="description" content="Solve problems here with Python, C, C++, and Verilog editors or instant-checked answer boxes.">
+  <title>Problem, Personal Interview Training</title>
+  <meta name="description" content="Solve problems here with Python, C, C++, and Verilog editors or instant checked answer boxes.">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
 </head>
@@ -33,7 +33,7 @@
       <a href="problems.html" class="back-link">← All problems</a>
       <span class="problem-nav-right">
         <button type="button" class="btn ghost small" data-prev>← Prev</button>
-        <button type="button" class="check-nav" data-solve-toggle aria-pressed="false"></button>
+        <button type="button" class="check-nav" data-solve-toggle disabled aria-label="Not solved yet"></button>
         <button type="button" class="btn ghost small" data-next>Next →</button>
       </span>
     </nav>
@@ -78,25 +78,22 @@
 
       if (!p) {
         root.innerHTML =
-          '<p class="empty-state">// problem not found — <a href="problems.html">browse all problems</a></p>';
+          '<p class="empty-state">// problem not found, <a href="problems.html">browse all problems</a></p>';
         document.querySelector(".problem-nav-right").style.visibility = "hidden";
         return;
       }
 
-      document.title = p.title + " — Personal Interview Training";
+      document.title = p.title + ", Personal Interview Training";
 
       var solveBtn = document.querySelector("[data-solve-toggle]");
       function paintSolveBtn() {
         var on = PIT_STORE.isSolved(p.id);
         solveBtn.className = "check-nav check" + (on ? " on" : "");
         solveBtn.textContent = on ? "✓" : "";
-        solveBtn.setAttribute("aria-pressed", String(on));
-        solveBtn.setAttribute("aria-label", on ? "Mark as unsolved" : "Mark as solved");
+        solveBtn.setAttribute("aria-label", on ? "Solved" : "Not solved yet. Solve it with a correct submission.");
       }
-      solveBtn.addEventListener("click", function () {
-        PIT_STORE.toggleSolved(p.id);
-        paintSolveBtn();
-      });
+      /* Read only: solved status is earned by a correct answer or passing
+         tests, never by hand. The button repaints when onSolved fires. */
 
       PIT_PROBLEM.render(root, p, { onSolved: paintSolveBtn });
       paintSolveBtn();

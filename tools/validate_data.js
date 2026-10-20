@@ -54,6 +54,11 @@ for (const p of PROBLEMS) {
   }
   if (p.answer !== null && isNaN(Number(p.answer)) && p.answer.length > 120)
     errors.push(`${at}: non-numeric answer too long for the answer box`);
+  if (p.image && (!p.image.url || !/^https?:\/\//.test(p.image.url)))
+    errors.push(`${at}: image must be an object with an http(s) url`);
+  for (const r of p.references || [])
+    if (!r.label || !/^https?:\/\//.test(r.url))
+      errors.push(`${at}: bad reference ${JSON.stringify(r)}`);
 }
 
 for (const key of TRACK_ORDER)

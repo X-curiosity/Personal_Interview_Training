@@ -9,7 +9,7 @@ const TRACKS = {
     name: "CPU Programming",
     short: "CPU",
     glyph: "⌘",
-    platform: "LeetCPU-style",
+    platform: "LeetCPU style",
     home: "https://www.leetcpu.com/",
     blurb: "Microarchitecture performance: branch prediction, caches, prefetching, ILP.",
     branches: ["Branch Prediction", "Cache Optimization", "Memory Hierarchy", "ILP & Pipelining", "Prefetching"]
@@ -18,7 +18,7 @@ const TRACKS = {
     name: "Silicon & RTL",
     short: "RTL",
     glyph: "⚡",
-    platform: "LeetSilicon-style",
+    platform: "LeetSilicon style",
     home: "https://leetsilicon.com/problems",
     blurb: "Hardware interview prep: RTL design, verification, architecture.",
     branches: ["RTL Design", "Verification", "Computer Architecture", "CDC & Timing"]
@@ -36,7 +36,7 @@ const TRACKS = {
     name: "Mathematics",
     short: "Math",
     glyph: "∑",
-    platform: "Project Euler-style",
+    platform: "Project Euler style",
     home: "https://projecteuler.net/archives",
     blurb: "Mathematical and computational puzzles, Euler-style.",
     branches: ["Number Theory", "Combinatorics & DP", "Sequences", "AI Traps", "Signal Processing"]
@@ -147,6 +147,12 @@ function registerProblems(arr) {
       answer: p.answer != null ? String(p.answer) : null,
       tolerance: typeof p.tolerance === "number" ? p.tolerance : 0,
       solution: p.solution || null,
+      image: p.image || null,             // optional { url, alt } illustration
+      references: Array.isArray(p.references)   // optional [{ label, url }]
+        ? p.references.map(function (r) {
+            return { label: String(r.label || r.url), url: String(r.url) };
+          })
+        : [],
       source: p.source || p.url || null,
       votes: p.votes || null
     });

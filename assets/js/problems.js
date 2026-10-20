@@ -123,7 +123,7 @@
         '<button type="button" class="vote-btn up' + (t.mine === "up" ? " on" : "") + '"' +
           ' data-vote="up" data-id="' + p.id + '"' +
           ' aria-pressed="' + (t.mine === "up") + '"' +
-          ' title="Accurate — really asked in interviews">▲ ' + t.up + "</button>" +
+          ' title="Accurate: really asked in interviews">▲ ' + t.up + "</button>" +
         '<span class="vote-bar"><span style="width:' + (t.pct || 0) + '%"></span></span>' +
         '<span class="vote-pct">' + (t.pct === null ? "no votes yet" : t.pct + "% accurate") + "</span>" +
         '<button type="button" class="vote-btn down' + (t.mine === "down" ? " on" : "") + '"' +
@@ -139,12 +139,11 @@
       return (
         "<tr" + (solved ? ' class="row-solved"' : "") + ' data-id="' + p.id + '">' +
           '<td class="col-status">' +
-            '<button type="button" class="check' + (solved ? " on" : "") + '"' +
-              ' data-toggle="' + p.id + '"' +
-              ' aria-pressed="' + solved + '"' +
-              ' aria-label="Mark ' + p.title + " as " + (solved ? "unsolved" : "solved") + '">' +
+            '<span class="check' + (solved ? " on" : "") + '" role="img"' +
+              ' aria-label="' + (solved ? "Solved" : "Not solved yet") + '"' +
+              ' title="Solved only by a correct submission">' +
               (solved ? "✓" : "") +
-            "</button>" +
+            "</span>" +
           "</td>" +
           '<td class="col-num">' + (index + 1) + "</td>" +
           '<td class="col-title">' +
@@ -213,30 +212,6 @@
       var p = PROBLEMS.find(function (x) { return x.id === id; });
       var widget = tbody.querySelector('[data-vote-widget="' + id + '"]');
       if (p && widget) widget.innerHTML = voteHtml(p);
-    });
-
-    /* Solve toggles — event delegation on the table. */
-    tbody.addEventListener("click", function (e) {
-      var btn = e.target.closest("[data-toggle]");
-      if (!btn) return;
-      var id = btn.getAttribute("data-toggle");
-      var nowSolved = PIT_STORE.toggleSolved(id);
-      btn.classList.toggle("on", nowSolved);
-      btn.setAttribute("aria-pressed", String(nowSolved));
-      btn.textContent = nowSolved ? "✓" : "";
-      btn.closest("tr").classList.toggle("row-solved", nowSolved);
-      btn.setAttribute("aria-label",
-        btn.getAttribute("aria-label").replace(/un?solved$/,
-          nowSolved ? "unsolved" : "solved"));
-
-      var pool = currentPool();
-      var solvedSet = PIT_STORE.getSolved();
-      if (progressEl) {
-        var pts = PIT_STORE.statsFor(pool, solvedSet);
-        var n = pool.filter(function (p) { return solvedSet.has(p.id); }).length;
-        progressEl.textContent = n + "/" + pool.length + " solved · " + pts.points + " pts";
-      }
-      window.PIT.refreshStats();
     });
 
     /* ---------- search & difficulty ---------- */

@@ -101,7 +101,7 @@
         var ok = checkAnswer(p, input.value);
         feedback.className = "answer-feedback " + (ok ? "ok" : "ko");
         feedback.textContent = ok
-          ? "✓ Correct — marked as solved."
+          ? "✓ Correct. Marked as solved."
           : "✗ Not quite. Check the magnitudes, then try again.";
         if (ok) markSolved();
       }
@@ -152,7 +152,7 @@
     var tabs = container.querySelectorAll(".editor-tab");
 
     function starterFor(lang) {
-      return p.starter[lang] || "// no starter for " + lang + " — write from scratch\n";
+      return p.starter[lang] || "// no starter for " + lang + ". Write from scratch\n";
     }
     editor.value = starterFor(active);
 
@@ -209,6 +209,19 @@
         '<div class="statement"><p>' +
           esc(p.statement).replace(/\n{2,}/g, "</p><p>").replace(/\n/g, "<br>") +
         "</p></div>" +
+        (p.image && p.image.url
+          ? '<figure class="problem-figure">' +
+            '<img src="' + esc(p.image.url) + '" alt="' + esc(p.image.alt || p.title) + '" loading="lazy">' +
+            (p.image.alt ? '<figcaption>' + esc(p.image.alt) + "</figcaption>" : "") +
+            "</figure>"
+          : "") +
+        (p.references && p.references.length
+          ? '<div class="problem-refs"><span class="refs-label">Further reading</span>' +
+            p.references.map(function (r) {
+              return '<a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.label) + " ↗</a>";
+            }).join("") +
+            "</div>"
+          : "") +
         '<div data-interactive></div>' +
         (p.source
           ? '<p class="source-link">Source: <a href="' + p.source + '" target="_blank" rel="noopener">' +

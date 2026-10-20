@@ -1,4 +1,4 @@
-/* CPU expansion pack 2: cpu-601..cpu-620 (10 code + 10 numeric), hand-verified. */
+/* cpu expansion2 — references/images enriched. */
 registerProblems([
  {
   "id": "cpu-601",
@@ -22,7 +22,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){int a[]={1,1,0,1,0,0};assert(static_hits(a,6,1)==3);assert(static_hits(a,6,0)==3);int b[]={1,1,1,1};assert(static_hits(b,4,1)==4);assert(static_hits(b,4,0)==0);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "Count positions where outcome == predict_taken."
+  "solution": "Count positions where outcome == predict_taken.",
+  "references": [
+   {
+    "label": "Branch predictor",
+    "url": "https://en.wikipedia.org/wiki/Branch_predictor"
+   }
+  ]
  },
  {
   "id": "cpu-602",
@@ -46,7 +52,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){int a[]={1,1,0,0,1,1};assert(one_bit_hits(a,6)==3);int b[]={1,0,1,0};assert(one_bit_hits(b,4)==0);int c[]={1,1,1};assert(one_bit_hits(c,3)==2);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "Keep last=0 initially; for each outcome compare then update last."
+  "solution": "Keep last=0 initially; for each outcome compare then update last.",
+  "references": [
+   {
+    "label": "Branch predictor",
+    "url": "https://en.wikipedia.org/wiki/Branch_predictor"
+   }
+  ]
  },
  {
   "id": "cpu-603",
@@ -70,7 +82,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){int a[]={1,2,1,3,2,1};assert(fifo_misses(a,6,2)==4);int b[]={1,2,3,1,2,3};assert(fifo_misses(b,6,3)==3);int c[]={1,2,3,4,1,2};assert(fifo_misses(c,6,2)==6);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "Keep a circular buffer; on miss insert at tail and advance; on hit leave order unchanged."
+  "solution": "Keep a circular buffer; on miss insert at tail and advance; on hit leave order unchanged.",
+  "references": [
+   {
+    "label": "Cache replacement policies",
+    "url": "https://en.wikipedia.org/wiki/Cache_replacement_policies"
+   }
+  ]
  },
  {
   "id": "cpu-604",
@@ -94,7 +112,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){unsigned long long a[]={60,64,124};int s[]={8,4,8};assert(line_splits(a,s,3,64)==2);unsigned long long b[]={0,32};int t[]={16,16};assert(line_splits(b,t,2,64)==0);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "An access splits when addr/line != (addr+size-1)/line."
+  "solution": "An access splits when addr/line != (addr+size-1)/line.",
+  "references": [
+   {
+    "label": "CPU cache",
+    "url": "https://en.wikipedia.org/wiki/CPU_cache"
+   }
+  ]
  },
  {
   "id": "cpu-605",
@@ -118,7 +142,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){unsigned a[]={1,2,3,1,2,3};assert(tlb_final_entries(a,6,4)==3);unsigned b[]={5,5,5,5};assert(tlb_final_entries(b,4,2)==1);unsigned c[]={1,2,3,4,5};assert(tlb_final_entries(c,5,3)==3);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "Occupancy grows to min(distinct pages, entries)."
+  "solution": "Occupancy grows to min(distinct pages, entries).",
+  "references": [
+   {
+    "label": "Translation lookaside buffer",
+    "url": "https://en.wikipedia.org/wiki/Translation_lookaside_buffer"
+   }
+  ]
  },
  {
   "id": "cpu-606",
@@ -142,7 +172,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){int l[]={3,2,4};int d[]={1,2,5};assert(total_stalls(l,d,3)==2);int l2[]={5};int d2[]={2};assert(total_stalls(l2,d2,1)==3);int l3[]={1,1};int d3[]={4,4};assert(total_stalls(l3,d3,2)==0);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "Accumulate max(0, latencies[i] - distances[i])."
+  "solution": "Accumulate max(0, latencies[i] - distances[i]).",
+  "references": [
+   {
+    "label": "Hazard (computer architecture)",
+    "url": "https://en.wikipedia.org/wiki/Hazard_(computer_architecture)"
+   }
+  ]
  },
  {
   "id": "cpu-607",
@@ -166,7 +202,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){long long a[]={100,164,228};assert(stride_next(a,3)==292);long long b[]={500,400,300};assert(stride_next(b,3)==200);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "return addrs[n-1] + (addrs[n-1] - addrs[n-2]);"
+  "solution": "return addrs[n-1] + (addrs[n-1] - addrs[n-2]);",
+  "references": [
+   {
+    "label": "Cache prefetching",
+    "url": "https://en.wikipedia.org/wiki/Cache_prefetching"
+   }
+  ]
  },
  {
   "id": "cpu-608",
@@ -190,7 +232,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){int ms[]={10,20,30,40};int pf[]={20,40,99};assert(covered_misses(ms,4,pf,3)==2);int m2[]={1,2};int p2[]={3,4};assert(covered_misses(m2,2,p2,2)==0);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "For each miss, scan the prefetch list for a match."
+  "solution": "For each miss, scan the prefetch list for a match.",
+  "references": [
+   {
+    "label": "Cache prefetching",
+    "url": "https://en.wikipedia.org/wiki/Cache_prefetching"
+   }
+  ]
  },
  {
   "id": "cpu-609",
@@ -214,7 +262,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){int mc[]={0,2,4,6};int st[]={5,5,5,5};assert(peak_outstanding(mc,st,4)==3);int a[]={0,10,20};int b[]={5,5,5};assert(peak_outstanding(a,b,3)==1);int c[]={0,1};int d[]={10,10};assert(peak_outstanding(c,d,2)==2);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "For each miss start, count intervals covering that cycle; take the max (including itself)."
+  "solution": "For each miss start, count intervals covering that cycle; take the max (including itself).",
+  "references": [
+   {
+    "label": "CPU cache",
+    "url": "https://en.wikipedia.org/wiki/CPU_cache"
+   }
+  ]
  },
  {
   "id": "cpu-610",
@@ -238,7 +292,13 @@ registerProblems([
   "tests": {
    "c": "int main(void){long long c[]={60,25,15};int p[]={1,2,4};assert(cpi_x100(c,p,3)==170);long long c2[]={1,1};int p2[]={1,3};assert(cpi_x100(c2,p2,2)==200);puts(\"ALL TESTS PASSED\");return 0;}\n"
   },
-  "solution": "Sum counts[i]*cpi[i], scale by 100, integer-divide by total instructions."
+  "solution": "Sum counts[i]*cpi[i], scale by 100, integer-divide by total instructions.",
+  "references": [
+   {
+    "label": "Cycles per instruction",
+    "url": "https://en.wikipedia.org/wiki/Cycles_per_instruction"
+   }
+  ]
  },
  {
   "id": "cpu-611",
@@ -255,7 +315,13 @@ registerProblems([
   "kind": "answer",
   "answer": "3",
   "tolerance": 0,
-  "solution": "Trace: predict N(T miss,->2), T(T hit,->3), T(N miss,->2), T(T hit,->3), T(N miss,->2), N(N hit,->1), N(T miss,->2) = 3 correct."
+  "solution": "Trace: predict N(T miss,->2), T(T hit,->3), T(N miss,->2), T(T hit,->3), T(N miss,->2), N(N hit,->1), N(T miss,->2) = 3 correct.",
+  "references": [
+   {
+    "label": "Branch predictor",
+    "url": "https://en.wikipedia.org/wiki/Branch_predictor"
+   }
+  ]
  },
  {
   "id": "cpu-612",
@@ -272,7 +338,13 @@ registerProblems([
   "kind": "answer",
   "answer": "128",
   "tolerance": 0,
-  "solution": "Sets = 32768 / (4 x 64) = 128."
+  "solution": "Sets = 32768 / (4 x 64) = 128.",
+  "references": [
+   {
+    "label": "CPU cache",
+    "url": "https://en.wikipedia.org/wiki/CPU_cache"
+   }
+  ]
  },
  {
   "id": "cpu-613",
@@ -289,7 +361,13 @@ registerProblems([
   "kind": "answer",
   "answer": "18",
   "tolerance": 0,
-  "solution": "Offset = log2(64) = 6; lines = 16384/64 = 256 so index = 8; tag = 32 - 6 - 8 = 18."
+  "solution": "Offset = log2(64) = 6; lines = 16384/64 = 256 so index = 8; tag = 32 - 6 - 8 = 18.",
+  "references": [
+   {
+    "label": "CPU cache",
+    "url": "https://en.wikipedia.org/wiki/CPU_cache"
+   }
+  ]
  },
  {
   "id": "cpu-614",
@@ -306,7 +384,17 @@ registerProblems([
   "kind": "answer",
   "answer": "3.5",
   "tolerance": 0.01,
-  "solution": "AMAT = 1 + 0.05 x (10 + 0.2 x 200) = 1 + 2.5 = 3.5 cycles."
+  "solution": "AMAT = 1 + 0.05 x (10 + 0.2 x 200) = 1 + 2.5 = 3.5 cycles.",
+  "references": [
+   {
+    "label": "Memory hierarchy",
+    "url": "https://en.wikipedia.org/wiki/Memory_hierarchy"
+   },
+   {
+    "label": "CPU cache",
+    "url": "https://en.wikipedia.org/wiki/CPU_cache"
+   }
+  ]
  },
  {
   "id": "cpu-615",
@@ -323,7 +411,17 @@ registerProblems([
   "kind": "answer",
   "answer": "4194304",
   "tolerance": 0,
-  "solution": "2^32 / 2^12 = 2^20 pages; 2^20 x 4 B = 4,194,304 bytes (4 MiB)."
+  "solution": "2^32 / 2^12 = 2^20 pages; 2^20 x 4 B = 4,194,304 bytes (4 MiB).",
+  "references": [
+   {
+    "label": "Page table",
+    "url": "https://en.wikipedia.org/wiki/Page_table"
+   },
+   {
+    "label": "Virtual memory",
+    "url": "https://en.wikipedia.org/wiki/Virtual_memory"
+   }
+  ]
  },
  {
   "id": "cpu-616",
@@ -340,7 +438,17 @@ registerProblems([
   "kind": "answer",
   "answer": "5",
   "tolerance": 0,
-  "solution": "One instruction completes per cycle versus one per 5 cycles: 5x throughput."
+  "solution": "One instruction completes per cycle versus one per 5 cycles: 5x throughput.",
+  "references": [
+   {
+    "label": "Instruction pipelining",
+    "url": "https://en.wikipedia.org/wiki/Instruction_pipelining"
+   }
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Pipeline%2C_4_stage.svg/330px-Pipeline%2C_4_stage.svg.png",
+   "alt": "A classic four-stage instruction pipeline"
+  }
  },
  {
   "id": "cpu-617",
@@ -357,7 +465,17 @@ registerProblems([
   "kind": "answer",
   "answer": "1.18",
   "tolerance": 0.01,
-  "solution": "CPI = 1 + 0.2 x 0.3 x 3 = 1.18."
+  "solution": "CPI = 1 + 0.2 x 0.3 x 3 = 1.18.",
+  "references": [
+   {
+    "label": "Cycles per instruction",
+    "url": "https://en.wikipedia.org/wiki/Cycles_per_instruction"
+   },
+   {
+    "label": "Branch predictor",
+    "url": "https://en.wikipedia.org/wiki/Branch_predictor"
+   }
+  ]
  },
  {
   "id": "cpu-618",
@@ -374,7 +492,13 @@ registerProblems([
   "kind": "answer",
   "answer": "50",
   "tolerance": 0,
-  "solution": "Coverage = 450 / 900 = 50%."
+  "solution": "Coverage = 450 / 900 = 50%.",
+  "references": [
+   {
+    "label": "Cache prefetching",
+    "url": "https://en.wikipedia.org/wiki/Cache_prefetching"
+   }
+  ]
  },
  {
   "id": "cpu-619",
@@ -391,7 +515,13 @@ registerProblems([
   "kind": "answer",
   "answer": "7",
   "tolerance": 0,
-  "solution": "2048 / 256 = 8 per counter; 8 - 1 = 7 competitors."
+  "solution": "2048 / 256 = 8 per counter; 8 - 1 = 7 competitors.",
+  "references": [
+   {
+    "label": "Branch predictor",
+    "url": "https://en.wikipedia.org/wiki/Branch_predictor"
+   }
+  ]
  },
  {
   "id": "cpu-620",
@@ -408,6 +538,16 @@ registerProblems([
   "kind": "answer",
   "answer": "2500",
   "tolerance": 0,
-  "solution": "Conflict = original - FA = 4000 - 1500 = 2500."
+  "solution": "Conflict = original - FA = 4000 - 1500 = 2500.",
+  "references": [
+   {
+    "label": "CPU cache",
+    "url": "https://en.wikipedia.org/wiki/CPU_cache"
+   },
+   {
+    "label": "Cache replacement policies",
+    "url": "https://en.wikipedia.org/wiki/Cache_replacement_policies"
+   }
+  ]
  }
 ]);

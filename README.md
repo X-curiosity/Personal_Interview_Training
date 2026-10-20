@@ -26,7 +26,8 @@ There are **159 coding tasks** across Python, C, C++, and Verilog, and **343 ans
 
 - Multi-page LeetCode-style interface rather than a single-page app.
 - Searchable/filterable 400-problem table with persisted solve status.
-- Local problem pages with full statements, previous/next navigation, and source attribution.
+- Local problem pages with full statements, previous/next navigation, source attribution, Wikipedia **further reading** links on 96 problems, and illustrations on selected problems.
+- Solved status is earned only by a correct submission (answer check or passing tests). There is no manual ticking.
 - Editors for Python, C, C++, and Verilog.
 - Exact/tolerant answer checking and model-solution reveal.
 - Timed role preparation for:

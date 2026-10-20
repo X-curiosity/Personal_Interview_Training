@@ -170,7 +170,7 @@
         var stateMark = ok ? "✓" : (skipped ? "↷ skipped" : "✗");
         return (
           '<li class="' + stateClass + '">' +
-            "<span>" + stateMark + " · Q" + (i + 1) + " — " +
+            "<span>" + stateMark + " · Q" + (i + 1) + " · " +
             '<a href="problem.html?id=' + encodeURIComponent(q.id) + '">' + esc(q.title) + "</a></span>" +
             '<span class="diff diff-' + q.difficulty + '">' + q.difficulty + "</span>" +
           "</li>"

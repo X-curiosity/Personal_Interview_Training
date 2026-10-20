@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contribute — Personal Interview Training</title>
+  <title>Contribute, Personal Interview Training</title>
   <meta name="description" content="How new puzzles enter the database: the scout agent scrapes the platforms, manual submissions are reviewed by the admin and voted by the community.">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
@@ -38,22 +38,22 @@
       <div class="section-head"><h2 id="pipeline-heading">How a puzzle gets in</h2></div>
       <ol class="pipeline">
         <li><strong>Scout agent.</strong> <code>agent/scrape_agent.py</code> runs weekly and checks Jane Street, Project Euler, LeetSilicon, and LeetCPU for new candidates.</li>
-        <li><strong>Manual submission.</strong> Anyone can propose a puzzle with the form below — it opens a pre-filled GitHub issue on the repo.</li>
+        <li><strong>Manual submission.</strong> Anyone can propose a puzzle with the form below, it opens a pre filled GitHub issue on the repo.</li>
         <li><strong>Community review.</strong> Candidates land in the review queue at the bottom of this page, where the community votes: worth adding or not.</li>
-        <li><strong>Admin merge.</strong> The admin reviews votes and sources, then moves approved entries from <code>assets/js/pending.js</code> into <code>assets/js/data.js</code> — live on the next deploy.</li>
+        <li><strong>Admin merge.</strong> The admin reviews votes and sources, then moves approved entries from <code>assets/js/pending.js</code> into <code>assets/js/data.js</code>, live on the next deploy.</li>
       </ol>
     </section>
 
     <section class="section" aria-labelledby="submit-heading">
       <div class="section-head">
         <h2 id="submit-heading">Submit a puzzle manually</h2>
-        <p>Fills a pre-formatted GitHub issue — nothing is sent anywhere else. You can also copy the entry as JSON and open a pull request yourself.</p>
+        <p>Fills a pre formatted GitHub issue, nothing is sent anywhere else. You can also copy the entry as JSON and open a pull request yourself.</p>
       </div>
       <div class="panel">
         <form class="submit-form" data-submit-form>
           <label for="f-title">Puzzle title *</label>
           <input id="f-title" name="title" type="text" maxlength="80" required
-                 placeholder="e.g. Two-Pointer Rain Water" autocomplete="off">
+                 placeholder="e.g. Rain Water Histogram" autocomplete="off">
 
           <div class="form-row">
             <div>
@@ -105,7 +105,7 @@
     <section class="section" aria-labelledby="queue-heading">
       <div class="section-head">
         <h2 id="queue-heading">Review queue</h2>
-        <p>Vote on candidates — the admin merges what the community approves. (Sample queue: seeded entries showing the flow.)</p>
+        <p>Vote on candidates, the admin merges what the community approves. (Sample queue: seeded entries showing the flow.)</p>
       </div>
       <div data-review-queue></div>
     </section>

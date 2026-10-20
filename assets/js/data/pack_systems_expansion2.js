@@ -1,4 +1,4 @@
-/* Systems expansion pack 2: sys-601..sys-618 (12 code + 6 numeric), reference-verified. */
+/* systems expansion2 — references/images enriched. */
 registerProblems([
  {
   "id": "sys-601",
@@ -303,7 +303,13 @@ registerProblems([
   "kind": "answer",
   "answer": "12504",
   "tolerance": 0,
-  "solution": "ceil(100000/64)=1563 words, and 1563*8=12504 bytes."
+  "solution": "ceil(100000/64)=1563 words, and 1563*8=12504 bytes.",
+  "references": [
+   {
+    "label": "Bit array",
+    "url": "https://en.wikipedia.org/wiki/Bit_array"
+   }
+  ]
  },
  {
   "id": "sys-614",
@@ -320,7 +326,13 @@ registerProblems([
   "kind": "answer",
   "answer": "14",
   "tolerance": 0,
-  "solution": "16 KiB = 16384 = 2^14 bytes, so the low 14 bits select a byte in the page."
+  "solution": "16 KiB = 16384 = 2^14 bytes, so the low 14 bits select a byte in the page.",
+  "references": [
+   {
+    "label": "Page table",
+    "url": "https://en.wikipedia.org/wiki/Page_table"
+   }
+  ]
  },
  {
   "id": "sys-615",
@@ -337,7 +349,13 @@ registerProblems([
   "kind": "answer",
   "answer": "240",
   "tolerance": 0,
-  "solution": "c is at 0, d at 8, i at 16, and tail padding rounds the struct from 20 to 24 bytes. Ten occupy 240 bytes."
+  "solution": "c is at 0, d at 8, i at 16, and tail padding rounds the struct from 20 to 24 bytes. Ten occupy 240 bytes.",
+  "references": [
+   {
+    "label": "Data structure alignment",
+    "url": "https://en.wikipedia.org/wiki/Data_structure_alignment"
+   }
+  ]
  },
  {
   "id": "sys-616",
@@ -354,7 +372,13 @@ registerProblems([
   "kind": "answer",
   "answer": "18",
   "tolerance": 0,
-  "solution": "The first block needs 0 padding. Offset 5 rounds to 16 (11 bytes), then offset 25 rounds to 32 (7 bytes), totaling 18."
+  "solution": "The first block needs 0 padding. Offset 5 rounds to 16 (11 bytes), then offset 25 rounds to 32 (7 bytes), totaling 18.",
+  "references": [
+   {
+    "label": "Page replacement algorithm",
+    "url": "https://en.wikipedia.org/wiki/Page_replacement_algorithm"
+   }
+  ]
  },
  {
   "id": "sys-617",
@@ -371,7 +395,13 @@ registerProblems([
   "kind": "answer",
   "answer": "511",
   "tolerance": 0,
-  "solution": "A perfect tree with 1023=2^10-1 nodes has 2^9=512 leaves, leaving 1023-512=511 internal nodes."
+  "solution": "A perfect tree with 1023=2^10-1 nodes has 2^9=512 leaves, leaving 1023-512=511 internal nodes.",
+  "references": [
+   {
+    "label": "Virtual memory",
+    "url": "https://en.wikipedia.org/wiki/Virtual_memory"
+   }
+  ]
  },
  {
   "id": "sys-618",
@@ -388,6 +418,12 @@ registerProblems([
   "kind": "answer",
   "answer": "4.6666666667",
   "tolerance": 0.0001,
-  "solution": "Execution is A(0-2), B(2-4), C(4-5), A(5-7), B(7-8), A(8-9). Completion times are 9, 8, 5; waits are 4, 5, 4, averaging 13/3 = 4.6667 ms."
+  "solution": "Execution is A(0-2), B(2-4), C(4-5), A(5-7), B(7-8), A(8-9). Completion times are 9, 8, 5; waits are 4, 5, 4, averaging 13/3 = 4.6667 ms.",
+  "references": [
+   {
+    "label": "Round-robin scheduling",
+    "url": "https://en.wikipedia.org/wiki/Round-robin_scheduling"
+   }
+  ]
  }
 ]);

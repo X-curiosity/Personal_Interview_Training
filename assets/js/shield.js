@@ -83,7 +83,7 @@
     var shouldVeil = document.hidden || !document.hasFocus();
     if (shouldVeil) {
       veiled = true;
-      show("Window not focused — content hidden.");
+      show("Window not focused. Content hidden.");
     } else if (veiled) {
       hide();
     }
@@ -91,7 +91,7 @@
 
   document.addEventListener("keyup", function (e) {
     if (e.key === "PrintScreen" || e.keyCode === 44) {
-      strike("Screenshot key detected — screen blanked.");
+      strike("Screenshot key detected. Screen blanked.");
     }
   });
 
@@ -99,7 +99,7 @@
     var k = String(e.key || "").toLowerCase();
     var combo = (e.metaKey || e.ctrlKey) && e.shiftKey &&
                 (k === "3" || k === "4" || k === "5" || k === "s");
-    if (combo) strike("Screenshot shortcut detected — screen blanked.");
+    if (combo) strike("Screenshot shortcut detected. Screen blanked.");
   });
 
   document.addEventListener("visibilitychange", refreshVeil);

@@ -109,7 +109,7 @@
       if (!PIT_CONFIG.pistonUrl) {
         return {
           ok: false, stdout: "", code: -1,
-          stderr: "Judge unreachable (" + e + "). The public judge is rate-limited — wait a moment and retry."
+          stderr: "Judge unreachable (" + e + "). The public judge is rate limited. Wait a moment and retry."
         };
       }
       /* optional Piston fallback */
@@ -141,7 +141,7 @@
     if (!url) {
       return Promise.resolve({
         ok: false, stdout: "", code: -1,
-        stderr: "No HDL runner connected. Verilog needs a simulator backend (Icarus/Verilator) — set PIT_CONFIG.runners.verilog in assets/js/config.js. Until then, paste the module into your local simulator or EDA Playground."
+        stderr: "No HDL runner connected. Verilog needs a simulator backend (Icarus or Verilator). Set PIT_CONFIG.runners.verilog in assets/js/config.js. Until then, paste the module into your local simulator or EDA Playground."
       });
     }
     onStatus("Sending to " + lang + " runner…");

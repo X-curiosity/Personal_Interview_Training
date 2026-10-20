@@ -391,7 +391,8 @@ a.p-title:hover { color: var(--accent); text-decoration: none; }
 }
 .solve-link:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
 
-/* square pixel checkbox */
+/* square pixel checkbox (read-only: solved is earned, not ticked) */
+span.check, .check[disabled] { cursor: default; opacity: 1; }
 .check {
   width: 1.5rem; height: 1.5rem;
   border: var(--bw) solid var(--ink); background: var(--bg-raised);
@@ -589,6 +590,32 @@ tr.row-flash { animation: rowflash 1.8s steps(6); }
 .source-link { font-family: var(--font-ui); font-size: 0.78rem; color: var(--text-dim); margin-top: 1rem; }
 
 .badge.lang { color: var(--track-math); border-color: var(--track-math); }
+
+/* optional problem illustration + further reading */
+.problem-figure {
+  margin: 0 0 1.25rem; background: var(--bg-panel);
+  border: var(--bw) solid var(--ink); box-shadow: var(--shadow);
+  padding: 1rem; text-align: center;
+}
+.problem-figure img { max-width: 100%; height: auto; background: #fff; padding: 0.5rem; }
+.problem-figure figcaption {
+  margin-top: 0.6rem; font-size: 0.76rem; color: var(--text-dim);
+  font-family: var(--font-ui);
+}
+.problem-refs {
+  display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+  margin: -0.35rem 0 1.25rem;
+}
+.problem-refs .refs-label {
+  font-family: var(--font-display); font-size: 0.55rem; text-transform: uppercase;
+  color: var(--text-dim); letter-spacing: 0.06em;
+}
+.problem-refs a {
+  font-family: var(--font-ui); font-size: 0.76rem; font-weight: 700;
+  color: var(--track-math); border: 2px solid var(--ink);
+  background: var(--bg-raised); padding: 0.2rem 0.6rem;
+}
+.problem-refs a:hover { color: var(--accent); text-decoration: none; }
 
 .answer-box { margin-bottom: 1.25rem; }
 .answer-label { display: block; font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.3rem; text-transform: uppercase; }

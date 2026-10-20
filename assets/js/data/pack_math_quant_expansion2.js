@@ -1,4 +1,4 @@
-/* Math + quant expansion pack 2: math-401..418 (incl. Signal Processing) and quant-401..416. */
+/* math quant expansion2 — references/images enriched. */
 registerProblems([
  {
   "id": "math-401",
@@ -22,7 +22,17 @@ registerProblems([
   "tests": {
    "python": "assert is_prime(2) is True\nassert is_prime(97) is True\nassert is_prime(1) is False\nassert is_prime(0) is False\nassert is_prime(99991) is True\nassert is_prime(99991*2) is False\nassert is_prime(7919*13) is False\n"
   },
-  "solution": "Reject n<2, handle 2, reject evens, then test odd divisors up to sqrt(n)."
+  "solution": "Reject n<2, handle 2, reject evens, then test odd divisors up to sqrt(n).",
+  "references": [
+   {
+    "label": "Primality test",
+    "url": "https://en.wikipedia.org/wiki/Primality_test"
+   },
+   {
+    "label": "Trial division",
+    "url": "https://en.wikipedia.org/wiki/Trial_division"
+   }
+  ]
  },
  {
   "id": "math-402",
@@ -46,7 +56,13 @@ registerProblems([
   "tests": {
    "python": "assert collatz_steps(1) == 0\nassert collatz_steps(6) == 8\nassert collatz_steps(27) == 111\nassert collatz_steps(97) == 118\n"
   },
-  "solution": "Loop with a counter; 27 takes 111 steps, a classic stress value."
+  "solution": "Loop with a counter; 27 takes 111 steps, a classic stress value.",
+  "references": [
+   {
+    "label": "Collatz conjecture",
+    "url": "https://en.wikipedia.org/wiki/Collatz_conjecture"
+   }
+  ]
  },
  {
   "id": "math-403",
@@ -70,7 +86,13 @@ registerProblems([
   "tests": {
    "python": "assert derangements(0) == 1\nassert derangements(1) == 0\nassert derangements(4) == 9\nassert derangements(5) == 44\nassert derangements(10) == 1334961\n"
   },
-  "solution": "Iterate the recurrence with two rolling values; D(4)=9 and D(5)=44."
+  "solution": "Iterate the recurrence with two rolling values; D(4)=9 and D(5)=44.",
+  "references": [
+   {
+    "label": "Derangement",
+    "url": "https://en.wikipedia.org/wiki/Derangement"
+   }
+  ]
  },
  {
   "id": "math-404",
@@ -94,7 +116,13 @@ registerProblems([
   "tests": {
    "python": "assert tribonacci(0) == 0\nassert tribonacci(2) == 1\nassert tribonacci(4) == 2\nassert tribonacci(10) == 81\nassert tribonacci(25) == 755476\n"
   },
-  "solution": "Roll three values forward; T(10)=81."
+  "solution": "Roll three values forward; T(10)=81.",
+  "references": [
+   {
+    "label": "Generalizations of Fibonacci numbers",
+    "url": "https://en.wikipedia.org/wiki/Generalizations_of_Fibonacci_numbers"
+   }
+  ]
  },
  {
   "id": "math-405",
@@ -111,7 +139,17 @@ registerProblems([
   "kind": "answer",
   "answer": "24",
   "tolerance": 0,
-  "solution": "floor(100/5)+floor(100/25)=20+4=24."
+  "solution": "floor(100/5)+floor(100/25)=20+4=24.",
+  "references": [
+   {
+    "label": "Factorial",
+    "url": "https://en.wikipedia.org/wiki/Factorial"
+   },
+   {
+    "label": "Trailing zero",
+    "url": "https://en.wikipedia.org/wiki/Trailing_zero"
+   }
+  ]
  },
  {
   "id": "math-406",
@@ -128,7 +166,13 @@ registerProblems([
   "kind": "answer",
   "answer": "1",
   "tolerance": 0,
-  "solution": "7^1=7, 7^2=9, 7^3=3, 7^4=1 — period 4. 2024 mod 4 = 0, so the digit is 1."
+  "solution": "7^1=7, 7^2=9, 7^3=3, 7^4=1 — period 4. 2024 mod 4 = 0, so the digit is 1.",
+  "references": [
+   {
+    "label": "Modular arithmetic",
+    "url": "https://en.wikipedia.org/wiki/Modular_arithmetic"
+   }
+  ]
  },
  {
   "id": "math-407",
@@ -145,7 +189,13 @@ registerProblems([
   "kind": "answer",
   "answer": "338350",
   "tolerance": 0,
-  "solution": "100*101*201/6 = 338350."
+  "solution": "100*101*201/6 = 338350.",
+  "references": [
+   {
+    "label": "Square pyramidal number",
+    "url": "https://en.wikipedia.org/wiki/Square_pyramidal_number"
+   }
+  ]
  },
  {
   "id": "math-408",
@@ -161,7 +211,13 @@ registerProblems([
   "kind": "answer",
   "answer": "44",
   "tolerance": 0,
-  "solution": "!2=1, !3=2, !4=9, !5=44 by !(n) = (n-1)(!(n-1)+!(n-2))."
+  "solution": "!2=1, !3=2, !4=9, !5=44 by !(n) = (n-1)(!(n-1)+!(n-2)).",
+  "references": [
+   {
+    "label": "Derangement",
+    "url": "https://en.wikipedia.org/wiki/Derangement"
+   }
+  ]
  },
  {
   "id": "math-409",
@@ -177,7 +233,13 @@ registerProblems([
   "kind": "answer",
   "answer": "429",
   "tolerance": 0,
-  "solution": "binom(14,7) = 3432; 3432/8 = 429."
+  "solution": "binom(14,7) = 3432; 3432/8 = 429.",
+  "references": [
+   {
+    "label": "Catalan number",
+    "url": "https://en.wikipedia.org/wiki/Catalan_number"
+   }
+  ]
  },
  {
   "id": "math-410",
@@ -193,7 +255,13 @@ registerProblems([
   "kind": "answer",
   "answer": "1000003",
   "tolerance": 0,
-  "solution": "1000003 is prime (no divisor up to its square root); the intervening candidates fail small divisors."
+  "solution": "1000003 is prime (no divisor up to its square root); the intervening candidates fail small divisors.",
+  "references": [
+   {
+    "label": "Prime number",
+    "url": "https://en.wikipedia.org/wiki/Prime_number"
+   }
+  ]
  },
  {
   "id": "math-411",
@@ -218,7 +286,17 @@ registerProblems([
   "tests": {
    "python": "assert moving_average([1,2,3,4,5], 3) == [2,3,4]\nassert moving_average([2,2,2,2], 2) == [2,2,2]\nassert moving_average([1,3], 2) == [2]\n"
   },
-  "solution": "Slide a window of n samples; a running sum avoids re-summing."
+  "solution": "Slide a window of n samples; a running sum avoids re-summing.",
+  "references": [
+   {
+    "label": "Moving average",
+    "url": "https://en.wikipedia.org/wiki/Moving_average"
+   },
+   {
+    "label": "Finite impulse response",
+    "url": "https://en.wikipedia.org/wiki/Finite_impulse_response"
+   }
+  ]
  },
  {
   "id": "math-412",
@@ -243,7 +321,17 @@ registerProblems([
   "tests": {
    "python": "assert abs(dft_magnitude([1,0,0,0], 0) - 1.0) < 1e-9\nassert abs(dft_magnitude([1,1,1,1], 0) - 4.0) < 1e-9\nassert abs(dft_magnitude([1,-1,1,-1], 2) - 4.0) < 1e-9\nassert abs(dft_magnitude([1,0,-1,0], 1) - 2.0) < 1e-9\n"
   },
-  "solution": "Sum samples[n]*cmath.exp(-2j*pi*k*n/N) and take abs()."
+  "solution": "Sum samples[n]*cmath.exp(-2j*pi*k*n/N) and take abs().",
+  "references": [
+   {
+    "label": "Discrete Fourier transform",
+    "url": "https://en.wikipedia.org/wiki/Discrete_Fourier_transform"
+   }
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/DFT_2sin%28t%29_%2B_cos%284t%29_25_points.svg/330px-DFT_2sin%28t%29_%2B_cos%284t%29_25_points.svg.png",
+   "alt": "The DFT decomposes a sampled signal into frequency bins"
+  }
  },
  {
   "id": "math-413",
@@ -261,7 +349,17 @@ registerProblems([
   "kind": "answer",
   "answer": "6800",
   "tolerance": 0,
-  "solution": "fs must exceed 2 x 3.4 kHz = 6.8 kHz = 6800 Hz."
+  "solution": "fs must exceed 2 x 3.4 kHz = 6.8 kHz = 6800 Hz.",
+  "references": [
+   {
+    "label": "Nyquist–Shannon sampling theorem",
+    "url": "https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem"
+   }
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Bandlimited.svg/330px-Bandlimited.svg.png",
+   "alt": "A bandlimited spectrum: sampling above twice the bandwidth allows perfect reconstruction"
+  }
  },
  {
   "id": "math-414",
@@ -278,7 +376,17 @@ registerProblems([
   "kind": "answer",
   "answer": "3000",
   "tolerance": 0,
-  "solution": "The alias frequency is |7 - 10| = 3 kHz = 3000 Hz."
+  "solution": "The alias frequency is |7 - 10| = 3 kHz = 3000 Hz.",
+  "references": [
+   {
+    "label": "Aliasing",
+    "url": "https://en.wikipedia.org/wiki/Aliasing"
+   }
+  ],
+  "image": {
+   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Moire_pattern_of_bricks.jpg/330px-Moire_pattern_of_bricks.jpg",
+   "alt": "A moire pattern: the visual analog of frequency aliasing"
+  }
  },
  {
   "id": "math-415",
@@ -296,7 +404,17 @@ registerProblems([
   "kind": "answer",
   "answer": "74.0",
   "tolerance": 0.01,
-  "solution": "6.02 x 12 + 1.76 = 74.0 dB."
+  "solution": "6.02 x 12 + 1.76 = 74.0 dB.",
+  "references": [
+   {
+    "label": "Analog-to-digital converter",
+    "url": "https://en.wikipedia.org/wiki/Analog-to-digital_converter"
+   },
+   {
+    "label": "Quantization (signal processing)",
+    "url": "https://en.wikipedia.org/wiki/Quantization_(signal_processing)"
+   }
+  ]
  },
  {
   "id": "math-416",
@@ -314,7 +432,13 @@ registerProblems([
   "kind": "answer",
   "answer": "46.875",
   "tolerance": 0.01,
-  "solution": "48000 / 1024 = 46.875 Hz per bin."
+  "solution": "48000 / 1024 = 46.875 Hz per bin.",
+  "references": [
+   {
+    "label": "Discrete Fourier transform",
+    "url": "https://en.wikipedia.org/wiki/Discrete_Fourier_transform"
+   }
+  ]
  },
  {
   "id": "math-417",
@@ -331,7 +455,13 @@ registerProblems([
   "kind": "answer",
   "answer": "274",
   "tolerance": 0,
-  "solution": "200 + 75 - 1 = 274 samples."
+  "solution": "200 + 75 - 1 = 274 samples.",
+  "references": [
+   {
+    "label": "Convolution",
+    "url": "https://en.wikipedia.org/wiki/Convolution"
+   }
+  ]
  },
  {
   "id": "math-418",
@@ -348,7 +478,13 @@ registerProblems([
   "kind": "answer",
   "answer": "12",
   "tolerance": 0,
-  "solution": "The new Nyquist limit is 24/2 = 12 kHz."
+  "solution": "The new Nyquist limit is 24/2 = 12 kHz.",
+  "references": [
+   {
+    "label": "Decimation (signal processing)",
+    "url": "https://en.wikipedia.org/wiki/Decimation_(signal_processing)"
+   }
+  ]
  },
  {
   "id": "quant-401",
@@ -365,7 +501,13 @@ registerProblems([
   "kind": "answer",
   "answer": "3.9",
   "tolerance": 0.005,
-  "solution": "0.1+0.2+0.6+0.8+1.0+1.2 = 3.9 dollars."
+  "solution": "0.1+0.2+0.6+0.8+1.0+1.2 = 3.9 dollars.",
+  "references": [
+   {
+    "label": "Expected value",
+    "url": "https://en.wikipedia.org/wiki/Expected_value"
+   }
+  ]
  },
  {
   "id": "quant-402",
@@ -382,7 +524,13 @@ registerProblems([
   "kind": "answer",
   "answer": "4",
   "tolerance": 0.005,
-  "solution": "Geometric expectation 1/0.25 = 4."
+  "solution": "Geometric expectation 1/0.25 = 4.",
+  "references": [
+   {
+    "label": "Geometric distribution",
+    "url": "https://en.wikipedia.org/wiki/Geometric_distribution"
+   }
+  ]
  },
  {
   "id": "quant-403",
@@ -399,7 +547,17 @@ registerProblems([
   "kind": "answer",
   "answer": "0.046296296296296294",
   "tolerance": 0.005,
-  "solution": "Favourable: (6,6,6), (6,6,5)x3, (6,6,4)x3, (6,5,5)x3 = 10 outcomes; 10/216 = 0.046296."
+  "solution": "Favourable: (6,6,6), (6,6,5)x3, (6,6,4)x3, (6,5,5)x3 = 10 outcomes; 10/216 = 0.046296.",
+  "references": [
+   {
+    "label": "Dice",
+    "url": "https://en.wikipedia.org/wiki/Dice"
+   },
+   {
+    "label": "Probability distribution",
+    "url": "https://en.wikipedia.org/wiki/Probability_distribution"
+   }
+  ]
  },
  {
   "id": "quant-404",
@@ -416,7 +574,13 @@ registerProblems([
   "kind": "answer",
   "answer": "2.9166666666666665",
   "tolerance": 0.005,
-  "solution": "E[X^2] = 91/6; variance = 91/6 - 12.25 = 35/12 = 2.91667."
+  "solution": "E[X^2] = 91/6; variance = 91/6 - 12.25 = 35/12 = 2.91667.",
+  "references": [
+   {
+    "label": "Variance",
+    "url": "https://en.wikipedia.org/wiki/Variance"
+   }
+  ]
  },
  {
   "id": "quant-405",
@@ -433,7 +597,13 @@ registerProblems([
   "kind": "answer",
   "answer": "3",
   "tolerance": 0.005,
-  "solution": "7 mod 4 = 3: take 3, leave 4; then mirror to 4-k."
+  "solution": "7 mod 4 = 3: take 3, leave 4; then mirror to 4-k.",
+  "references": [
+   {
+    "label": "Nim",
+    "url": "https://en.wikipedia.org/wiki/Nim"
+   }
+  ]
  },
  {
   "id": "quant-406",
@@ -450,7 +620,13 @@ registerProblems([
   "kind": "answer",
   "answer": "0.5",
   "tolerance": 0.005,
-  "solution": "Indifference equalizes the opponent's payoffs only at 0.5."
+  "solution": "Indifference equalizes the opponent's payoffs only at 0.5.",
+  "references": [
+   {
+    "label": "Matching pennies",
+    "url": "https://en.wikipedia.org/wiki/Matching_pennies"
+   }
+  ]
  },
  {
   "id": "quant-407",
@@ -467,7 +643,13 @@ registerProblems([
   "kind": "answer",
   "answer": "0.7142857142857143",
   "tolerance": 0.005,
-  "solution": "pi_S = 0.5/(0.2+0.5) = 5/7 = 0.714286."
+  "solution": "pi_S = 0.5/(0.2+0.5) = 5/7 = 0.714286.",
+  "references": [
+   {
+    "label": "Markov chain",
+    "url": "https://en.wikipedia.org/wiki/Markov_chain"
+   }
+  ]
  },
  {
   "id": "quant-408",
@@ -484,7 +666,13 @@ registerProblems([
   "kind": "answer",
   "answer": "6",
   "tolerance": 0.005,
-  "solution": "Geometric with p=1/6: mean 6."
+  "solution": "Geometric with p=1/6: mean 6.",
+  "references": [
+   {
+    "label": "Geometric distribution",
+    "url": "https://en.wikipedia.org/wiki/Geometric_distribution"
+   }
+  ]
  },
  {
   "id": "quant-409",
@@ -501,7 +689,13 @@ registerProblems([
   "kind": "answer",
   "answer": "25",
   "tolerance": 0.005,
-  "solution": "27 = 25 (till) + 2 (bellhop); adding 27+2 double-counts the 2."
+  "solution": "27 = 25 (till) + 2 (bellhop); adding 27+2 double-counts the 2.",
+  "references": [
+   {
+    "label": "Missing dollar riddle",
+    "url": "https://en.wikipedia.org/wiki/Missing_dollar_riddle"
+   }
+  ]
  },
  {
   "id": "quant-410",
@@ -518,7 +712,17 @@ registerProblems([
   "kind": "answer",
   "answer": "10",
   "tolerance": 0.005,
-  "solution": "Open iff d(n) is odd iff n is a perfect square; 10 squares up to 100."
+  "solution": "Open iff d(n) is odd iff n is a perfect square; 10 squares up to 100.",
+  "references": [
+   {
+    "label": "Square number",
+    "url": "https://en.wikipedia.org/wiki/Square_number"
+   },
+   {
+    "label": "Divisor function",
+    "url": "https://en.wikipedia.org/wiki/Divisor_function"
+   }
+  ]
  },
  {
   "id": "quant-411",
@@ -535,7 +739,13 @@ registerProblems([
   "kind": "answer",
   "answer": "125",
   "tolerance": 0.005,
-  "solution": "(50+200)/2 = 125."
+  "solution": "(50+200)/2 = 125.",
+  "references": [
+   {
+    "label": "Two envelopes problem",
+    "url": "https://en.wikipedia.org/wiki/Two_envelopes_problem"
+   }
+  ]
  },
  {
   "id": "quant-412",
@@ -552,7 +762,13 @@ registerProblems([
   "kind": "answer",
   "answer": "4.472222222222222",
   "tolerance": 0.005,
-  "solution": "E[max] = 161/36 = 4.47222."
+  "solution": "E[max] = 161/36 = 4.47222.",
+  "references": [
+   {
+    "label": "Order statistic",
+    "url": "https://en.wikipedia.org/wiki/Order_statistic"
+   }
+  ]
  },
  {
   "id": "quant-413",
@@ -569,7 +785,13 @@ registerProblems([
   "kind": "answer",
   "answer": "0.5",
   "tolerance": 0.005,
-  "solution": "i/N = 3/6 = 0.5."
+  "solution": "i/N = 3/6 = 0.5.",
+  "references": [
+   {
+    "label": "Gambler's ruin",
+    "url": "https://en.wikipedia.org/wiki/Gambler's_ruin"
+   }
+  ]
  },
  {
   "id": "quant-414",
@@ -586,7 +808,13 @@ registerProblems([
   "kind": "answer",
   "answer": "4.463129088",
   "tolerance": 0.005,
-  "solution": "5(1-(4/5)^10) = 4.46262."
+  "solution": "5(1-(4/5)^10) = 4.46262.",
+  "references": [
+   {
+    "label": "Coupon collector's problem",
+    "url": "https://en.wikipedia.org/wiki/Coupon_collector's_problem"
+   }
+  ]
  },
  {
   "id": "quant-415",
@@ -603,7 +831,13 @@ registerProblems([
   "kind": "answer",
   "answer": "40",
   "tolerance": 0.005,
-  "solution": "120 km in 2+1 = 3 hours: 40 km/h."
+  "solution": "120 km in 2+1 = 3 hours: 40 km/h.",
+  "references": [
+   {
+    "label": "Harmonic mean",
+    "url": "https://en.wikipedia.org/wiki/Harmonic_mean"
+   }
+  ]
  },
  {
   "id": "quant-416",
@@ -620,6 +854,12 @@ registerProblems([
   "kind": "answer",
   "answer": "40",
   "tolerance": 0.005,
-  "solution": "80/2 = 40."
+  "solution": "80/2 = 40.",
+  "references": [
+   {
+    "label": "First-price sealed-bid auction",
+    "url": "https://en.wikipedia.org/wiki/First-price_sealed-bid_auction"
+   }
+  ]
  }
 ]);

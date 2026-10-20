@@ -1,4 +1,4 @@
-/* Silicon expansion pack 2: rtl-601..rtl-620 (10 Verilog + 10 numeric), X-strict testbenches. */
+/* silicon expansion2 — references/images enriched. */
 registerProblems([
  {
   "id": "rtl-601",
@@ -22,7 +22,13 @@ registerProblems([
   "tests": {
    "verilog": "module tb; reg[7:0] r; wire v; wire[2:0] i; first_set8 dut(r,v,i); initial begin r=0;#1;if(v||i!==0)$fatal(1,\"zero\");r=8'b10101000;#1;if(!v||i!==3)$fatal(1,\"priority\");r=8'h80;#1;if(!v||i!==7)$fatal(1,\"top\");r=8'hff;#1;if(i!==0)$fatal(1,\"bit zero\");$display(\"ALL TESTS PASSED\");$finish;end endmodule\n"
   },
-  "solution": "Use a combinational casez ordered from req[0] through req[7], defaulting valid and index to zero."
+  "solution": "Use a combinational casez ordered from req[0] through req[7], defaulting valid and index to zero.",
+  "references": [
+   {
+    "label": "Priority encoder",
+    "url": "https://en.wikipedia.org/wiki/Priority_encoder"
+   }
+  ]
  },
  {
   "id": "rtl-602",
@@ -142,7 +148,13 @@ registerProblems([
   "tests": {
    "verilog": "module tb;reg clk=0,rst_n=0,t=0;wire e;integer hits=0;toggle_receiver dut(clk,rst_n,t,e);always #5 clk=~clk;always @(posedge clk)begin #1;if(e)hits=hits+1;end initial begin repeat(2)@(posedge clk);rst_n<=1;#3;t=1;repeat(5)@(posedge clk);if(hits!==1)$fatal(1,\"first\");#2;t=0;repeat(5)@(posedge clk);if(hits!==2)$fatal(1,\"second\");repeat(3)@(posedge clk);if(hits!==2)$fatal(1,\"width\");$display(\"ALL TESTS PASSED\");$finish;end endmodule\n"
   },
-  "solution": "Register sync1, sync2, and sync2_d on each edge, and assign pulse_event from sync2 XOR sync2_d."
+  "solution": "Register sync1, sync2, and sync2_d on each edge, and assign pulse_event from sync2 XOR sync2_d.",
+  "references": [
+   {
+    "label": "Clock domain crossing",
+    "url": "https://en.wikipedia.org/wiki/Clock_domain_crossing"
+   }
+  ]
  },
  {
   "id": "rtl-607",
@@ -214,7 +226,13 @@ registerProblems([
   "tests": {
    "verilog": "module tb;reg signed[11:0]x;wire signed[7:0]y;clamp8 dut(x,y);initial begin x=100;#1;if(y!==100)$fatal(1,\"inside\");x=300;#1;if(y!==8'sh7f)$fatal(1,\"high\");x=-400;#1;if(y!==8'sh80)$fatal(1,\"low\");x=-128;#1;if(y!==8'sh80)$fatal(1,\"edge low\");x=127;#1;if(y!==8'sh7f)$fatal(1,\"edge high\");$display(\"ALL TESTS PASSED\");$finish;end endmodule\n"
   },
-  "solution": "Use signed comparisons against 12'sd127 and -12'sd128, otherwise select x[7:0]."
+  "solution": "Use signed comparisons against 12'sd127 and -12'sd128, otherwise select x[7:0].",
+  "references": [
+   {
+    "label": "Saturation arithmetic",
+    "url": "https://en.wikipedia.org/wiki/Saturation_arithmetic"
+   }
+  ]
  },
  {
   "id": "rtl-610",
@@ -255,7 +273,13 @@ registerProblems([
   "kind": "answer",
   "answer": "1",
   "tolerance": 0.01,
-  "solution": "Adjacent reflected Gray-code words are constructed to differ in exactly one bit."
+  "solution": "Adjacent reflected Gray-code words are constructed to differ in exactly one bit.",
+  "references": [
+   {
+    "label": "Gray code",
+    "url": "https://en.wikipedia.org/wiki/Gray_code"
+   }
+  ]
  },
  {
   "id": "rtl-612",
@@ -340,7 +364,13 @@ registerProblems([
   "kind": "answer",
   "answer": "128",
   "tolerance": 0.01,
-  "solution": "The cache has 65536/64 = 1024 lines, divided among 8 ways: 1024/8 = 128 sets."
+  "solution": "The cache has 65536/64 = 1024 lines, divided among 8 ways: 1024/8 = 128 sets.",
+  "references": [
+   {
+    "label": "CPU cache",
+    "url": "https://en.wikipedia.org/wiki/CPU_cache"
+   }
+  ]
  },
  {
   "id": "rtl-617",
@@ -357,7 +387,13 @@ registerProblems([
   "kind": "answer",
   "answer": "56",
   "tolerance": 0.01,
-  "solution": "The first result takes 7 cycles and the remaining 49 results arrive one per cycle, totaling 7+49 = 56 cycles."
+  "solution": "The first result takes 7 cycles and the remaining 49 results arrive one per cycle, totaling 7+49 = 56 cycles.",
+  "references": [
+   {
+    "label": "Instruction pipelining",
+    "url": "https://en.wikipedia.org/wiki/Instruction_pipelining"
+   }
+  ]
  },
  {
   "id": "rtl-618",
@@ -374,7 +410,13 @@ registerProblems([
   "kind": "answer",
   "answer": "2.2",
   "tolerance": 0.01,
-  "solution": "Miss cost per instruction is 0.04*25 = 1 cycle, so effective CPI is 1.2+1 = 2.2."
+  "solution": "Miss cost per instruction is 0.04*25 = 1 cycle, so effective CPI is 1.2+1 = 2.2.",
+  "references": [
+   {
+    "label": "Cycles per instruction",
+    "url": "https://en.wikipedia.org/wiki/Cycles_per_instruction"
+   }
+  ]
  },
  {
   "id": "rtl-619",
@@ -391,7 +433,13 @@ registerProblems([
   "kind": "answer",
   "answer": "2.5",
   "tolerance": 0.01,
-  "solution": "Period is 1/400 MHz = 2.5 ns."
+  "solution": "Period is 1/400 MHz = 2.5 ns.",
+  "references": [
+   {
+    "label": "Clock rate",
+    "url": "https://en.wikipedia.org/wiki/Clock_rate"
+   }
+  ]
  },
  {
   "id": "rtl-620",
@@ -408,6 +456,12 @@ registerProblems([
   "kind": "answer",
   "answer": "0.8",
   "tolerance": 0.01,
-  "solution": "Slack = 4.0 + 0.10 - 0.25 - 2.70 - 0.35 = 0.80 ns."
+  "solution": "Slack = 4.0 + 0.10 - 0.25 - 2.70 - 0.35 = 0.80 ns.",
+  "references": [
+   {
+    "label": "Static timing analysis",
+    "url": "https://en.wikipedia.org/wiki/Static_timing_analysis"
+   }
+  ]
  }
 ]);
