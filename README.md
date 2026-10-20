@@ -1,14 +1,19 @@
 # Personal Interview Training
 
-**Live site: <https://personal-interview-training.vercel.app>**
+**Live sites**
 
-A multi-page interview-training website focused on CPU architecture, systems C/C++, silicon/RTL, mathematics, probability/quant, and company-style interview questions.
+- Vercel (production): <https://personal-interview-training.vercel.app>
+- GitHub Pages (mirror): <https://x-curiosity.github.io/Personal_Interview_Training/>
 
-Every problem has a local statement and is solved on-platform. External links are attribution only.
+Both deploy automatically on every push to `main` (Vercel git integration + the Pages workflow in `.github/workflows/pages.yml`, which validates the database before publishing).
+
+A multi page interview training website with a pixel art retro game UI, focused on CPU architecture, systems C/C++, silicon/RTL, mathematics (including signal processing), probability/quant, and company style interview questions.
+
+Every problem has a local statement and is solved on platform. External links are attribution or further reading only.
 
 ## Problem database
 
-The database is capped at exactly **502 problems**.
+The database is capped at exactly **502 problems** (enforced by `tools/validate_data.js`).
 
 | Track | Problems |
 |---|---:|
@@ -20,26 +25,22 @@ The database is capped at exactly **502 problems**.
 | Interview Questions | 70 |
 | **Total** | **502** |
 
-There are **159 coding tasks** across Python, C, C++, and Verilog, and **343 answer/model-solution tasks**. The math track includes a **Signal Processing** branch (Nyquist, aliasing, DFT, quantization, decimation) and an **AI Traps** branch. The platform intentionally contains no GPU track or GPU programming problems.
+There are **159 coding tasks** across Python, C, C++, and Verilog, and **343 answer/model solution tasks**. The math track includes a **Signal Processing** branch (Nyquist, aliasing, DFT, quantization, decimation) and an **AI Traps** branch. The platform intentionally contains no GPU track or GPU programming problems.
 
 ## Features
 
-- Multi-page LeetCode-style interface rather than a single-page app.
-- Searchable/filterable 400-problem table with persisted solve status.
+- Pixel art / 8 bit retro game interface: chunky pixel outlines, hard shadows, NES palette, Press Start 2P and Silkscreen fonts, game style mock interview HUD.
+- Searchable/filterable 502 problem table with persisted solve status and collapsible track branches.
 - Local problem pages with full statements, previous/next navigation, source attribution, Wikipedia **further reading** links on 96 problems, and illustrations on selected problems.
-- Solved status is earned only by a correct submission (answer check or passing tests). There is no manual ticking.
+- **Solved status is earned, never ticked**: only a verified correct submission (answer check or passing tests) marks a problem solved.
 - Editors for Python, C, C++, and Verilog.
-- Exact/tolerant answer checking and model-solution reveal.
-- Timed role preparation for:
-  - ML Engineer
-  - CPU Architecture Engineer
-  - RTL / Silicon Engineer
-  - Quant Researcher
-- **AI-trap problems** — 12 adversarial math problems (ambiguity, false premises, negation, Unicode impostors, prompt injection, counting traps) that punish careless AI-assisted solving.
-- **Screenshot deterrence** — blackout on PrintScreen/screenshot shortcuts and an automatic veil when the window loses focus (best-effort; see Known Limits in `REPORT.md`).
+- Exact/tolerant answer checking and model solution reveal.
+- Timed role preparation for ML Engineer, CPU Architecture Engineer, RTL / Silicon Engineer, and Quant Researcher.
+- **AI trap problems**: 12 adversarial math problems (ambiguity, false premises, negation, Unicode impostors, prompt injection, counting traps) that punish careless AI assisted solving.
+- **Screenshot deterrence**: blackout on PrintScreen/screenshot shortcuts and an automatic veil when the window loses focus (best effort; see Known limitations in `REPORT.md`).
 - Weighted scoring: easy 1, medium 3, hard 5.
 - Local rival leaderboard, community voting, submission review queue, and weekly scout workflow.
-- Browser-local progress using `localStorage`.
+- Browser local progress using `localStorage`.
 
 ## Code execution
 
@@ -64,13 +65,15 @@ window.PIT_CONFIG = {
 };
 ```
 
-A browser-side runner key is not a secret. Public deployments need real authentication, rate limiting, and per-submission isolation in front of the runner.
+A browser side runner key is not a secret. Public deployments need real authentication, rate limiting, and per submission isolation in front of the runner.
 
-Verilog problems with a self-checking testbench can earn automatic credit. Compile-only success is feedback—not proof—and never marks a problem solved automatically.
+Verilog problems with a self checking testbench earn automatic credit when the bench passes. Compile only success is feedback, not proof, and never marks a problem solved.
 
 ## Hosting
 
-The static frontend is deployed on Vercel (`vercel deploy --prod` from the repo root, or the GitHub Pages workflow in `.github/workflows/pages.yml`). The optional Verilog runner deploys on Render via `runner-service/render.yaml`; point `PIT_CONFIG.runners.verilog` in `assets/js/config.js` at it.
+- **Vercel**: the repo is linked to the `personal-interview-training` project; every push to `main` auto deploys to production. `vercel.json` provides zero config static hosting.
+- **GitHub Pages**: `.github/workflows/pages.yml` runs `tools/validate_data.js` on every push, then publishes via `actions/deploy-pages`. Enable under repo Settings → Pages → Source: GitHub Actions.
+- **Verilog runner** (optional): deploy `runner-service/` on Render via `runner-service/render.yaml` or anywhere with Docker, then point `PIT_CONFIG.runners.verilog` at it.
 
 ## Run locally
 
@@ -94,15 +97,9 @@ npm install
 npm test
 ```
 
-Run all root checks:
+The validator checks schema, unique IDs, track/branch consistency, starter code, test harnesses, role references, image/reference shapes, forbidden removed track content, and the exact 502 problem cap. Every C/C++/Python coding task is shipped with tests verified against a reference implementation; every Verilog testbench is X strict (an empty starter provably fails, a correct module provably passes).
 
-```bash
-make test
-```
-
-The validator checks schema, unique IDs, track/branch consistency, starter code, test harnesses, role references, forbidden removed-track content, and the exact 400-problem cap.
-
-Runner-service tests:
+Runner service tests:
 
 ```bash
 cd runner-service
@@ -143,13 +140,15 @@ See [`runner-service/README.md`](runner-service/README.md) for the execution con
 .
 ├── index.html, problems.html, problem.html
 ├── interview.html, leaderboard.html, submit.html, about.html
+├── vercel.json                     # static hosting config
 ├── assets/
-│   ├── css/style.css
+│   ├── css/style.css               # pixel art theme
 │   └── js/
 │       ├── data.js                 # track/role registry and normalization
-│       ├── data/pack_*.js          # exactly 400 problems
+│       ├── data/pack_*.js          # exactly 502 problems
 │       ├── problem.js, runner.js   # solving UI and execution adapters
 │       ├── interview.js            # timed role sessions
+│       ├── shield.js               # screenshot deterrence
 │       └── store.js                # local progress/votes/rivals
 ├── runner-service/                 # FastAPI + Icarus Verilog
 ├── tools/                          # data and runtime validators
@@ -163,4 +162,4 @@ Progress, votes, and rivals remain in browser `localStorage`. Python executes lo
 
 ## License and attribution
 
-This repository is licensed under the [MIT License](LICENSE). External source links identify inspiration/reference platforms; linked third-party content remains subject to its respective terms.
+This repository is licensed under the [MIT License](LICENSE). External source links identify inspiration/reference platforms; linked third party content remains subject to its respective terms. Wikipedia further reading links and Wikimedia illustrations belong to their respective authors and licenses.
