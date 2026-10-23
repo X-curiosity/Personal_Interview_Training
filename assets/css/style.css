@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Personal Interview Training — Pixel Art UI
+   Interview Red — Pixel Art UI
    8-bit / retro-game style: pixel grid, NES palette, chunky borders,
    hard offset shadows, dithering, pixel typography. No anti-aliased
    softness, no border radius anywhere.
@@ -25,6 +25,8 @@
   --track-cpu: #ff9e00;
   --track-silicon: #b78bff;
   --track-math: #4a9fff;
+  --track-ml: #ff7182;
+  --track-python: #85dca3;
   --track-quant: #ff7b72;
   --track-interview: #f778ba;
   --track-systems: #6bd5e1;
@@ -187,6 +189,8 @@ a:hover { text-decoration: underline; }
 .badge.track-cpu     { color: var(--track-cpu);     border-color: var(--track-cpu); }
 .badge.track-silicon { color: var(--track-silicon); border-color: var(--track-silicon); }
 .badge.track-math    { color: var(--track-math);    border-color: var(--track-math); }
+.badge.track-ml      { color: var(--track-ml);      border-color: var(--track-ml); }
+.badge.track-python  { color: var(--track-python);  border-color: var(--track-python); }
 .badge.track-quant   { color: var(--track-quant);   border-color: var(--track-quant); }
 .badge.track-interview { color: var(--track-interview); border-color: var(--track-interview); }
 .badge.track-systems { color: var(--track-systems); border-color: var(--track-systems); }
@@ -230,6 +234,8 @@ a.card:hover, .card.hoverable:hover {
 .accent-cpu     { --card-accent: var(--track-cpu); }
 .accent-silicon { --card-accent: var(--track-silicon); }
 .accent-math    { --card-accent: var(--track-math); }
+.accent-ml      { --card-accent: var(--track-ml); }
+.accent-python  { --card-accent: var(--track-python); }
 .accent-quant   { --card-accent: var(--track-quant); }
 .accent-interview { --card-accent: var(--track-interview); }
 .accent-systems { --card-accent: var(--track-systems); }
@@ -587,6 +593,9 @@ tr.row-flash { animation: rowflash 1.8s steps(6); }
 .statement p { margin-bottom: 0.75em; }
 .statement p:last-child { margin-bottom: 0; }
 .statement strong, .statement code { color: var(--text); }
+.statement code { font-family: var(--mono); overflow-wrap: anywhere; }
+.statement ul { margin: 0 0 0.75em; padding-left: 1.5rem; }
+.statement li + li { margin-top: 0.25em; }
 .source-link { font-family: var(--font-ui); font-size: 0.78rem; color: var(--text-dim); margin-top: 1rem; }
 
 .badge.lang { color: var(--track-math); border-color: var(--track-math); }

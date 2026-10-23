@@ -50,6 +50,24 @@ const TRACKS = {
     blurb: "Probability, expected value and brainteasers, firm-interview style.",
     branches: ["Expected Value", "Dice & Coins", "Games & Strategy", "Markov & Stopping", "Brainteasers"]
   },
+  "ml": {
+    name: "Machine Learning",
+    short: "ML",
+    glyph: "✦",
+    platform: "Interview Red",
+    home: "problems.html#ml",
+    blurb: "Classic model math: optimization, preprocessing, metrics, classification, clustering.",
+    branches: ["Regression & Optimization", "Preprocessing", "Evaluation", "Classification", "Clustering"]
+  },
+  "python": {
+    name: "Python Algorithms",
+    short: "Python",
+    glyph: "◆",
+    platform: "Interview Red",
+    home: "problems.html#python",
+    blurb: "Classic coding interview patterns with executable Python tests.",
+    branches: ["Arrays & Hashing", "Sliding Window", "Stack", "Intervals", "Graph Traversal"]
+  },
   "interview": {
     name: "Interview Questions",
     short: "Interview",
@@ -61,13 +79,13 @@ const TRACKS = {
   }
 };
 
-const TRACK_ORDER = ["cpu", "silicon", "systems", "math", "quant", "interview"];
+const TRACK_ORDER = ["cpu", "silicon", "systems", "ml", "python", "math", "quant", "interview"];
 
 /* Mock-interview roles: which tracks feed them, how many questions, how long. */
 const ROLES = {
   "ml-engineer": {
     name: "ML Engineer", icon: "🧠",
-    tracks: ["systems", "math", "quant"],
+    tracks: ["ml", "python", "systems", "math", "quant"],
     difficulties: ["medium", "hard"],
     count: 6, minutes: 45,
     blurb: "Numerical reasoning, production systems and the probability questions ML interviews love."

@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Personal Interview Training · One platform. Every hard interview.</title>
-  <meta name="description" content="A personal training platform combining LeetCPU, LeetSilicon, systems programming, Project Euler and quant firm puzzles into one place, with a weighted leaderboard.">
+  <title>Interview Red · One platform. Every hard interview.</title>
+  <meta name="description" content="Interview Red brings Python coding classics, machine learning, CPU, RTL, systems, math and quant interview practice together with tested problems and a leaderboard.">
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/logo-32.png">
+  <link rel="apple-touch-icon" href="assets/img/logo-192.png">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header">
     <div class="nav-wrap">
-      <a class="brand" href="index.html"><span class="prompt">pit&gt;</span> Personal_Interview_Training</a>
+      <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt="" width="24" height="24"><span class="prompt">ir&gt;</span> Interview Red</a>
       <nav class="site-nav" aria-label="Main navigation">
         <ul>
           <li><a href="index.html" aria-current="page">Home</a></li>
@@ -31,12 +33,12 @@
   <main id="main" class="container">
 
     <section class="hero">
-      <p class="kicker">// leetcpu · leetsilicon · systems · project euler · quant puzzles</p>
+      <p class="kicker">// python · machine learning · silicon · systems · math · quant</p>
       <h1>One platform.<br>Every hard interview.</h1>
       <p class="lead">
         A single home base for everything worth training: CPU microarchitecture,
-        systems programming, RTL design, mathematics, and the probability puzzles
-        quant firms love. Pick a track, solve problems, climb the leaderboard,
+        systems programming, RTL design, machine learning, Python algorithms,
+        mathematics, and the probability puzzles quant firms love. Pick a track, solve problems, climb the leaderboard,
         or roll a random one when you're bored.
       </p>
       <div class="hero-cta">
@@ -64,7 +66,7 @@
     <section class="section" aria-labelledby="tracks-heading">
       <div class="section-head">
         <h2 id="tracks-heading">Training tracks</h2>
-        <p>Six tracks, every problem lives right here, in browser Python, judged C/C++, Verilog simulation, or instant check answer boxes for math and concept questions.</p>
+        <p>Eight tracks, with in browser Python, judged C/C++, Verilog simulation, and instant answer checks for math and concept questions.</p>
       </div>
       <div class="grid">
         <a class="card accent-cpu" href="problems.html#cpu">
@@ -103,6 +105,18 @@
           <p>Bit manipulation, pointers, allocators and data structures, compiled and judged online, LeetCode style.</p>
           <span class="card-meta" data-track-count="systems" data-suffix=" problems · judged C/C++">…</span>
         </a>
+        <a class="card accent-ml" href="problems.html#ml">
+          <div class="glyph" aria-hidden="true">✦</div>
+          <h3>Machine Learning</h3>
+          <p>Implement model math, data preprocessing, evaluation metrics, and classic learning algorithms in Python.</p>
+          <span class="card-meta" data-track-count="ml" data-suffix=" problems · tested Python">…</span>
+        </a>
+        <a class="card accent-python" href="problems.html#python">
+          <div class="glyph" aria-hidden="true">◆</div>
+          <h3>Python Algorithms</h3>
+          <p>Practice arrays, sliding windows, stacks, intervals and graph traversal with runnable edge case tests.</p>
+          <span class="card-meta" data-track-count="python" data-suffix=" problems · tested Python">…</span>
+        </a>
       </div>
     </section>
 
@@ -122,7 +136,7 @@
 
   <footer class="site-footer">
     <div class="footer-wrap">
-      <span>pit&gt; built for training, <span data-year>2025</span>. Progress is stored locally in your browser.</span>
+      <span>ir&gt; built for training, <span data-year>2025</span>. Your progress is saved in this browser and syncs when signed in.</span>
       <nav aria-label="Footer">
         <ul>
           <li><a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a></li>
@@ -152,6 +166,8 @@
   <script src="assets/js/data/pack_interview_expansion2.js"></script>
   <script src="assets/js/data/pack_projects.js"></script>
   <script src="assets/js/data/pack_bonus.js"></script>
+  <script src="assets/js/data/pack_ml.js"></script>
+  <script src="assets/js/data/pack_python.js"></script>
   <script src="assets/js/store.js"></script>
   <script src="assets/js/main.js"></script>
 </body>

@@ -53,7 +53,14 @@ window.PIT_RUNNER = { run: () => Promise.resolve({ ok: true, stdout: "ALL TESTS 
 
 const { PROBLEMS, TRACKS, ROLES } = window.__TEST_EXPORTS;
 const { PIT_STORE, PIT_PROBLEM } = window;
-assert.strictEqual(PROBLEMS.length, 520, `database cap requires exactly 520 problems; got ${PROBLEMS.length}`);
+assert.strictEqual(PROBLEMS.length, 532, `database cap requires exactly 532 problems; got ${PROBLEMS.length}`);
+for (const key of ["ml", "python"]) {
+  assert(TRACKS[key], `${key} track missing`);
+  const problems = PROBLEMS.filter(p => p.track === key);
+  assert.strictEqual(problems.length, 6, `${key} must contain exactly six new problems`);
+  assert(problems.every(p => p.kind === "code" && p.languages.includes("python") && p.tests.python && p.statement.length > 200),
+    `${key} problems must have detailed statements and runnable Python tests`);
+}
 assert.strictEqual(new Set(PROBLEMS.map(p => p.id)).size, PROBLEMS.length, "problem ids must be unique");
 assert(!TRACKS.gpu, "GPU track must remain removed");
 assert(PROBLEMS.every(p => !p.languages.includes("cuda")), "CUDA tasks must remain removed");
@@ -86,12 +93,36 @@ PIT_PROBLEM.render(host, codeProblem, {});
 assert(host.querySelector("textarea[data-editor]"), "code problem should render editor");
 assert(host.querySelector("[data-run]"), "code problem should render Run tests");
 assert(host.querySelector("textarea").value.length > 10, "starter code should populate editor");
+for (const id of ["ml-901", "py-901"]) {
+  const p = PROBLEMS.find(entry => entry.id === id);
+  assert(p, `${id} missing`);
+  host = window.document.createElement("div");
+  PIT_PROBLEM.render(host, p, {});
+  assert(host.querySelector("textarea[data-editor]"), `${id} must have an editor`);
+  assert(host.querySelector("[data-run]"), `${id} must have Run tests`);
+  assert(host.querySelector("[data-hint]"), `${id} must offer hints`);
+}
+const formatted = Object.assign({}, PROBLEMS.find(p => p.id === "py-901"), {
+  statement: '<img src=x onerror=alert(1)>\n\nConstraints:\n- `example` is safe'
+});
+host = window.document.createElement("div");
+PIT_PROBLEM.render(host, formatted, {});
+assert(!host.querySelector(".statement img"), "statement HTML must stay escaped");
+assert.strictEqual(host.querySelector(".statement li code").textContent, "example", "inline code/list formatting failed");
 
 // Every role has enough medium/hard questions for a full session.
 for (const [key, role] of Object.entries(ROLES)) {
   const pool = PROBLEMS.filter(p => role.tracks.includes(p.track) && role.difficulties.includes(p.difficulty));
   assert(pool.length >= role.count, `${key} has only ${pool.length}/${role.count} questions`);
 }
+
+// The server scoring registry must stay in exact sync with client packs.
+const { DIFF: SERVER_DIFFICULTIES, pointsFor } = require(path.join(ROOT, "api/_points.js"));
+assert.strictEqual(Object.keys(SERVER_DIFFICULTIES).length, PROBLEMS.length, "server difficulty registry is stale");
+for (const p of PROBLEMS) {
+  assert.strictEqual(SERVER_DIFFICULTIES[p.id], p.difficulty, `${p.id}: server scoring difficulty mismatch`);
+}
+assert.strictEqual(pointsFor(["ml-901", "py-901"]).points, 4, "new track points must be counted");
 
 // Scoring contract.
 window.localStorage.clear();
@@ -104,6 +135,13 @@ assert.strictEqual(stats.points, 4);
 // Every local script referenced by an HTML page exists.
 for (const html of fs.readdirSync(ROOT).filter(f => f.endsWith(".html"))) {
   const body = read(html);
+  assert(body.includes("Interview Red</title>") || body.includes("Interview Red ·"), `${html}: old page title`);
+  assert(body.includes('href="assets/img/logo.svg"'), `${html}: logo missing`);
+  if (body.includes('src="assets/js/data.js"')) {
+    for (const pack of ["pack_ml.js", "pack_python.js"]) {
+      assert(body.includes(`src="assets/js/data/${pack}"`), `${html}: ${pack} missing`);
+    }
+  }
   for (const match of body.matchAll(/<script\s+src="([^"]+)"/g)) {
     const src = match[1];
     if (/^https?:/.test(src)) continue;

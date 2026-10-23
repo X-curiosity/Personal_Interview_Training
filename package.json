@@ -1,11 +1,11 @@
 {
-  "name": "personal-interview-training",
+  "name": "interview-red",
   "version": "2.0.0",
   "private": true,
-  "description": "A build-free, multi-track interview training website with 400 problems and optional execution runners.",
+  "description": "Interview Red: a multi-track practice site with 532 verified interview problems.",
   "scripts": {
     "validate": "node tools/validate_data.js",
-    "test": "node tools/validate_data.js && node tools/test_runtime.js",
+    "test": "node tools/validate_data.js && node tools/test_runtime.js && python3 tools/verify_ml_problems.py && python3 tools/verify_python_problems.py",
     "serve": "python3 -m http.server 8000"
   },
   "devDependencies": {

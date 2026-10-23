@@ -18,6 +18,41 @@
     });
   }
 
+  /* Format only a tiny, safe subset of Markdown used by our original
+     statements. Escape text first; never interpret arbitrary HTML. */
+  function statementHtml(raw) {
+    function inline(line) {
+      return esc(line).replace(/`([^`\n]+)`/g, "<code>$1</code>");
+    }
+    return String(raw).replace(/\r\n?/g, "\n").split(/\n{2,}/).map(function (block) {
+      var pieces = [];
+      var prose = [];
+      var items = [];
+      function flushProse() {
+        if (prose.length) pieces.push("<p>" + prose.map(inline).join("<br>") + "</p>");
+        prose = [];
+      }
+      function flushItems() {
+        if (items.length) pieces.push("<ul>" + items.map(function (item) {
+          return "<li>" + inline(item) + "</li>";
+        }).join("") + "</ul>");
+        items = [];
+      }
+      block.split("\n").forEach(function (line) {
+        if (/^[-*] /.test(line)) {
+          flushProse();
+          items.push(line.slice(2));
+        } else {
+          flushItems();
+          prose.push(line);
+        }
+      });
+      flushProse();
+      flushItems();
+      return pieces.join("");
+    }).join("");
+  }
+
   function metaHtml(p) {
     var t = TRACKS[p.track];
     return (
@@ -286,9 +321,7 @@
       '<div class="problem-view">' +
         '<div class="meta problem-meta">' + metaHtml(p) + "</div>" +
         "<h1 class=\"problem-title\">" + esc(p.title) + "</h1>" +
-        '<div class="statement"><p>' +
-          esc(p.statement).replace(/\n{2,}/g, "</p><p>").replace(/\n/g, "<br>") +
-        "</p></div>" +
+        '<div class="statement">' + statementHtml(p.statement) + "</div>" +
         (p.image && p.image.url
           ? '<figure class="problem-figure">' +
             '<img src="' + esc(p.image.url) + '" alt="' + esc(p.image.alt || p.title) + '" loading="lazy">' +

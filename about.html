@@ -3,17 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About, Personal Interview Training</title>
+  <title>About, Interview Red</title>
   <meta name="description" content="Why this site exists: one platform combining LeetCPU, LeetSilicon, systems programming, Project Euler, and quant firm puzzles.">
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/logo-32.png">
+  <link rel="apple-touch-icon" href="assets/img/logo-192.png">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header">
     <div class="nav-wrap">
-      <a class="brand" href="index.html"><span class="prompt">pit&gt;</span> Personal_Interview_Training</a>
+      <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt="" width="24" height="24"><span class="prompt">ir&gt;</span> Interview Red</a>
       <nav class="site-nav" aria-label="Main navigation">
         <ul>
           <li><a href="index.html">Home</a></li>
@@ -45,7 +47,7 @@
         and quant brainteasers are scattered across firm archives like
         <a href="https://janestreet.com/puzzles/archive/" target="_blank" rel="noopener">Jane Street's puzzle page</a>.
         This site is the map on top of all of them: one selection page, one progress
-        tracker, one leaderboard.
+        tracker, and local and global leaderboards.
       </p>
 
       <h2>The tracks</h2>
@@ -53,6 +55,8 @@
         <li><strong>CPU Programming</strong>, branch prediction, cache optimization, memory hierarchy, ILP &amp; pipelining, prefetching. Backed by LeetCPU's ChampSim simulations.</li>
         <li><strong>Silicon &amp; RTL</strong>, RTL design, verification, computer architecture, clock domain crossing &amp; timing, with an on platform Verilog editor.</li>
         <li><strong>Systems C/C++</strong>, bit manipulation, pointers, allocators, data structures, concurrency and OS fundamentals, compiled by the online judge.</li>
+        <li><strong>Machine Learning</strong>, implement stable loss functions, train only scaling, gradient descent, classification metrics, nearest neighbors and clustering in Python.</li>
+        <li><strong>Python Algorithms</strong>, practice original exercises based on classic coding interview patterns such as hashing, sliding windows, stacks, intervals and graph traversal, with further reading links.</li>
         <li><strong>Mathematics</strong>, number theory, combinatorics &amp; DP, sequences, and an <strong>AI Traps</strong> set (ambiguity, false premises, Unicode impostors, prompt injection) that punishes careless AI assisted solving.</li>
         <li><strong>Probability &amp; Quant</strong>, expected value, dice &amp; coins, games &amp; strategy, optimal stopping and brainteasers in the style of Jane Street, SIG, Optiver and Citadel interviews.</li>
         <li><strong>Interview Questions</strong>, CPU, RTL, silicon, and quant questions from company style interviews, each one <strong>community voted</strong> as accurate or not.</li>
@@ -91,9 +95,10 @@
 
       <h2>Privacy</h2>
       <p>
-        Your solved problems, votes and leaderboard entries live in your browser's <code>localStorage</code>.
-        Python code remains in browser. C/C++ code is sent to Judge0 when you press Run; Verilog code
-        is sent only when you configure a simulator URL. No account or tracking cookie is required.
+        You can practice without an account: progress and votes are saved in your browser's <code>localStorage</code>.
+        If you sign in, solved problem IDs also sync to the SQLite database and count toward the global leaderboard.
+        Python code runs in your browser. C/C++ code is sent to Judge0 when you press Run; Verilog code
+        is sent only when you configure a simulator URL. No tracking cookie is required.
         A screenshot deterrence shield blanks the screen on capture shortcuts and when the window loses
         focus; it is best effort only, the operating system can always capture the screen.
         Community vote counts seeded in the data are sample data until a shared voting backend is wired in.
@@ -104,7 +109,7 @@
 
   <footer class="site-footer">
     <div class="footer-wrap">
-      <span>pit&gt; built for training, <span data-year>2025</span>. Progress is stored locally in your browser.</span>
+      <span>ir&gt; built for training, <span data-year>2025</span>. Your progress is saved in this browser and syncs when signed in.</span>
       <nav aria-label="Footer">
         <ul>
           <li><a href="https://www.leetcpu.com/" target="_blank" rel="noopener">LeetCPU</a></li>
@@ -134,6 +139,8 @@
   <script src="assets/js/data/pack_interview_expansion2.js"></script>
   <script src="assets/js/data/pack_projects.js"></script>
   <script src="assets/js/data/pack_bonus.js"></script>
+  <script src="assets/js/data/pack_ml.js"></script>
+  <script src="assets/js/data/pack_python.js"></script>
   <script src="assets/js/store.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
