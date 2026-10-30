@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Problems, Interview Red</title>
-  <meta name="description" content="Browse Python algorithm, machine learning, CPU, systems, RTL, math, quant and interview problems on Interview Red; filter by track, branch and difficulty.">
+  <meta name="description" content="Browse Python algorithm, machine learning, CPU, systems, RTL, math, quant and interview problems on Interview Red; filter by language, track, branch and difficulty.">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/img/logo-32.png">
@@ -34,7 +34,7 @@
 
     <div class="page-head">
       <h1>Problems</h1>
-      <p>Pick a track on the left, or a branch to go deep. Solve problems with correct answers to earn weighted points: Easy 1 · Medium 3 · Hard 5.</p>
+      <p>Pick a track on the left, a wording style, or a branch to go deep. Filter by language and difficulty, then solve to earn weighted points: Easy 1 · Medium 3 · Hard 5.</p>
     </div>
 
     <div class="problems-layout">
@@ -48,10 +48,26 @@
         <div class="problems-toolbar">
           <input type="search" class="search" data-search
                  placeholder="Search problems, tags, branches…" aria-label="Search problems">
-          <button class="chip" type="button" data-diff-filter="all" aria-pressed="true">All</button>
-          <button class="chip" type="button" data-diff-filter="easy" aria-pressed="false">Easy</button>
-          <button class="chip" type="button" data-diff-filter="medium" aria-pressed="false">Medium</button>
-          <button class="chip" type="button" data-diff-filter="hard" aria-pressed="false">Hard</button>
+        </div>
+
+        <div class="filter-bar">
+          <div class="filter-group" role="group" aria-label="Filter by language">
+            <span class="filter-label">Language</span>
+            <button class="chip" type="button" data-lang-filter="all" aria-pressed="true" title="Show every problem">All</button>
+            <button class="chip" type="button" data-lang-filter="python" aria-pressed="false" title="Problems solved in Python">Python</button>
+            <button class="chip" type="button" data-lang-filter="c" aria-pressed="false" title="Problems solved in C">C</button>
+            <button class="chip" type="button" data-lang-filter="cpp" aria-pressed="false" title="Problems solved in C++">C++</button>
+            <button class="chip" type="button" data-lang-filter="verilog" aria-pressed="false" title="Problems solved in Verilog">Verilog</button>
+            <button class="chip" type="button" data-lang-filter="answer" aria-pressed="false" title="Concept questions answered in a box">Answer</button>
+          </div>
+          <div class="filter-group" role="group" aria-label="Filter by difficulty">
+            <span class="filter-label">Difficulty</span>
+            <button class="chip" type="button" data-diff-filter="all" aria-pressed="true">All</button>
+            <button class="chip" type="button" data-diff-filter="easy" aria-pressed="false">Easy</button>
+            <button class="chip" type="button" data-diff-filter="medium" aria-pressed="false">Medium</button>
+            <button class="chip" type="button" data-diff-filter="hard" aria-pressed="false">Hard</button>
+          </div>
+          <button class="btn ghost small" type="button" data-clear-filters hidden>Clear filters</button>
           <button class="btn ghost" type="button" data-roll-selection>🎲 Roll one</button>
         </div>
 
@@ -69,6 +85,7 @@
                 <th scope="col">#</th>
                 <th scope="col">Title</th>
                 <th scope="col" class="col-tags">Tags</th>
+                <th scope="col" class="col-lang">Language</th>
                 <th scope="col">Difficulty</th>
                 <th scope="col">Link</th>
               </tr>
@@ -78,7 +95,7 @@
         </div>
 
         <div class="empty-state" data-empty-row hidden>
-          // no problems match this selection, loosen the filters
+          // no problems match these filters, loosen the language or difficulty selection
         </div>
 
       </section>

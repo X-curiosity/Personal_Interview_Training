@@ -23,14 +23,23 @@
     var diffChips = Array.prototype.slice.call(
       document.querySelectorAll("[data-diff-filter]")
     );
+    var langChips = Array.prototype.slice.call(
+      document.querySelectorAll("[data-lang-filter]")
+    );
+    var clearButton = document.querySelector("[data-clear-filters]");
     var rollButton = document.querySelector("[data-roll-selection]");
     var headingEl = document.querySelector("[data-selection-heading]");
     var countEl = document.querySelector("[data-selection-count]");
     var progressEl = document.querySelector("[data-selection-progress]");
     var emptyRow = document.querySelector("[data-empty-row]");
 
-    var state = { track: "all", branch: null, difficulty: "all", query: "" };
+    var state = { track: "all", branch: null, difficulty: "all", query: "", langs: [] };
     var lastRollId = null;
+
+    var LANG_LABELS = {
+      python: "Python", c: "C", cpp: "C++", verilog: "Verilog", answer: "Answer"
+    };
+    var LANG_ORDER = ["python", "c", "cpp", "verilog", "answer"];
 
     /* ---------- sidebar ---------- */
 
@@ -97,17 +106,85 @@
       });
     }
 
+    /* Remaining problem count per language for the current selection, ignoring
+       the language filter itself so the numbers guide the next click. */
+    function langCounts() {
+      var counts = {};
+      PROBLEMS.forEach(function (p) {
+        if (state.track !== "all" && p.track !== state.track) return;
+        if (state.branch && p.branch !== state.branch) return;
+        if (state.difficulty !== "all" && p.difficulty !== state.difficulty) return;
+        if (state.query) {
+          var q = state.query.toLowerCase();
+          var hay = (p.title + " " + p.summary + " " + p.branch + " " +
+                     p.tags.join(" ") + " " + langKeys(p).join(" ")).toLowerCase();
+          if (hay.indexOf(q) === -1) return;
+        }
+        langKeys(p).forEach(function (l) {
+          counts[l] = (counts[l] || 0) + 1;
+        });
+      });
+      return counts;
+    }
+
+    function paintLangChips() {
+      var counts = langCounts();
+      langChips.forEach(function (chip) {
+        var value = chip.getAttribute("data-lang-filter");
+        var on = value === "all" ? !state.langs.length : state.langs.indexOf(value) !== -1;
+        chip.setAttribute("aria-pressed", on ? "true" : "false");
+        var badge = chip.querySelector(".chip-count");
+        if (!badge) {
+          badge = document.createElement("span");
+          badge.className = "chip-count";
+          chip.appendChild(badge);
+        }
+        var n = value === "all"
+          ? LANG_ORDER.reduce(function (sum, key) { return sum + (counts[key] || 0); }, 0)
+          : (counts[value] || 0);
+        /* Answer questions and code tasks both appear under All, so count the
+           pool directly instead of summing language buckets. */
+        if (value === "all") n = currentPoolWithoutLang().length;
+        badge.textContent = String(n);
+      });
+    }
+
+    function currentPoolWithoutLang() {
+      var saved = state.langs;
+      state.langs = [];
+      var pool = currentPool();
+      state.langs = saved;
+      return pool;
+    }
+
     /* ---------- filtering ---------- */
+
+    /* Language keys for a problem: its code languages, or "answer" for
+       concept questions that are solved in a text box. */
+    function langKeys(p) {
+      return p.kind === "code" && p.languages.length ? p.languages : ["answer"];
+    }
+
+    function matchesLang(p) {
+      if (!state.langs.length) return true;
+      return langKeys(p).some(function (l) { return state.langs.indexOf(l) !== -1; });
+    }
+
+    function hasFilters() {
+      return state.track !== "all" || !!state.branch || state.difficulty !== "all" ||
+        !!state.query || state.langs.length > 0;
+    }
 
     function currentPool() {
       return PROBLEMS.filter(function (p) {
         if (state.track !== "all" && p.track !== state.track) return false;
         if (state.branch && p.branch !== state.branch) return false;
         if (state.difficulty !== "all" && p.difficulty !== state.difficulty) return false;
+        if (!matchesLang(p)) return false;
         if (state.query) {
           var q = state.query.toLowerCase();
           var hay = (p.title + " " + p.summary + " " + p.branch + " " +
-                     p.tags.join(" ")).toLowerCase();
+                     p.tags.join(" ") + " " + langKeys(p).join(" ")).toLowerCase();
           if (hay.indexOf(q) === -1) return false;
         }
         return true;
@@ -159,6 +236,11 @@
           '<td class="col-tags">' +
             p.tags.map(function (tag) { return '<span class="tag">' + esc(tag) + "</span>"; }).join("") +
           "</td>" +
+          '<td class="col-lang">' +
+            langKeys(p).map(function (l) {
+              return '<span class="badge lang">' + LANG_LABELS[l] + "</span>";
+            }).join(" ") +
+          "</td>" +
           '<td class="col-diff"><span class="diff diff-' + p.difficulty + '">' +
             p.difficulty.charAt(0).toUpperCase() + p.difficulty.slice(1) + "</span></td>" +
           '<td class="col-link">' +
@@ -172,9 +254,28 @@
     }
 
     function heading() {
-      if (state.branch) return state.branch;
-      if (state.track === "all") return "All tracks";
-      return TRACKS[state.track].name;
+      var base = state.branch
+        ? state.branch
+        : (state.track === "all" ? "All tracks" : TRACKS[state.track].name);
+      if (state.langs.length) {
+        base += " · " + state.langs.map(function (l) { return LANG_LABELS[l]; }).join(" + ");
+      }
+      return base;
+    }
+
+    /* Reflect the current selection in the URL so a filtered view can be
+       bookmarked or shared. The track stays in the hash for old deep links. */
+    function syncUrl() {
+      if (!window.history || !window.history.replaceState) return;
+      var params = new URLSearchParams();
+      if (state.difficulty !== "all") params.set("diff", state.difficulty);
+      if (state.langs.length) params.set("lang", state.langs.join(","));
+      if (state.query) params.set("q", state.query);
+      var qs = params.toString();
+      var next = window.location.pathname + (qs ? "?" + qs : "") + window.location.hash;
+      if (next !== window.location.pathname + window.location.search + window.location.hash) {
+        window.history.replaceState(null, "", next);
+      }
     }
 
     function render() {
@@ -186,6 +287,8 @@
 
       paintSidebar();
       syncExpanded();
+      paintLangChips();
+      if (clearButton) clearButton.hidden = !hasFilters();
       if (headingEl) headingEl.textContent = heading();
       if (countEl) countEl.textContent = pool.length + (pool.length === 1 ? " problem" : " problems");
 
@@ -201,6 +304,7 @@
       var announce = document.querySelector("[data-roll-announce]");
       if (announce) announce.textContent = "";
 
+      syncUrl();
       window.PIT.refreshStats();
     }
 
@@ -217,7 +321,7 @@
       if (p && widget) widget.innerHTML = voteHtml(p);
     });
 
-    /* ---------- search & difficulty ---------- */
+    /* ---------- search, language & difficulty ---------- */
 
     if (searchInput) {
       searchInput.addEventListener("input", function () {
@@ -235,6 +339,36 @@
         render();
       });
     });
+
+    langChips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var value = chip.getAttribute("data-lang-filter");
+        if (value === "all") {
+          state.langs = [];
+        } else {
+          var at = state.langs.indexOf(value);
+          if (at === -1) state.langs = state.langs.concat([value]);
+          else state.langs = state.langs.filter(function (l) { return l !== value; });
+        }
+        render();
+      });
+    });
+
+    if (clearButton) {
+      clearButton.addEventListener("click", function () {
+        state.track = "all";
+        state.branch = null;
+        state.difficulty = "all";
+        state.query = "";
+        state.langs = [];
+        if (searchInput) searchInput.value = "";
+        diffChips.forEach(function (c) {
+          c.setAttribute("aria-pressed", c.getAttribute("data-diff-filter") === "all" ? "true" : "false");
+        });
+        render();
+        if (searchInput) searchInput.focus();
+      });
+    }
 
     /* ---------- roll from the current selection ---------- */
 
@@ -256,6 +390,29 @@
     }
 
     buildSidebar();
+
+    /* Read shareable filters from the query string (language, difficulty,
+       search). Invalid values are ignored rather than trusted. */
+    (function initFromQuery() {
+      var params = new URLSearchParams(window.location.search);
+      var diff = params.get("diff");
+      if (["easy", "medium", "hard"].indexOf(diff) !== -1) state.difficulty = diff;
+      var lang = params.get("lang");
+      if (lang) {
+        state.langs = lang.split(",").filter(function (l) {
+          return LANG_ORDER.indexOf(l) !== -1;
+        });
+      }
+      var q = params.get("q");
+      if (q) {
+        state.query = q;
+        if (searchInput) searchInput.value = q;
+      }
+      diffChips.forEach(function (c) {
+        c.setAttribute("aria-pressed",
+          c.getAttribute("data-diff-filter") === state.difficulty ? "true" : "false");
+      });
+    })();
 
     /* Deep links such as problems.html#cpu preselect a track (used by home cards). */
     (function initFromHash() {

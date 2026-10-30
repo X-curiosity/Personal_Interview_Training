@@ -45,6 +45,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 
 body {
@@ -144,6 +145,17 @@ a:hover { text-decoration: underline; }
 }
 .hero p.lead { font-size: 1.05rem; color: var(--text-dim); max-width: 44rem; }
 .hero .hero-cta { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-top: 1.4rem; }
+
+/* quick language / difficulty deep links */
+.quick-picks {
+  display: flex; gap: 0.5rem 0.9rem; align-items: center; flex-wrap: wrap;
+  margin: 1.1rem 0 0; font-size: 0.82rem;
+}
+.quick-picks a {
+  font-family: var(--font-ui); font-weight: 700;
+  border-bottom: 2px solid transparent; padding-bottom: 1px;
+}
+.quick-picks a:hover { border-bottom-color: currentColor; text-decoration: none; }
 
 .page-head { padding-bottom: 1.25rem; border-bottom: var(--bw) solid var(--ink); margin-bottom: 1.5rem; }
 .page-head p { color: var(--text-dim); max-width: 46rem; margin-bottom: 0; }
@@ -339,6 +351,26 @@ a.card:hover, .card.hoverable:hover {
 .problems-toolbar .search::placeholder { color: var(--text-dim); }
 .problems-toolbar .search:focus { border-color: var(--accent); outline: none; }
 
+/* grouped language / difficulty filter chips */
+.filter-bar {
+  display: flex; gap: 0.85rem 1.25rem; align-items: center; flex-wrap: wrap;
+  margin-bottom: 1.1rem;
+}
+.filter-group {
+  display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap;
+}
+.filter-label {
+  font-family: var(--font-ui); font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-dim); margin-right: 0.15rem;
+}
+.filter-bar .btn { margin-left: auto; }
+.chip-count {
+  display: inline-block; margin-left: 0.4rem;
+  font-size: 0.66rem; opacity: 0.75;
+}
+.chip[aria-pressed="true"] .chip-count { opacity: 0.85; }
+
 .chip {
   font-family: var(--font-ui); font-size: 0.76rem; font-weight: 700;
   text-transform: uppercase;
@@ -389,6 +421,8 @@ a.p-title:hover { color: var(--accent); text-decoration: none; }
   color: var(--text-dim); margin-top: 0.1rem;
 }
 .col-diff { white-space: nowrap; }
+.col-lang { white-space: nowrap; }
+.col-lang .badge.lang { margin-right: 0.2rem; }
 .col-link { width: 3rem; }
 .solve-link {
   display: inline-block; width: 1.9rem; height: 1.9rem; line-height: 1.75rem;
@@ -737,6 +771,7 @@ tr.row-flash { animation: rowflash 1.8s steps(6); }
   .nav-wrap { justify-content: center; }
   .container { padding-top: 1.5rem; }
   .col-tags { display: none; }
+  .col-lang { display: none; }
   .submit-form .form-row { grid-template-columns: 1fr; }
   /* leaderboard: keep Rank/Name/Solved/Points on small screens */
   th.col-d, td.diff-easy, td.diff-medium, td.diff-hard { display: none; }
