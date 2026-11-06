@@ -169,7 +169,7 @@
         '<label class="answer-label" for="ans-' + p.id + '">Your answer</label>' +
         '<div class="answer-row">' +
           '<input id="ans-' + p.id + '" type="text" autocomplete="off" spellcheck="false" placeholder="type your answer…">' +
-          '<button type="button" class="btn small" data-check>Check</button>' +
+          '<button type="button" class="btn small" data-check>Submit answer</button>' +
         "</div>" +
         '<p class="answer-feedback" data-feedback aria-live="polite"></p>';
     }
@@ -233,10 +233,11 @@
         '<textarea class="editor" data-editor spellcheck="false" aria-label="Code editor"' +
           ' aria-describedby="editor-hint-' + esc(p.id) + '"></textarea>' +
         '<p class="editor-hint" id="editor-hint-' + esc(p.id) + '">' +
-          "Tab indents · Shift+Tab outdents · Enter keeps indentation and opens blocks" +
+          "Tab indents · Shift+Tab outdents · Enter opens blocks · Ctrl/Cmd+Enter runs · Ctrl/Cmd+Shift+Enter submits" +
         "</p>" +
         '<div class="editor-actions">' +
-          '<button type="button" class="btn small" data-run>▶ Run tests</button>' +
+          '<button type="button" class="btn ghost small" data-run>▶ Run tests</button>' +
+          '<button type="button" class="btn small" data-submit>✔ Submit</button>' +
           '<button type="button" class="btn ghost small" data-reset>Reset</button>' +
           '<span class="run-status" data-status aria-live="polite"></span>' +
         "</div>" +
@@ -248,6 +249,7 @@
     var output = container.querySelector("[data-output]");
     var status = container.querySelector("[data-status]");
     var runBtn = container.querySelector("[data-run]");
+    var submitBtn = container.querySelector("[data-submit]");
     var resetBtn = container.querySelector("[data-reset]");
     var tabs = container.querySelectorAll(".editor-tab");
     var actions = container.querySelector(".editor-actions");
@@ -419,31 +421,66 @@
       status.textContent = "";
     });
 
-    runBtn.addEventListener("click", function () {
+    var POINTS = { easy: 1, medium: 3, hard: 5 };
+
+    /* "Run" is a practice run: it never awards credit. "Submit" grades the
+       same tests and is the only action that can mark the problem solved. */
+    function execute(mode) {
+      if (runBtn.disabled) return;
       runBtn.disabled = true;
+      submitBtn.disabled = true;
       resetBtn.disabled = true;
       tabs.forEach(function (tab) { tab.disabled = true; });
       output.hidden = false;
       output.className = "run-output";
       output.textContent = "";
+      status.textContent = mode === "submit" ? "Submitting…" : "Running tests…";
       PIT_RUNNER.run(active, editor.value, p.tests[active] || "", function (msg) {
         status.textContent = msg;
       }).then(function (res) {
-        status.textContent = "";
+        var text = res.stdout + (res.stderr ? "\n" + res.stderr : "");
+        var forfeited = PIT_STORE.isForfeited(p.id);
+        var notes = [];
+
+        if (res.ok && !forfeited) {
+          if (mode === "submit") {
+            var already = PIT_STORE.isSolved(p.id);
+            if (!already) PIT_STORE.toggleSolved(p.id);
+            if (hooks.onSolved) hooks.onSolved();
+            var points = POINTS[p.difficulty] || 0;
+            notes.push(already
+              ? "Accepted. You had already solved this problem."
+              : "Accepted! Credit earned: " + points + (points === 1 ? " point." : " points."));
+          } else {
+            notes.push("All checks passed. Press Submit to earn credit for this problem.");
+          }
+        } else if (res.ok && forfeited) {
+          notes.push("All checks passed, but credit was forfeited when you viewed the solution.");
+        } else if (mode === "submit") {
+          notes.push("Submission failed. No credit was earned.");
+        }
+
+        output.textContent = (text.trim() || "(no output)") +
+          (notes.length ? "\n\n" + notes.join("\n") : "");
+        output.classList.add(res.ok && !forfeited ? "ok" : (res.compileOnly ? "neutral" : "ko"));
+        status.textContent = mode === "submit"
+          ? (res.ok && !forfeited ? "Accepted" : (res.ok ? "Tests passed" : "Submission failed"))
+          : (res.ok ? "Tests passed" : "Tests failed");
         runBtn.disabled = false;
+        submitBtn.disabled = false;
         resetBtn.disabled = false;
         tabs.forEach(function (tab) { tab.disabled = false; });
-        var text = res.stdout + (res.stderr ? "\n" + res.stderr : "");
-        var forfeitNote = PIT_STORE.isForfeited(p.id)
-          ? "\nSolution viewed. Credit forfeited for this problem."
-          : "";
-        output.textContent = (text.trim() || "(no output)") + forfeitNote;
-        output.classList.add(res.ok && !forfeitNote ? "ok" : (res.compileOnly ? "neutral" : "ko"));
-        if (res.ok && !forfeitNote) {
-          if (!PIT_STORE.isSolved(p.id)) PIT_STORE.toggleSolved(p.id);
-          if (hooks.onSolved) hooks.onSolved();
-        }
       });
+    }
+
+    runBtn.addEventListener("click", function () { execute("run"); });
+    submitBtn.addEventListener("click", function () { execute("submit"); });
+
+    /* Ctrl/Cmd+Enter runs the tests, adding Shift submits. */
+    editor.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" || !(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      execute(e.shiftKey ? "submit" : "run");
     });
   }
 

@@ -11,6 +11,8 @@
 
 The new ML and Python tracks include 12 detailed, original problems covering learning algorithms, evaluation, data preprocessing and classic coding interview patterns. They provide runnable Python tests, progressive hints and explanations. Related LeetCode or NeetCode links are for further reading; their problem text is not reproduced here.
 
+The editor separates **Run tests** from **Submit**: running is practice and never awards credit, submitting grades the same suite and is the only action that marks a problem solved. `Ctrl/Cmd+Enter` runs and `Ctrl/Cmd+Shift+Enter` submits.
+
 The built-in editor auto-indents: `Enter` after a Python colon (`if`, `for`, `while`, `def`, `class`, `else`, `try`) or an opening brace opens a new level, and `Tab` / `Shift+Tab` indent and outdent whole selections (press `Escape` first if you want `Tab` to move focus).
 
 Browse by language (Python, C, C++, Verilog, answer-only) and difficulty, or combine both with a track; the selection is stored in the URL so filtered views can be bookmarked and shared.

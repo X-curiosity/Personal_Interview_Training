@@ -5,7 +5,7 @@
   "description": "Interview Red: a multi-track practice site with 532 verified interview problems.",
   "scripts": {
     "validate": "node tools/validate_data.js",
-    "test": "node tools/validate_data.js && node tools/test_runtime.js && node tools/test_browse_filters.js && node tools/test_editor_indent.js && python3 tools/verify_ml_problems.py && python3 tools/verify_python_problems.py",
+    "test": "node tools/validate_data.js && node tools/test_runtime.js && node tools/test_browse_filters.js && node tools/test_editor_indent.js && node tools/test_run_submit.js && node tools/test_python_harness.js && python3 tools/verify_ml_problems.py && python3 tools/verify_python_problems.py",
     "serve": "python3 -m http.server 8000"
   },
   "devDependencies": {

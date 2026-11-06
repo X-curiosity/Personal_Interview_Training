@@ -30,6 +30,103 @@
     return pyodidePromise;
   }
 
+  /* A Python harness that runs the solution and the hidden tests separately so
+     failures can be reported precisely: which check, its source line, and what
+     actually went wrong. It also returns a real boolean instead of relying on
+     a printed marker, so printing "ALL TESTS PASSED" in a solution no longer
+     counts as a pass. */
+  var PYTHON_HARNESS = [
+    "import base64 as _pit_b64",
+    "",
+    "_pit_user = _pit_b64.b64decode(__PIT_USER_CODE__).decode('utf-8')",
+    "_pit_tests = _pit_b64.b64decode(__PIT_TESTS__).decode('utf-8')",
+    "_pit_ns = {'__name__': '__main__'}",
+    "",
+    "def _pit_frame(exc, filename):",
+    "    tb = exc.__traceback__",
+    "    found = None",
+    "    while tb is not None:",
+    "        if tb.tb_frame.f_code.co_filename == filename:",
+    "            found = tb",
+    "        tb = tb.tb_next",
+    "    return found",
+    "",
+    "_pit_error = None",
+    "try:",
+    "    exec(compile(_pit_user, 'your_solution.py', 'exec'), _pit_ns)",
+    "except BaseException as _pit_exc:",
+    "    _pit_error = _pit_exc",
+    "else:",
+    "    try:",
+    "        exec(compile(_pit_tests, 'hidden_tests.py', 'exec'), _pit_ns)",
+    "    except BaseException as _pit_exc:",
+    "        _pit_error = _pit_exc",
+    "",
+    "_pit_ok = _pit_error is None",
+    "if _pit_ok:",
+    "    print('ALL TESTS PASSED')",
+    "else:",
+    "    _pit_kind = type(_pit_error).__name__",
+    "    _pit_lines = _pit_tests.splitlines()",
+    "    if _pit_kind == 'SyntaxError':",
+    "        _pit_where = getattr(_pit_error, 'lineno', None)",
+    "        print('Your code does not compile, a syntax error on line %s:' % (_pit_where or '?'))",
+    "        _pit_text = (getattr(_pit_error, 'text', '') or '').strip()",
+    "        if _pit_text:",
+    "            print('    ' + _pit_text)",
+    "        print('  %s: %s' % (_pit_kind, getattr(_pit_error, 'msg', str(_pit_error))))",
+    "    else:",
+    "        _pit_test_frame = _pit_frame(_pit_error, 'hidden_tests.py')",
+    "        _pit_user_frame = _pit_frame(_pit_error, 'your_solution.py')",
+    "        if _pit_test_frame is not None:",
+    "            _pit_n = _pit_test_frame.tb_lineno",
+    "            _pit_src = _pit_lines[_pit_n - 1].strip() if 0 < _pit_n <= len(_pit_lines) else ''",
+    "            if _pit_user_frame is not None:",
+    "                print('A check failed, your code raised %s on line %d:' % (_pit_kind, _pit_user_frame.tb_lineno))",
+    "            else:",
+    "                print('A check failed. Your code ran, but this test got the wrong result:')",
+    "            if _pit_src:",
+    "                print('    ' + _pit_src)",
+    "            print('  (line %d of the hidden test suite)' % _pit_n)",
+    "        elif _pit_user_frame is not None:",
+    "            print('Your code raised %s on line %d:' % (_pit_kind, _pit_user_frame.tb_lineno))",
+    "        else:",
+    "            print('Your code raised %s:' % _pit_kind)",
+    "        _pit_msg = str(_pit_error).strip()",
+    "        if _pit_msg:",
+    "            print('  %s: %s' % (_pit_kind, _pit_msg))",
+    "        elif _pit_kind == 'AssertionError':",
+    "            print('  AssertionError: the value returned above does not match the expected one.')",
+    "    print('')",
+    "    print('No credit was earned. Fix the logic and run the tests again.')",
+    "",
+    "_pit_ok"
+  ].join("\n");
+
+  /* Sources travel as base64 so no quoting, newline or Unicode character in a
+     solution can break the harness source that carries it. */
+  function base64Utf8(text) {
+    var bytes = new TextEncoder().encode(String(text));
+    var binary = "";
+    for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary);
+  }
+
+  /* Single pass, so text inside a solution is never mistaken for a placeholder. */
+  function buildPythonHarness(code, tests) {
+    return PYTHON_HARNESS.replace(/__PIT_(USER_CODE|TESTS)__/g, function (token) {
+      return "'" + base64Utf8(token === "__PIT_USER_CODE__" ? code : tests) + "'";
+    });
+  }
+
+  function toBool(value) {
+    if (value === true) return true;
+    if (value && typeof value.valueOf === "function") {
+      try { return value.valueOf() === true; } catch (e) { return false; }
+    }
+    return false;
+  }
+
   function runPython(code, tests, onStatus) {
     onStatus("Loading Python runtime (first run downloads ~10 MB)…");
     return getPyodide().then(function (py) {
@@ -38,17 +135,18 @@
       py.setStdout({ batched: function (l) { out.push(l); } });
       py.setStderr({ batched: function (l) { out.push(l); } });
       var failed = null;
+      var ok = false;
       try {
-        py.runPython(code + "\n");
-        if (tests) py.runPython(tests + "\n");
-        out.push("ALL TESTS PASSED");
+        ok = toBool(py.runPython(buildPythonHarness(code, tests || "")));
       } catch (e) {
-        failed = String(e.message || e);
+        failed = "Runner error: " + String(e.message || e);
         out.push(failed);
       }
       return {
-        ok: !failed && /ALL TESTS PASSED/.test(out.join("\n")),
-        stdout: out.join("\n"), stderr: failed || "", code: failed ? 1 : 0
+        ok: ok && !failed,
+        stdout: out.join("\n"),
+        stderr: failed || "",
+        code: ok && !failed ? 0 : 1
       };
     }).catch(function (e) {
       return { ok: false, stdout: "", stderr: String(e), code: -1 };
@@ -186,5 +284,5 @@
     return runRemote(lang, code, tests, onStatus);
   }
 
-  window.PIT_RUNNER = { run: run };
+  window.PIT_RUNNER = { run: run, buildPythonHarness: buildPythonHarness };
 })();
