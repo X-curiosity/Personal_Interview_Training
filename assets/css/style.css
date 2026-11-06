@@ -697,6 +697,10 @@ tr.row-flash { animation: rowflash 1.8s steps(6); }
   padding: 0.9rem 1rem; tab-size: 4;
 }
 .editor:focus { border-color: var(--accent); outline: none; }
+.editor-hint {
+  font-family: var(--font-ui); font-size: 0.72rem; color: var(--text-dim);
+  margin: 0.4rem 0 0;
+}
 .editor-actions { display: flex; gap: 0.6rem; align-items: center; margin-top: 0.6rem; flex-wrap: wrap; }
 .run-status { font-family: var(--font-ui); font-size: 0.76rem; color: var(--text-dim); }
 .run-output {

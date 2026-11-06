@@ -230,7 +230,11 @@
               ' data-lang="' + l + '" aria-selected="' + (i === 0) + '">' + LANG_LABELS[l] + "</button>";
           }).join("") +
         "</div>" +
-        '<textarea class="editor" data-editor spellcheck="false" aria-label="Code editor"></textarea>' +
+        '<textarea class="editor" data-editor spellcheck="false" aria-label="Code editor"' +
+          ' aria-describedby="editor-hint-' + esc(p.id) + '"></textarea>' +
+        '<p class="editor-hint" id="editor-hint-' + esc(p.id) + '">' +
+          "Tab indents · Shift+Tab outdents · Enter keeps indentation and opens blocks" +
+        "</p>" +
         '<div class="editor-actions">' +
           '<button type="button" class="btn small" data-run>▶ Run tests</button>' +
           '<button type="button" class="btn ghost small" data-reset>Reset</button>' +
@@ -267,6 +271,134 @@
       return p.starter[lang] || "// no starter for " + lang + ". Write from scratch\n";
     }
     editor.value = starterFor(active);
+
+    /* ---------- smart indentation ----------
+       A textarea has no idea about blocks, so the editor adds the behaviours
+       programmers expect: Enter continues the current indentation and opens
+       a new level after a Python line ending in ":" or an opening bracket,
+       Tab indents instead of leaving the field, Shift+Tab outdents. */
+    var INDENT = "    ";
+    var escapePressed = false;
+
+    function lineStartAt(text, pos) {
+      return text.lastIndexOf("\n", pos - 1) + 1;
+    }
+    function lineEndAt(text, pos) {
+      var i = text.indexOf("\n", pos);
+      return i === -1 ? text.length : i;
+    }
+
+    /* Prefer the browser command so native undo keeps working; fall back to
+       direct editing where execCommand is unavailable. */
+    function insertText(text) {
+      var applied = false;
+      try {
+        applied = document.execCommand("insertText", false, text);
+      } catch (err) {
+        applied = false;
+      }
+      if (applied) return true;
+      var s = editor.selectionStart;
+      var e = editor.selectionEnd;
+      var value = editor.value;
+      editor.value = value.slice(0, s) + text + value.slice(e);
+      editor.selectionStart = editor.selectionEnd = s + text.length;
+      return true;
+    }
+
+    function replaceRange(start, end, text, selStart, selEnd) {
+      var value = editor.value;
+      editor.value = value.slice(0, start) + text + value.slice(end);
+      editor.selectionStart = selStart == null ? start + text.length : selStart;
+      editor.selectionEnd = selEnd == null ? editor.selectionStart : selEnd;
+    }
+
+    /* Add one indent unit to every line touched by the selection. */
+    function indentLines() {
+      var value = editor.value;
+      var start = lineStartAt(value, editor.selectionStart);
+      var end = lineEndAt(value, editor.selectionEnd);
+      var block = value.slice(start, end);
+      var lines = block.split("\n").map(function (line) {
+        return line.length ? INDENT + line : line;
+      });
+      var next = lines.join("\n");
+      var delta = next.length - block.length;
+      replaceRange(start, end, next, start, end + delta);
+    }
+
+    /* Remove up to one indent unit (or a leading tab) from touched lines. */
+    function outdentLines() {
+      var value = editor.value;
+      var start = lineStartAt(value, editor.selectionStart);
+      var end = lineEndAt(value, editor.selectionEnd);
+      var block = value.slice(start, end);
+      var removed = 0;
+      var lines = block.split("\n").map(function (line, index) {
+        var cut = 0;
+        if (line.charAt(0) === "\t") cut = 1;
+        else while (cut < INDENT.length && line.charAt(cut) === " ") cut++;
+        if (index === 0) removed = cut;
+        return line.slice(cut);
+      });
+      var next = lines.join("\n");
+      var delta = block.length - next.length;
+      replaceRange(start, end, next, Math.max(start, editor.selectionStart - removed),
+        Math.max(start, editor.selectionEnd - delta));
+    }
+
+    editor.addEventListener("keydown", function (e) {
+      if (e.isComposing || e.key === "Process") return;
+      var start = editor.selectionStart;
+      var end = editor.selectionEnd;
+
+      if (e.key === "Escape") {
+        /* Escape then Tab moves focus out, so keyboard users are never trapped. */
+        escapePressed = true;
+        return;
+      }
+      if (e.key === "Tab") {
+        if (escapePressed) {
+          escapePressed = false;
+          return;
+        }
+        e.preventDefault();
+        if (e.shiftKey) outdentLines();
+        else if (start !== end) indentLines();
+        else {
+          var column = start - lineStartAt(editor.value, start);
+          insertText(new Array(4 - (column % 4) + 1).join(" "));
+        }
+        return;
+      }
+      escapePressed = false;
+
+      if (e.key !== "Enter" || e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
+
+      var value = editor.value;
+      var lineStart = lineStartAt(value, start);
+      var beforeCaret = value.slice(lineStart, start);
+      var baseIndent = (beforeCaret.match(/^[ \t]*/) || [""])[0];
+      var trimmed = beforeCaret.replace(/[ \t]+$/, "");
+      var opener = trimmed.slice(-1);
+      var closers = { "{": "}", "(": ")", "[": "]" };
+      var nextChar = value.charAt(end);
+
+      /* "{" immediately followed by "}" expands into an indented block with
+         the caret on the empty line between the braces. */
+      if (closers[opener] && nextChar === closers[opener] && start === end) {
+        e.preventDefault();
+        var inner = baseIndent + INDENT;
+        insertText("\n" + inner + "\n" + baseIndent);
+        editor.selectionStart = editor.selectionEnd = start + 1 + inner.length;
+        return;
+      }
+
+      var extra = opener === ":" || closers[opener] ? INDENT : "";
+      if (!baseIndent && !extra) return; /* plain line: let the browser do it */
+      e.preventDefault();
+      insertText("\n" + baseIndent + extra);
+    });
 
     container.querySelectorAll(".editor-tab").forEach(function (tab) {
       tab.addEventListener("click", function () {
