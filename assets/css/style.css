@@ -22,11 +22,14 @@
   --easy: #3bd16f;
   --medium: #fab400;
   --hard: #e7001c;
+  --expert: #ff2e88;
   --track-cpu: #ff9e00;
   --track-silicon: #b78bff;
   --track-math: #4a9fff;
   --track-ml: #ff7182;
   --track-python: #85dca3;
+  --track-hpc: #b8f24a;
+  --track-fpga: #d98cff;
   --track-quant: #ff7b72;
   --track-interview: #f778ba;
   --track-systems: #6bd5e1;
@@ -190,6 +193,7 @@ a:hover { text-decoration: underline; }
 .diff-easy   { color: var(--easy); }
 .diff-medium { color: var(--medium); }
 .diff-hard   { color: var(--hard); }
+.diff-expert { color: var(--expert); }
 
 .badge {
   display: inline-block; font-family: var(--font-ui); font-size: 0.68rem; font-weight: 700;
@@ -203,6 +207,8 @@ a:hover { text-decoration: underline; }
 .badge.track-math    { color: var(--track-math);    border-color: var(--track-math); }
 .badge.track-ml      { color: var(--track-ml);      border-color: var(--track-ml); }
 .badge.track-python  { color: var(--track-python);  border-color: var(--track-python); }
+.badge.track-hpc     { color: var(--track-hpc);     border-color: var(--track-hpc); }
+.badge.track-fpga    { color: var(--track-fpga);    border-color: var(--track-fpga); }
 .badge.track-quant   { color: var(--track-quant);   border-color: var(--track-quant); }
 .badge.track-interview { color: var(--track-interview); border-color: var(--track-interview); }
 .badge.track-systems { color: var(--track-systems); border-color: var(--track-systems); }
@@ -248,6 +254,8 @@ a.card:hover, .card.hoverable:hover {
 .accent-math    { --card-accent: var(--track-math); }
 .accent-ml      { --card-accent: var(--track-ml); }
 .accent-python  { --card-accent: var(--track-python); }
+.accent-hpc     { --card-accent: var(--track-hpc); }
+.accent-fpga    { --card-accent: var(--track-fpga); }
 .accent-quant   { --card-accent: var(--track-quant); }
 .accent-interview { --card-accent: var(--track-interview); }
 .accent-systems { --card-accent: var(--track-systems); }
@@ -627,6 +635,13 @@ tr.row-flash { animation: rowflash 1.8s steps(6); }
 .statement p { margin-bottom: 0.75em; }
 .statement p:last-child { margin-bottom: 0; }
 .statement strong, .statement code { color: var(--text); }
+.solution-code {
+  font-family: var(--mono); font-size: 0.78rem; line-height: 1.5;
+  white-space: pre-wrap; word-break: break-word;
+  background: var(--bg-raised); border: 2px solid var(--ink);
+  padding: 0.9rem 1rem; margin: 0 0 0.75rem; color: var(--text);
+  overflow-x: auto;
+}
 .statement code { font-family: var(--mono); overflow-wrap: anywhere; }
 .statement ul { margin: 0 0 0.75em; padding-left: 1.5rem; }
 .statement li + li { margin-top: 0.25em; }
@@ -778,7 +793,7 @@ tr.row-flash { animation: rowflash 1.8s steps(6); }
   .col-lang { display: none; }
   .submit-form .form-row { grid-template-columns: 1fr; }
   /* leaderboard: keep Rank/Name/Solved/Points on small screens */
-  th.col-d, td.diff-easy, td.diff-medium, td.diff-hard { display: none; }
+  th.col-d, td.diff-easy, td.diff-medium, td.diff-hard, td.diff-expert { display: none; }
   .btn { width: 100%; text-align: center; }
   .random-machine .machine-head .btn,
   .rival-form .btn { width: 100%; }
@@ -817,3 +832,62 @@ body.shielded > *:not(.shield-overlay) { visibility: hidden; }
   margin-right: 8px;
   vertical-align: -6px;
 }
+
+/* ---------- Build arcs: ordered series that assemble into one system ---------- */
+
+.builds-grid { display: grid; gap: 1.5rem; }
+
+.build-card {
+  background: var(--bg-panel); border: var(--bw) solid var(--ink);
+  box-shadow: var(--shadow); padding: 1.35rem 1.5rem;
+}
+.build-head {
+  display: flex; gap: 0.75rem; align-items: baseline; justify-content: space-between;
+  flex-wrap: wrap; margin-bottom: 0.6rem;
+}
+.build-head h2 { margin: 0; font-size: clamp(0.8rem, 1.9vw, 1rem); }
+.build-meta { display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; }
+.build-card p { color: var(--text-dim); font-size: 0.9rem; }
+.build-outcome {
+  border-left: var(--bw) solid var(--accent); padding-left: 0.75rem;
+  color: var(--text); font-size: 0.88rem;
+}
+.build-progress {
+  height: 12px; background: var(--bg-raised);
+  border: 2px solid var(--ink); margin: 0.5rem 0 1rem;
+}
+.build-progress span { display: block; height: 100%; background: var(--track-hpc); }
+
+.build-steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+.build-steps li {
+  display: flex; gap: 0.75rem; align-items: center;
+  padding: 0.55rem 0; border-top: 2px solid var(--ink);
+}
+.build-steps li:first-child { border-top: none; }
+.step-num {
+  font-family: var(--font-display); font-size: 0.62rem;
+  border: 2px solid var(--ink); background: var(--bg-raised);
+  color: var(--text-dim); padding: 0.3rem 0.45rem; min-width: 2.1rem; text-align: center;
+}
+.build-steps li.done .step-num { background: var(--easy); color: var(--ink); border-color: var(--ink); }
+.build-steps li.forfeit .step-num { background: var(--hard); color: var(--ink); }
+.build-steps a.step-title { flex: 1; color: var(--text); font-weight: 700; }
+.build-steps a.step-title:hover { color: var(--accent); text-decoration: none; }
+.build-steps .step-diff { font-family: var(--font-display); font-size: 0.56rem; text-transform: uppercase; }
+
+/* build banner on a problem page */
+.arc-banner {
+  display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;
+  background: var(--bg-raised); border: var(--bw) solid var(--ink);
+  box-shadow: var(--shadow-sm); padding: 0.7rem 1rem; margin-bottom: 1rem;
+  font-size: 0.82rem;
+}
+.arc-banner .arc-name { font-family: var(--font-ui); font-weight: 700; color: var(--accent); }
+.arc-banner .arc-step { color: var(--text-dim); }
+.arc-banner .arc-nav { margin-left: auto; display: flex; gap: 0.5rem; }
+.arc-banner .arc-nav a {
+  font-family: var(--font-ui); font-size: 0.75rem; font-weight: 700;
+  border: 2px solid var(--ink); background: var(--bg-panel);
+  color: var(--accent); padding: 0.25rem 0.6rem;
+}
+.arc-banner .arc-nav a:hover { background: var(--bg-hover); text-decoration: none; }

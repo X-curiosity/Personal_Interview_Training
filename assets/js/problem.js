@@ -11,6 +11,7 @@
   var LANG_LABELS = {
     python: "Python", c: "C", cpp: "C++", verilog: "Verilog"
   };
+  var DIFF_LABELS = { easy: "Easy", medium: "Medium", hard: "Hard", expert: "Very hard" };
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
@@ -53,13 +54,38 @@
     }).join("");
   }
 
+  /* Banner that ties one step to the system it belongs to, with prev/next. */
+  function arcBanner(p) {
+    if (!p.arc) return "";
+    var siblings = PROBLEMS.filter(function (x) {
+      return x.arc && x.arc.id === p.arc.id;
+    }).sort(function (a, b) { return a.arc.step - b.arc.step; });
+    var index = -1;
+    for (var i = 0; i < siblings.length; i++) {
+      if (siblings[i].id === p.id) index = i;
+    }
+    var prev = index > 0 ? siblings[index - 1] : null;
+    var next = index !== -1 && index < siblings.length - 1 ? siblings[index + 1] : null;
+    return (
+      '<div class="arc-banner">' +
+        '<span class="badge">build step ' + p.arc.step + " of " + p.arc.total + "</span>" +
+        '<a class="arc-name" href="builds.html#' + esc(p.arc.id) + '">' + esc(p.arc.name) + "</a>" +
+        '<span class="arc-step">each step is a module of the finished system</span>' +
+        '<span class="arc-nav">' +
+          (prev ? '<a href="problem.html?id=' + encodeURIComponent(prev.id) + '">← step ' + prev.arc.step + "</a>" : "") +
+          (next ? '<a href="problem.html?id=' + encodeURIComponent(next.id) + '">step ' + next.arc.step + " →</a>" : "") +
+        "</span>" +
+      "</div>"
+    );
+  }
+
   function metaHtml(p) {
     var t = TRACKS[p.track];
     return (
       '<span class="badge track-' + p.track + '">' + t.name + "</span>" +
       '<span class="badge">' + p.branch + "</span>" +
       '<span class="diff diff-' + p.difficulty + '">' +
-        p.difficulty.charAt(0).toUpperCase() + p.difficulty.slice(1) + "</span>" +
+        (DIFF_LABELS[p.difficulty] || p.difficulty) + "</span>" +
       (p.kind === "code"
         ? p.languages.map(function (l) {
             return '<span class="badge lang">' + LANG_LABELS[l] + "</span>";
@@ -150,12 +176,19 @@
     });
   }
 
+  /* Build-arc solutions are reference implementations, not prose. Render those
+     in a monospace block so indentation survives. */
+  function looksLikeCode(text) {
+    return /\n/.test(text) && /(^\s*(module|def |class |#include|typedef|int |void |struct )|;\s*$)/m.test(text);
+  }
+
   function revealHtml(p, label) {
+    var body = looksLikeCode(p.solution)
+      ? '<pre class="solution-code">' + esc(p.solution) + "</pre>"
+      : "<p>" + esc(p.solution).replace(/\n{2,}/g, "</p><p>").replace(/\n/g, "<br>") + "</p>";
     return (
       '<button type="button" class="btn ghost small" data-reveal>' + label + "</button>" +
-      '<div class="solution" data-solution hidden>' +
-        "<h3>Solution</h3><p>" + esc(p.solution).replace(/\n{2,}/g, "</p><p>").replace(/\n/g, "<br>") + "</p>" +
-      "</div>"
+      '<div class="solution" data-solution hidden><h3>Solution</h3>' + body + "</div>"
     );
   }
 
@@ -421,7 +454,7 @@
       status.textContent = "";
     });
 
-    var POINTS = { easy: 1, medium: 3, hard: 5 };
+    var POINTS = { easy: 1, medium: 3, hard: 5, expert: 8 };
 
     /* "Run" is a practice run: it never awards credit. "Submit" grades the
        same tests and is the only action that can mark the problem solved. */
@@ -488,6 +521,7 @@
   function render(container, p, hooks) {
     var html =
       '<div class="problem-view">' +
+        arcBanner(p) +
         '<div class="meta problem-meta">' + metaHtml(p) + "</div>" +
         "<h1 class=\"problem-title\">" + esc(p.title) + "</h1>" +
         '<div class="statement">' + statementHtml(p.statement) + "</div>" +

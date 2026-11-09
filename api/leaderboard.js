@@ -18,10 +18,14 @@ module.exports = async (req, res) => {
     const board = rows
       .map((r) => {
         const s = pointsFor(parseSolved(r.solved));
-        return { name: r.name, points: s.points, solved: s.solved, hard: s.hard, medium: s.medium, easy: s.easy };
+        return {
+          name: r.name, points: s.points, solved: s.solved,
+          expert: s.expert, hard: s.hard, medium: s.medium, easy: s.easy
+        };
       })
       .filter((r) => r.solved > 0)
-      .sort((a, b) => b.points - a.points || b.hard - a.hard || b.medium - a.medium || a.name.localeCompare(b.name))
+      .sort((a, b) => b.points - a.points || b.expert - a.expert ||
+        b.hard - a.hard || b.medium - a.medium || a.name.localeCompare(b.name))
       .slice(0, 50)
       .map((r, i) => ({ rank: i + 1, ...r }));
     return json(res, 200, { board, total: rows.length });

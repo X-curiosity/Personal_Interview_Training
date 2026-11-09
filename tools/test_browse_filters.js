@@ -104,7 +104,7 @@ async function main() {
     const { document: doc, window } = dom.window;
 
     assert.strictEqual(rows(doc).length, PROBLEMS.length, "initial view lists every problem");
-    assert.strictEqual(rows(doc).length, 532, "database cap is 532");
+    assert.strictEqual(rows(doc).length, 520, "database cap is 520");
     assert.strictEqual(rows(doc).length, new Set(rows(doc).map((r) => r.dataset.id)).size,
       "row ids are unique");
     assert.strictEqual(doc.querySelector("[data-clear-filters]").hidden, true,

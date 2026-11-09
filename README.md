@@ -7,19 +7,21 @@
 - <https://personal-interview-training.vercel.app>
 - <https://x-curiosity.github.io/Personal_Interview_Training/>
 
-**Interview Red** is a pixel art training platform with **532 problems** across eight tracks: machine learning, Python algorithms, CPU architecture, systems C/C++, silicon/RTL, mathematics, quant puzzles, and company interview questions. Solve directly on the site with Python, C, C++, or Verilog.
+**Interview Red** is a pixel art training platform with **520 problems** across ten tracks: CPU architecture, silicon/RTL, FPGA implementation, systems C/C++, machine learning, Python algorithms, high performance computing, mathematics, quant puzzles, and company interview questions.
 
-The new ML and Python tracks include 12 detailed, original problems covering learning algorithms, evaluation, data preprocessing and classic coding interview patterns. They provide runnable Python tests, progressive hints and explanations. Related LeetCode or NeetCode links are for further reading; their problem text is not reproduced here.
+Five **build arcs** turn individual problems into whole systems. Each arc is an ordered series where every step is a real module of the final design, and the tests only rely on the contract you already built:
 
-The editor separates **Run tests** from **Submit**: running is practice and never awards credit, submitting grades the same suite and is the only action that marks a problem solved. `Ctrl/Cmd+Enter` runs and `Ctrl/Cmd+Shift+Enter` submits.
+| Arc | Language | What you end up with |
+|---|---|---|
+| CPU simulator | C | Decoder, ALU and register file, byte-addressed memory, the full instruction step, then a cache that turns instructions into cycles |
+| Edge detector | Verilog | Streaming ISP front end: RGB to luma, line buffer, Sobel, threshold, integrated block with handshake |
+| FPGA bring-up | Verilog | Heartbeat, two-flop synchronizer and debouncer, UART transmit and receive with framing errors, loopback top |
+| Stack VM | Python | Tokenizer, Pratt parser, bytecode compiler, VM loop, functions and recursion |
+| HPC kernel suite | Python | Blocked multiply, tiled transpose, halo exchange, parallel reduction, roofline report |
 
-The built-in editor auto-indents: `Enter` after a Python colon (`if`, `for`, `while`, `def`, `class`, `else`, `try`) or an opening brace opens a new level, and `Tab` / `Shift+Tab` indent and outdent whole selections (press `Escape` first if you want `Tab` to move focus).
+Difficulty runs **Easy 1, Medium 3, Hard 5, Very hard 8** points. Math, probability and interview practice deliberately start at Medium: the recall drills were retired in favour of depth, and the very hard tier is reserved for exact derivations.
 
-Progress, forfeits and votes are cached in memory, so filtering a 500+ row table no longer parses `localStorage` for every row, and the table rebuilds only when typing pauses. A performance test guards both behaviours.
-
-Browse by language (Python, C, C++, Verilog, answer-only) and difficulty, or combine both with a track; the selection is stored in the URL so filtered views can be bookmarked and shared.
-
-Create a free profile to sync progress across devices and join the global leaderboard. Solving is earned by correct submissions only; hard problems offer free hints, but viewing a solution forfeits credit for that problem. Twelve **project problems** (cache simulator, FIFO, arena allocator, arbiter, Karatsuba, Monte Carlo pricer and more) are multi-hour builds with full edge-case test suites.
+Create a free profile to sync progress across devices and join the global leaderboard. Solving is earned by correct submissions only, hints are free, and viewing a solution forfeits credit for that problem. Twelve standalone project problems (cache simulator, FIFO, arena allocator, arbiter, Karatsuba, Monte Carlo pricer and more) are multi-hour builds with full edge-case test suites.
 
 ## Run locally
 
@@ -39,11 +41,13 @@ Open <http://localhost:8000>. Done. No build step, no dependencies.
 ```bash
 npm install
 npm test
+node tools/gen_points.js   # after adding problems: refreshes server scoring
 ```
 
 A few ground rules keep the database clean:
 
-- The total is capped at **exactly 532 problems** — change the cap deliberately when adding verified content, rather than inflating it accidentally.
+- The total is capped at **exactly 520 problems** — change the cap deliberately when adding verified content, rather than inflating it accidentally.
+- Build-arc steps must name their contract, ship a skeleton that compiles but fails, and keep the reference implementation in `solution`; `npm test` re-verifies all 25 steps.
 - Coding tasks need starter code and deterministic tests. The judge reports `ALL TESTS PASSED` only after those tests finish successfully.
 - Answer tasks need a verified answer plus an explanatory solution.
 - No GPU/CUDA content; the platform deliberately dropped that track.

@@ -17,13 +17,13 @@ const only = process.env.PACKS ? process.env.PACKS.split(",") : null;
 const packs = fs.readdirSync(packDir).filter((f) =>
   f.endsWith(".js") && (!only || only.includes(f))).sort();
 for (const p of packs) src += "\n" + read("assets/js/data/" + p);
-src += "\n;globalThis.__R = { PROBLEMS, TRACKS, TRACK_ORDER, ROLES };";
+src += "\n;globalThis.__R = { PROBLEMS, TRACKS, TRACK_ORDER, ROLES, ARCS };";
 eval(src);
 
-const { PROBLEMS, TRACKS, TRACK_ORDER, ROLES } = globalThis.__R;
+const { PROBLEMS, TRACKS, TRACK_ORDER, ROLES, ARCS } = globalThis.__R;
 const errors = [];
-const MAX_PROBLEMS = 532;
-const DIFFS = ["easy", "medium", "hard"];
+const MAX_PROBLEMS = 520;
+const DIFFS = ["easy", "medium", "hard", "expert"];
 const LANGS = ["python", "c", "cpp", "verilog"];
 
 const ids = new Set();
@@ -61,6 +61,38 @@ for (const p of PROBLEMS) {
   for (const r of p.references || [])
     if (!r.label || !/^https?:\/\//.test(r.url))
       errors.push(`${at}: bad reference ${JSON.stringify(r)}`);
+
+  /* Math, quant and interview practice is deliberately medium and above:
+     easy recall drills were retired from those tracks. */
+  if (["math", "quant", "interview"].includes(p.track) && p.difficulty === "easy")
+    errors.push(`${at}: ${p.track} problems must be medium or harder`);
+
+  if (p.arc) {
+    const arc = ARCS[p.arc.id];
+    if (!arc) errors.push(`${at}: unknown arc "${p.arc.id}"`);
+    else {
+      if (arc.track !== p.track) errors.push(`${at}: arc ${p.arc.id} belongs to track ${arc.track}`);
+      if (!Number.isInteger(p.arc.step) || p.arc.step < 1 || p.arc.step > arc.steps)
+        errors.push(`${at}: arc step ${p.arc.step} outside 1..${arc.steps}`);
+    }
+  }
+}
+
+/* ---------- build arcs: complete, contiguous, correctly labelled ----------
+   Scoped PACKS runs validate one pack in isolation, so arc completeness is
+   only meaningful for a full-database run. */
+for (const [id, arc] of Object.entries(only ? {} : ARCS)) {
+  const steps = PROBLEMS.filter((p) => p.arc && p.arc.id === id)
+    .map((p) => p.arc.step).sort((a, b) => a - b);
+  if (!steps.length) errors.push(`arc ${id}: no problems`);
+  else {
+    if (steps.length !== arc.steps)
+      errors.push(`arc ${id}: has ${steps.length} problems, registry says ${arc.steps}`);
+    for (let i = 0; i < steps.length; i++)
+      if (steps[i] !== i + 1) errors.push(`arc ${id}: steps not contiguous from 1 (${steps.join(",")})`);
+  }
+  if (!TRACKS[arc.track]) errors.push(`arc ${id}: unknown track ${arc.track}`);
+  if (!arc.name || !arc.blurb || !arc.outcome) errors.push(`arc ${id}: incomplete presentation data`);
 }
 
 for (const key of TRACK_ORDER)

@@ -1,69 +1,6 @@
 /* math quant expansion2 — references/images enriched. */
+/* Easy math and quant drills were retired: these tracks start at medium. */
 registerProblems([
- {
-  "id": "math-401",
-  "track": "math",
-  "branch": "Number Theory",
-  "title": "Primality by Trial Division",
-  "difficulty": "easy",
-  "tags": [
-   "primes",
-   "python"
-  ],
-  "summary": "Decide primality testing divisors only up to the square root.",
-  "statement": "Implement `is_prime(n)` in Python. Return True when the integer n >= 0 is prime, False otherwise. Use trial division up to the square root; do not import sympy or similar.",
-  "kind": "code",
-  "languages": [
-   "python"
-  ],
-  "starter": {
-   "python": "def is_prime(n):\n    \"\"\"Return True iff n is prime.\"\"\"\n    # TODO\n    raise NotImplementedError\n"
-  },
-  "tests": {
-   "python": "assert is_prime(2) is True\nassert is_prime(97) is True\nassert is_prime(1) is False\nassert is_prime(0) is False\nassert is_prime(99991) is True\nassert is_prime(99991*2) is False\nassert is_prime(7919*13) is False\n"
-  },
-  "solution": "Reject n<2, handle 2, reject evens, then test odd divisors up to sqrt(n).",
-  "references": [
-   {
-    "label": "Primality test",
-    "url": "https://en.wikipedia.org/wiki/Primality_test"
-   },
-   {
-    "label": "Trial division",
-    "url": "https://en.wikipedia.org/wiki/Trial_division"
-   }
-  ]
- },
- {
-  "id": "math-402",
-  "track": "math",
-  "branch": "Number Theory",
-  "title": "Collatz Step Count",
-  "difficulty": "easy",
-  "tags": [
-   "collatz",
-   "python"
-  ],
-  "summary": "Count steps to reach 1 under the Collatz map.",
-  "statement": "Implement `collatz_steps(n)` in Python for positive integers. Repeatedly apply: even -> n/2, odd -> 3n+1. Return the number of steps needed to reach 1 (collatz_steps(1) == 0).",
-  "kind": "code",
-  "languages": [
-   "python"
-  ],
-  "starter": {
-   "python": "def collatz_steps(n):\n    \"\"\"Return the number of Collatz steps from n to 1.\"\"\"\n    # TODO\n    raise NotImplementedError\n"
-  },
-  "tests": {
-   "python": "assert collatz_steps(1) == 0\nassert collatz_steps(6) == 8\nassert collatz_steps(27) == 111\nassert collatz_steps(97) == 118\n"
-  },
-  "solution": "Loop with a counter; 27 takes 111 steps, a classic stress value.",
-  "references": [
-   {
-    "label": "Collatz conjecture",
-    "url": "https://en.wikipedia.org/wiki/Collatz_conjecture"
-   }
-  ]
- },
  {
   "id": "math-403",
   "track": "math",
@@ -91,86 +28,6 @@ registerProblems([
    {
     "label": "Derangement",
     "url": "https://en.wikipedia.org/wiki/Derangement"
-   }
-  ]
- },
- {
-  "id": "math-404",
-  "track": "math",
-  "branch": "Sequences",
-  "title": "Tribonacci Term",
-  "difficulty": "easy",
-  "tags": [
-   "sequences",
-   "python"
-  ],
-  "summary": "Compute T(n) with T(0)=0, T(1)=0, T(2)=1.",
-  "statement": "Implement `tribonacci(n)` in Python for nonnegative n, where T(0)=0, T(1)=0, T(2)=1 and T(n)=T(n-1)+T(n-2)+T(n-3). Use iteration and O(1) space.",
-  "kind": "code",
-  "languages": [
-   "python"
-  ],
-  "starter": {
-   "python": "def tribonacci(n):\n    \"\"\"Return the nth tribonacci number.\"\"\"\n    # TODO\n    raise NotImplementedError\n"
-  },
-  "tests": {
-   "python": "assert tribonacci(0) == 0\nassert tribonacci(2) == 1\nassert tribonacci(4) == 2\nassert tribonacci(10) == 81\nassert tribonacci(25) == 755476\n"
-  },
-  "solution": "Roll three values forward; T(10)=81.",
-  "references": [
-   {
-    "label": "Generalizations of Fibonacci numbers",
-    "url": "https://en.wikipedia.org/wiki/Generalizations_of_Fibonacci_numbers"
-   }
-  ]
- },
- {
-  "id": "math-405",
-  "track": "math",
-  "branch": "Number Theory",
-  "title": "Trailing Zeros of 100!",
-  "difficulty": "easy",
-  "tags": [
-   "factorial",
-   "trailing zeros"
-  ],
-  "summary": "Count factors of 5 in 100!.",
-  "statement": "How many trailing zeros does 100! have in base 10?",
-  "kind": "answer",
-  "answer": "24",
-  "tolerance": 0,
-  "solution": "floor(100/5)+floor(100/25)=20+4=24.",
-  "references": [
-   {
-    "label": "Factorial",
-    "url": "https://en.wikipedia.org/wiki/Factorial"
-   },
-   {
-    "label": "Trailing zero",
-    "url": "https://en.wikipedia.org/wiki/Trailing_zero"
-   }
-  ]
- },
- {
-  "id": "math-406",
-  "track": "math",
-  "branch": "Number Theory",
-  "title": "Units Digit of 7^2024",
-  "difficulty": "easy",
-  "tags": [
-   "modular arithmetic",
-   "cycles"
-  ],
-  "summary": "The units digits of powers of 7 cycle with period 4.",
-  "statement": "What is the units (ones) digit of 7^2024?",
-  "kind": "answer",
-  "answer": "1",
-  "tolerance": 0,
-  "solution": "7^1=7, 7^2=9, 7^3=3, 7^4=1 — period 4. 2024 mod 4 = 0, so the digit is 1.",
-  "references": [
-   {
-    "label": "Modular arithmetic",
-    "url": "https://en.wikipedia.org/wiki/Modular_arithmetic"
    }
   ]
  },
@@ -264,41 +121,6 @@ registerProblems([
   ]
  },
  {
-  "id": "math-411",
-  "track": "math",
-  "branch": "Signal Processing",
-  "title": "Moving Average Filter",
-  "difficulty": "easy",
-  "tags": [
-   "DSP",
-   "FIR",
-   "python"
-  ],
-  "summary": "Apply an N-tap boxcar (moving average) to a sample list.",
-  "statement": "Implement `moving_average(samples, n)` in Python. Given a list of numbers and a positive window length n, return a list where output[i] is the mean of samples[i-n+1 .. i] for i >= n-1 (so the result has len(samples)-n+1 entries). The tests use values that divide evenly.",
-  "kind": "code",
-  "languages": [
-   "python"
-  ],
-  "starter": {
-   "python": "def moving_average(samples, n):\n    \"\"\"Return the n-point moving average of samples.\"\"\"\n    # TODO\n    raise NotImplementedError\n"
-  },
-  "tests": {
-   "python": "assert moving_average([1,2,3,4,5], 3) == [2,3,4]\nassert moving_average([2,2,2,2], 2) == [2,2,2]\nassert moving_average([1,3], 2) == [2]\n"
-  },
-  "solution": "Slide a window of n samples; a running sum avoids re-summing.",
-  "references": [
-   {
-    "label": "Moving average",
-    "url": "https://en.wikipedia.org/wiki/Moving_average"
-   },
-   {
-    "label": "Finite impulse response",
-    "url": "https://en.wikipedia.org/wiki/Finite_impulse_response"
-   }
-  ]
- },
- {
   "id": "math-412",
   "track": "math",
   "branch": "Signal Processing",
@@ -331,34 +153,6 @@ registerProblems([
   "image": {
    "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/DFT_2sin%28t%29_%2B_cos%284t%29_25_points.svg/330px-DFT_2sin%28t%29_%2B_cos%284t%29_25_points.svg.png",
    "alt": "The DFT decomposes a sampled signal into frequency bins"
-  }
- },
- {
-  "id": "math-413",
-  "track": "math",
-  "branch": "Signal Processing",
-  "title": "Nyquist Rate for a Band-Limited Tone",
-  "difficulty": "easy",
-  "tags": [
-   "DSP",
-   "Nyquist",
-   "sampling"
-  ],
-  "summary": "Sample above twice the highest frequency present.",
-  "statement": "A continuous signal contains frequency components up to 3.4 kHz and nothing higher. According to the Nyquist sampling theorem, what is the minimum sampling rate in Hz that allows perfect reconstruction?",
-  "kind": "answer",
-  "answer": "6800",
-  "tolerance": 0,
-  "solution": "fs must exceed 2 x 3.4 kHz = 6.8 kHz = 6800 Hz.",
-  "references": [
-   {
-    "label": "Nyquist–Shannon sampling theorem",
-    "url": "https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem"
-   }
-  ],
-  "image": {
-   "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/Bandlimited.svg/330px-Bandlimited.svg.png",
-   "alt": "A bandlimited spectrum: sampling above twice the bandwidth allows perfect reconstruction"
   }
  },
  {
@@ -417,53 +211,6 @@ registerProblems([
   ]
  },
  {
-  "id": "math-416",
-  "track": "math",
-  "branch": "Signal Processing",
-  "title": "DFT Bin Spacing at 48 kHz",
-  "difficulty": "easy",
-  "tags": [
-   "DSP",
-   "DFT",
-   "frequency resolution"
-  ],
-  "summary": "Resolution = fs / N.",
-  "statement": "A 1024-point DFT is computed on a signal sampled at 48 kHz. What is the spacing between adjacent DFT bins in Hz? Give the exact decimal value.",
-  "kind": "answer",
-  "answer": "46.875",
-  "tolerance": 0.01,
-  "solution": "48000 / 1024 = 46.875 Hz per bin.",
-  "references": [
-   {
-    "label": "Discrete Fourier transform",
-    "url": "https://en.wikipedia.org/wiki/Discrete_Fourier_transform"
-   }
-  ]
- },
- {
-  "id": "math-417",
-  "track": "math",
-  "branch": "Signal Processing",
-  "title": "Linear Convolution Length",
-  "difficulty": "easy",
-  "tags": [
-   "DSP",
-   "convolution"
-  ],
-  "summary": "len(x*h) = len(x) + len(h) - 1.",
-  "statement": "An FIR filter has 75 taps and processes a frame of 200 samples using linear (not circular) convolution. How many samples long is the full convolution output?",
-  "kind": "answer",
-  "answer": "274",
-  "tolerance": 0,
-  "solution": "200 + 75 - 1 = 274 samples.",
-  "references": [
-   {
-    "label": "Convolution",
-    "url": "https://en.wikipedia.org/wiki/Convolution"
-   }
-  ]
- },
- {
   "id": "math-418",
   "track": "math",
   "branch": "Signal Processing",
@@ -483,52 +230,6 @@ registerProblems([
    {
     "label": "Decimation (signal processing)",
     "url": "https://en.wikipedia.org/wiki/Decimation_(signal_processing)"
-   }
-  ]
- },
- {
-  "id": "quant-401",
-  "track": "quant",
-  "branch": "Expected Value",
-  "title": "EV of a Loaded Die",
-  "difficulty": "easy",
-  "tags": [
-   "expected value",
-   "dice"
-  ],
-  "summary": "Weighted average over six faces.",
-  "statement": "A die shows 1,2,3,4,5,6 with probabilities 0.1,0.1,0.2,0.2,0.2,0.2. You win the face value in dollars. What is the expected win in dollars?",
-  "kind": "answer",
-  "answer": "3.9",
-  "tolerance": 0.005,
-  "solution": "0.1+0.2+0.6+0.8+1.0+1.2 = 3.9 dollars.",
-  "references": [
-   {
-    "label": "Expected value",
-    "url": "https://en.wikipedia.org/wiki/Expected_value"
-   }
-  ]
- },
- {
-  "id": "quant-402",
-  "track": "quant",
-  "branch": "Expected Value",
-  "title": "Expected Flips to First Head",
-  "difficulty": "easy",
-  "tags": [
-   "geometric",
-   "expected value"
-  ],
-  "summary": "Geometric mean 1/p.",
-  "statement": "A biased coin lands heads with probability 0.25. What is the expected number of flips until the first head (counting the successful flip)?",
-  "kind": "answer",
-  "answer": "4",
-  "tolerance": 0.005,
-  "solution": "Geometric expectation 1/0.25 = 4.",
-  "references": [
-   {
-    "label": "Geometric distribution",
-    "url": "https://en.wikipedia.org/wiki/Geometric_distribution"
    }
   ]
  },
@@ -583,29 +284,6 @@ registerProblems([
   ]
  },
  {
-  "id": "quant-405",
-  "track": "quant",
-  "branch": "Games & Strategy",
-  "title": "Nim With One Heap",
-  "difficulty": "easy",
-  "tags": [
-   "nim",
-   "games"
-  ],
-  "summary": "Losing positions are multiples of 4.",
-  "statement": "A game has one heap of 7 stones; players alternate taking 1, 2 or 3 stones and the taker of the last stone wins. You move first. How many stones should you take to guarantee a win?",
-  "kind": "answer",
-  "answer": "3",
-  "tolerance": 0.005,
-  "solution": "7 mod 4 = 3: take 3, leave 4; then mirror to 4-k.",
-  "references": [
-   {
-    "label": "Nim",
-    "url": "https://en.wikipedia.org/wiki/Nim"
-   }
-  ]
- },
- {
   "id": "quant-406",
   "track": "quant",
   "branch": "Games & Strategy",
@@ -648,52 +326,6 @@ registerProblems([
    {
     "label": "Markov chain",
     "url": "https://en.wikipedia.org/wiki/Markov_chain"
-   }
-  ]
- },
- {
-  "id": "quant-408",
-  "track": "quant",
-  "branch": "Markov & Stopping",
-  "title": "Expected Rolls to See a Six",
-  "difficulty": "easy",
-  "tags": [
-   "stopping time",
-   "geometric"
-  ],
-  "summary": "Mean waiting time 1/p with p=1/6.",
-  "statement": "How many rolls of a fair die are needed on average to see the first six (counting the successful roll)?",
-  "kind": "answer",
-  "answer": "6",
-  "tolerance": 0.005,
-  "solution": "Geometric with p=1/6: mean 6.",
-  "references": [
-   {
-    "label": "Geometric distribution",
-    "url": "https://en.wikipedia.org/wiki/Geometric_distribution"
-   }
-  ]
- },
- {
-  "id": "quant-409",
-  "track": "quant",
-  "branch": "Brainteasers",
-  "title": "The Missing Dollar",
-  "difficulty": "easy",
-  "tags": [
-   "brainteaser",
-   "accounting"
-  ],
-  "summary": "The 27 already includes the 2 — track the money.",
-  "statement": "Three guests pay $30 for a room ($10 each). The clerk refunds $5 via the bellhop, who pockets $2 and returns $1 to each guest. Each guest effectively paid $9 (total $27) and the bellhop has $2. How many dollars does the clerk's till hold?",
-  "kind": "answer",
-  "answer": "25",
-  "tolerance": 0.005,
-  "solution": "27 = 25 (till) + 2 (bellhop); adding 27+2 double-counts the 2.",
-  "references": [
-   {
-    "label": "Missing dollar riddle",
-    "url": "https://en.wikipedia.org/wiki/Missing_dollar_riddle"
    }
   ]
  },
@@ -813,29 +445,6 @@ registerProblems([
    {
     "label": "Coupon collector's problem",
     "url": "https://en.wikipedia.org/wiki/Coupon_collector's_problem"
-   }
-  ]
- },
- {
-  "id": "quant-415",
-  "track": "quant",
-  "branch": "Brainteasers",
-  "title": "Average Speed Round Trip",
-  "difficulty": "easy",
-  "tags": [
-   "harmonic mean",
-   "speed"
-  ],
-  "summary": "Harmonic, not arithmetic, mean for equal distances.",
-  "statement": "You drive 60 km to work at 30 km/h and return the same 60 km at 60 km/h. What is your average speed for the round trip in km/h?",
-  "kind": "answer",
-  "answer": "40",
-  "tolerance": 0.005,
-  "solution": "120 km in 2+1 = 3 hours: 40 km/h.",
-  "references": [
-   {
-    "label": "Harmonic mean",
-    "url": "https://en.wikipedia.org/wiki/Harmonic_mean"
    }
   ]
  },

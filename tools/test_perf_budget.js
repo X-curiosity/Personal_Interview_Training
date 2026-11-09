@@ -10,12 +10,26 @@ const fs = require("fs");
 const http = require("http");
 const path = require("path");
 const { JSDOM, VirtualConsole } = require("jsdom");
+const vm = require("vm");
 
 const ROOT = path.join(__dirname, "..");
 const MIME = {
   ".html": "text/html", ".js": "text/javascript", ".css": "text/css",
   ".svg": "image/svg+xml", ".png": "image/png"
 };
+
+/* Expected counts come from the packs themselves (const PROBLEMS is lexical,
+   so it is read back through a sandbox rather than from window). */
+function loadProblems() {
+  const context = vm.createContext({});
+  let source = fs.readFileSync(path.join(ROOT, "assets/js/data.js"), "utf8");
+  for (const file of fs.readdirSync(path.join(ROOT, "assets/js/data")).sort()) {
+    if (file.endsWith(".js")) source += "\n" + fs.readFileSync(path.join(ROOT, "assets/js/data", file), "utf8");
+  }
+  source += "\n;globalThis.__P = PROBLEMS;";
+  vm.runInContext(source, context);
+  return context.__P;
+}
 
 function startServer() {
   const server = http.createServer((req, res) => {
@@ -71,21 +85,24 @@ async function main() {
     await waitFor(() => doc.querySelectorAll("tbody[data-problem-rows] tr").length > 200,
       "problem rows");
     assert.deepStrictEqual(errors, [], "page loaded without script errors");
-    assert.strictEqual(doc.querySelectorAll("tbody[data-problem-rows] tr").length, 532);
+    assert.strictEqual(doc.querySelectorAll("tbody[data-problem-rows] tr").length, 520);
 
     /* ---------- no localStorage work per row ---------- */
+    /* expected counts come from the loaded packs, not a hardcoded number */
+    const langKeys = (p) => (p.kind === "code" && p.languages.length ? p.languages : ["answer"]);
+    const expectedPython = loadProblems().filter((p) => langKeys(p).includes("python")).length;
     reads.count = 0;
     doc.querySelector('[data-lang-filter="python"]').click();
-    await waitFor(() => doc.querySelectorAll("tbody tr").length === 32, "python filter");
+    await waitFor(() => doc.querySelectorAll("tbody tr").length === expectedPython, "python filter");
     assert(reads.count < 40,
-      `a full render must not read localStorage per row (read ${reads.count} times for 32 rows)`);
+      `a full render must not read localStorage per row (read ${reads.count} times for ${expectedPython} rows)`);
 
     reads.count = 0;
     doc.querySelector('[data-diff-filter="all"]').click();
     doc.querySelector('[data-lang-filter="all"]').click();
-    await waitFor(() => doc.querySelectorAll("tbody tr").length === 532, "full list");
+    await waitFor(() => doc.querySelectorAll("tbody tr").length === 520, "full list");
     assert(reads.count < 40,
-      `the 532-row render must not read storage per row (read ${reads.count} times)`);
+      `the 520-row render must not read storage per row (read ${reads.count} times)`);
 
     /* ---------- typing stays responsive and coalesces renders ---------- */
     const tbody = doc.querySelector("tbody[data-problem-rows]");

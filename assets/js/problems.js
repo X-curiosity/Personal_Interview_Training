@@ -36,6 +36,8 @@
     var state = { track: "all", branch: null, difficulty: "all", query: "", langs: [] };
     var lastRollId = null;
 
+    var DIFF_LABELS = { easy: "Easy", medium: "Medium", hard: "Hard", expert: "Very hard" };
+
     var LANG_LABELS = {
       python: "Python", c: "C", cpp: "C++", verilog: "Verilog", answer: "Answer"
     };
@@ -264,7 +266,7 @@
           '<td class="col-tags">' + tagsCell(p) + "</td>" +
           '<td class="col-lang">' + langCell(p) + "</td>" +
           '<td class="col-diff"><span class="diff diff-' + p.difficulty + '">' +
-            p.difficulty.charAt(0).toUpperCase() + p.difficulty.slice(1) + "</span></td>" +
+            (DIFF_LABELS[p.difficulty] || p.difficulty) + "</span></td>" +
           '<td class="col-link">' +
             (p.source
               ? '<a href="' + esc(p.source) + '" target="_blank" rel="noopener" ' +
@@ -427,7 +429,7 @@
     (function initFromQuery() {
       var params = new URLSearchParams(window.location.search);
       var diff = params.get("diff");
-      if (["easy", "medium", "hard"].indexOf(diff) !== -1) state.difficulty = diff;
+      if (["easy", "medium", "hard", "expert"].indexOf(diff) !== -1) state.difficulty = diff;
       var lang = params.get("lang");
       if (lang) {
         state.langs = lang.split(",").filter(function (l) {

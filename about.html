@@ -20,6 +20,7 @@
         <ul>
           <li><a href="index.html">Home</a></li>
           <li><a href="problems.html">Problems</a></li>
+          <li><a href="builds.html">Builds</a></li>
           <li><a href="interview.html">Mock Interview</a></li>
           <li><a href="leaderboard.html">Leaderboard</a></li>
           <li><a href="submit.html">Contribute</a></li>
@@ -59,8 +60,27 @@
         <li><strong>Python Algorithms</strong>, practice original exercises based on classic coding interview patterns such as hashing, sliding windows, stacks, intervals and graph traversal, with further reading links.</li>
         <li><strong>Mathematics</strong>, number theory, combinatorics &amp; DP, sequences, and an <strong>AI Traps</strong> set (ambiguity, false premises, Unicode impostors, prompt injection) that punishes careless AI assisted solving.</li>
         <li><strong>Probability &amp; Quant</strong>, expected value, dice &amp; coins, games &amp; strategy, optimal stopping and brainteasers in the style of Jane Street, SIG, Optiver and Citadel interviews.</li>
+        <li><strong>FPGA Implementation</strong>, board-level Verilog: clock dividers, two-flop synchronizers, debouncing, UART framing and a loopback top, ordered from a first blink to a working design.</li>
+        <li><strong>High Performance Computing</strong>, blocked matrix multiply, tiled transposes, halo exchange, parallel reduction and roofline classification, with deterministic access counters instead of wall-clock timing.</li>
         <li><strong>Interview Questions</strong>, CPU, RTL, silicon, and quant questions from company style interviews, each one <strong>community voted</strong> as accurate or not.</li>
       </ul>
+
+      <h2>Build arcs</h2>
+      <p>
+        Five arcs on the <a href="builds.html">Builds page</a> turn individual problems into one
+        finished system: a CPU simulator in C, an edge detector and an FPGA bring-up in Verilog,
+        a stack VM and an HPC kernel suite in Python. Every step states the contract it must honour,
+        so the module you write in step three is the same function the final step calls.
+      </p>
+
+      <h2>Difficulty and scoring</h2>
+      <p>
+        Four tiers: <span class="diff diff-easy">Easy</span> 1 point,
+        <span class="diff diff-medium">Medium</span> 3,
+        <span class="diff diff-hard">Hard</span> 5,
+        <span class="diff diff-expert">Very hard</span> 8. Math, probability and interview practice
+        deliberately start at Medium: recall drills were retired in favour of depth.
+      </p>
 
       <h2>How new puzzles get in</h2>
       <p>
@@ -141,6 +161,8 @@
   <script src="assets/js/data/pack_bonus.js"></script>
   <script src="assets/js/data/pack_ml.js"></script>
   <script src="assets/js/data/pack_python.js"></script>
+  <script src="assets/js/data/pack_arcs.js"></script>
+  <script src="assets/js/data/pack_expert.js"></script>
   <script src="assets/js/store.js"></script>
   <script src="assets/js/main.js"></script>
 </body>

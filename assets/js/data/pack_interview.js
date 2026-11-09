@@ -1,23 +1,6 @@
-/* Company-style interview questions: hardware/RTL, CPU architecture, and quant/trading. */
+/* Company-style interview questions: hardware/RTL, CPU architecture, and quant/trading.
+   Easy recall questions were dropped: interview practice starts at medium depth. */
 registerProblems([
-  {
-    "id": "iq-101",
-    "track": "interview",
-    "branch": "Hardware & RTL",
-    "title": "Race Conditions in Verilog Simulation",
-    "difficulty": "easy",
-    "tags": [
-      "race conditions"
-    ],
-    "summary": "Two always blocks touch the same signal on the same clock edge — explain the race, the event scheduler, and the coding rule that prevents it.",
-    "statement": "Two always blocks write and read the same signal on the same clock edge. What happens, and is the result deterministic? Explain how the Verilog event scheduler makes this a race, and give the coding rule that prevents it. A strong answer names the active and non-blocking regions of the scheduler and states the = versus <= discipline.",
-    "kind": "answer",
-    "solution": "Verilog executes always blocks in an arbitrary order within the active region of a timestep, so if one block reads a signal with blocking assignment while another writes it, the observed value depends on simulator scheduling order — a true race. Non-blocking assignments defer updates to the NBA region at the end of the timestep, so all reads in the active region see the old value and behavior becomes deterministic. The standard rule: use <= for sequential logic, = only inside combinational blocks, and never mix both on the same variable. Races are especially nasty because RTL sim, gate-level sim, and hardware can each pick a different winner. Follow-up trap: blocking assignments inside a clocked always block can silently create the same race between two clocked blocks.",
-    "votes": {
-      "up": 54,
-      "down": 2
-    }
-  },
   {
     "id": "iq-102",
     "track": "interview",
@@ -35,25 +18,6 @@ registerProblems([
     "votes": {
       "up": 48,
       "down": 3
-    }
-  },
-  {
-    "id": "iq-103",
-    "track": "interview",
-    "branch": "Hardware & RTL",
-    "title": "Async Assert, Sync Deassert Reset",
-    "difficulty": "easy",
-    "tags": [
-      "reset",
-      "Qualcomm-style"
-    ],
-    "summary": "The standard reset rule: assert asynchronously, deassert synchronously. Explain the circuit and the failure mode each half protects against.",
-    "statement": "Why do we assert reset asynchronously but deassert it synchronously? Describe the reset synchronizer circuit and the specific failure mode each half of the rule protects against. A strong answer mentions recovery/removal timing and multi-bit state machines.",
-    "kind": "answer",
-    "solution": "Asserting asynchronously guarantees the flops enter a known state immediately, even without a running clock, which is essential for power-up and fault recovery. Deassertion is the dangerous edge: if reset releases near the clock edge, flops can violate recovery/removal timing and go metastable, and different flops may leave reset on different cycles, corrupting state machines and counters. A reset synchronizer — two flops clocked by the destination clock with asynchronous reset pins — deasserts cleanly on a clock edge so the whole domain leaves reset together with a full cycle to settle. Follow-up trap: each clock domain needs its own deassertion synchronizer; one globally synced reset is not enough.",
-    "votes": {
-      "up": 51,
-      "down": 2
     }
   },
   {
@@ -91,25 +55,6 @@ registerProblems([
     "solution": "Dynamic power is roughly alpha*C*V^2*f, and the clock network plus flop clock pins are the most active nets in the chip, so stopping the clock on idle blocks saves a large fraction of power. The naive AND gate on the clock glitches if enable changes while the clock is high; the correct ICG cell is a low-transparent latch on enable followed by an AND, so enable is only sampled while the clock is low. Costs: clock-tree insertion delay and skew grow, enable becomes a timing-critical path that synthesis must check for both edges, and scan testing needs a test-enable override so flops stay controllable. Follow-up: coarse gating of whole blocks saves the most, but synthesis-added fine-grained gating captures idle cycles you never thought about.",
     "votes": {
       "up": 44,
-      "down": 3
-    }
-  },
-  {
-    "id": "iq-106",
-    "track": "interview",
-    "branch": "Hardware & RTL",
-    "title": "Why Inferred Latches Are Dangerous",
-    "difficulty": "easy",
-    "tags": [
-      "latches",
-      "AMD-style"
-    ],
-    "summary": "How incomplete if/case statements infer latches, why teams ban them, and the one legitimate use of a latch.",
-    "statement": "Why do design teams ban inferred latches in RTL? Show how one gets inferred, explain why latches complicate timing analysis and test, and name one legitimate use of a deliberate latch.",
-    "kind": "answer",
-    "solution": "Latches get inferred when a combinational always block does not assign a signal on every path — an if without else, or a case without default. They are level-sensitive, so they pass glitches straight through while open, they make timing analysis much harder because time borrows across the latch boundary, and they break scan because latch state is not controllable or observable like flop state. In FPGA flows there may be no latch primitive at all, so the tool emulates one horribly with LUT feedback loops. The legitimate uses: high-performance designs deliberately use latch-based time borrowing, and every ICG cell contains a latch — but those are instantiated intentionally, not inferred by accident. Follow-up: full_case and parallel_case pragmas can reintroduce sim/silicon mismatches that look exactly like latch bugs.",
-    "votes": {
-      "up": 46,
       "down": 3
     }
   },
@@ -208,25 +153,6 @@ registerProblems([
     }
   },
   {
-    "id": "iq-112",
-    "track": "interview",
-    "branch": "Hardware & RTL",
-    "title": "case vs if-else: Priority Hardware",
-    "difficulty": "easy",
-    "tags": [
-      "priority logic",
-      "Qualcomm-style"
-    ],
-    "summary": "What hardware does an if-else chain imply versus a case statement, why it matters for timing, and when synthesis ignores the difference.",
-    "statement": "What hardware does an if-else-if chain imply versus a case statement, and why does the distinction matter for timing and area? When can synthesis ignore the difference, and what is dangerous about casex and casez?",
-    "kind": "answer",
-    "solution": "An if-else-if chain infers a priority encoder: each condition gates the branches below it, so the logic is a serial chain and the last branch sits at the deepest level. A full, mutually exclusive case infers a parallel mux where every branch has equal delay — better timing and often smaller area. If your conditions are actually mutually exclusive but you wrote if-else, you paid for priority logic you did not need; if they overlap and you wrote case, simulation and synthesis can disagree. Synthesis can sometimes prove mutual exclusivity and flatten the if-else anyway, but do not count on it for complex conditions. Follow-up: casex and casez are dangerous because don't-care bits can mask real bugs and create x-masking mismatches — prefer plain case, or unique case to state your intent and let the tool check it.",
-    "votes": {
-      "up": 45,
-      "down": 2
-    }
-  },
-  {
     "id": "iq-113",
     "track": "interview",
     "branch": "Hardware & RTL",
@@ -280,25 +206,6 @@ registerProblems([
     "votes": {
       "up": 34,
       "down": 5
-    }
-  },
-  {
-    "id": "iq-116",
-    "track": "interview",
-    "branch": "CPU & Architecture",
-    "title": "Pipeline Hazards and Forwarding",
-    "difficulty": "easy",
-    "tags": [
-      "pipelining",
-      "Intel-style"
-    ],
-    "summary": "Name the three hazard classes, show a data hazard that forwarding fixes, and identify the one case that still needs a stall.",
-    "statement": "In a classic 5-stage RISC pipeline, name the three hazard classes and show a two-instruction sequence that stalls without forwarding. Explain how forwarding fixes it, and identify the one dependent case that still requires a stall bubble even with full forwarding.",
-    "kind": "answer",
-    "solution": "The three classes are data hazards (a consumer needs a producer's result), control hazards (branches redirect the fetch stream), and structural hazards (two stages want the same resource, like a single memory port). Example: add x1, x2, x3 followed by sub x4, x1, x5 — the sub reads x1 in decode while the add only writes it back three cycles later. Forwarding routes the add's result from the EX/MEM pipeline register straight back to the ALU input, eliminating the stall entirely. The case forwarding cannot fix is load-use: the load's data only exists at the end of MEM, but the dependent instruction needs it at the start of EX in the same cycle, so one bubble is mandatory. Follow-up: control hazards are handled by prediction rather than stalls because waiting for branch resolution every time would cost around 20 percent of IPC.",
-    "votes": {
-      "up": 52,
-      "down": 1
     }
   },
   {
@@ -396,25 +303,6 @@ registerProblems([
     }
   },
   {
-    "id": "iq-122",
-    "track": "interview",
-    "branch": "CPU & Architecture",
-    "title": "MESI and the O in MOESI",
-    "difficulty": "easy",
-    "tags": [
-      "MESI",
-      "AMD-style"
-    ],
-    "summary": "Walk the four MESI states, then explain what Owned adds and when cache-to-cache dirty transfer saves bandwidth.",
-    "statement": "Walk through the four MESI states and what each guarantees about the line. What does the O state in MOESI add, and in what workload pattern does it save memory bandwidth?",
-    "kind": "answer",
-    "solution": "Modified: I have the only copy, it is dirty, and I must write it back on eviction. Exclusive: I have the only copy, it is clean, and I can silently upgrade to Modified on a write with no bus transaction. Shared: several caches hold clean copies, so a write requires invalidating everyone first. Invalid: I do not have the line. MOESI adds Owned: a dirty line that may exist in multiple caches — the owner services snoops and is responsible for writeback while the others hold Shared copies. That saves a memory round-trip when a dirty line passes between cores, which happens constantly in producer-consumer workloads, and is why AMD favored MOESI. Follow-up: the interesting transition is M-to-S on a snoop hit — the dirty data must be supplied either by writing back to memory (MESI) or by direct cache-to-cache transfer (MOESI and modern interconnects).",
-    "votes": {
-      "up": 50,
-      "down": 2
-    }
-  },
-  {
     "id": "iq-123",
     "track": "interview",
     "branch": "CPU & Architecture",
@@ -430,25 +318,6 @@ registerProblems([
     "solution": "Coherence operates at cache-line granularity (64 bytes), not variable granularity: two hot variables on the same line make the line ping-pong between the cores' caches in Modified state on every write, serializing the threads with hundred-cycle coherence transfers. It looks exactly like lock contention in wall-clock profiles, but no lock exists — diagnose it with performance counters showing heavy hit-modified snoop traffic, or by testing whether padding restores scaling. The fix is to pad and align hot per-thread data onto separate cache lines, or restructure so each thread owns whole lines. The classic offender is a results array where thread i writes results[i] — embarrassingly parallel code that runs slower than the single-threaded version. Follow-up trap: over-aligning everything wastes cache capacity and can hurt; only pad what is actually hot and contended.",
     "votes": {
       "up": 46,
-      "down": 2
-    }
-  },
-  {
-    "id": "iq-124",
-    "track": "interview",
-    "branch": "CPU & Architecture",
-    "title": "Cache Write Policies",
-    "difficulty": "easy",
-    "tags": [
-      "write-back",
-      "ARM-style"
-    ],
-    "summary": "Write-through vs write-back, write-allocate vs no-allocate — which combinations real CPUs use, and when streaming stores override them.",
-    "statement": "Compare write-through and write-back caches, and write-allocate versus write-no-allocate on store misses. Which combination do real CPU caches use and why, and when would you deliberately bypass that policy?",
-    "kind": "answer",
-    "solution": "Write-through pushes every store to the next level immediately — simple and always consistent with memory, but it burns bandwidth on every write. Write-back only writes a line down when a dirty line is evicted — it coalesces repeated writes to the same line and saves bandwidth, at the cost of dirty-state tracking and more complex evictions. Write-allocate brings the line into the cache on a store miss and pairs naturally with write-back; write-no-allocate streams the store past the cache and pairs with write-through. Real CPUs use write-back plus write-allocate throughout L1/L2/L3 because written data has strong temporal locality and bandwidth is the scarce resource. Follow-up: non-temporal streaming stores (movnt) exist precisely to override write-allocate when you know the data will never be re-read — caching it would just evict useful lines.",
-    "votes": {
-      "up": 43,
       "down": 2
     }
   },
@@ -469,25 +338,6 @@ registerProblems([
     "votes": {
       "up": 38,
       "down": 4
-    }
-  },
-  {
-    "id": "iq-126",
-    "track": "interview",
-    "branch": "CPU & Architecture",
-    "title": "TLB Hierarchy and Huge Pages",
-    "difficulty": "easy",
-    "tags": [
-      "TLB",
-      "Intel-style"
-    ],
-    "summary": "Why the TLB exists, what a miss costs, why huge pages can give 10%+ on big heaps, and the catches of huge pages.",
-    "statement": "Why does the TLB exist, what happens on a TLB miss, and why do huge pages help so much for large working sets? What are the downsides of huge pages that make operating systems cautious about them?",
-    "kind": "answer",
-    "solution": "Every virtual memory access needs a virtual-to-physical translation, and a 4-level page-table walk is up to 4 dependent memory reads per access — that would multiply memory latency several-fold. The TLB caches recent translations: a small L1 iTLB/dTLB answering in about a cycle, a larger shared L2 TLB behind it, plus hardware walk caches for intermediate page-table levels. A TLB miss triggers a hardware page walk; only if the entry is genuinely not present does the OS take a page fault. Huge pages (2MB or 1GB) multiply each TLB entry's reach by 512x or more, so big working sets stop thrashing the TLB — databases and JVM heaps routinely gain over 10 percent. The catches: huge pages need contiguous physical memory, suffer internal fragmentation, make individual faults and reclaim far more expensive, and the OS compaction that creates them can stall the system.",
-    "votes": {
-      "up": 48,
-      "down": 2
     }
   },
   {
@@ -544,25 +394,6 @@ registerProblems([
     "votes": {
       "up": 35,
       "down": 4
-    }
-  },
-  {
-    "id": "iq-146",
-    "track": "interview",
-    "branch": "Quant & Trading",
-    "title": "EV vs Variance Tradeoffs",
-    "difficulty": "easy",
-    "tags": [
-      "expected value",
-      "SIG-style"
-    ],
-    "summary": "A sure $10 vs a higher-EV risky bet: what the right answer depends on, and how firms bridge to Kelly sizing.",
-    "statement": "Two bets: A pays +$10 with certainty; B pays $30 with probability 0.5 and -$5 otherwise. Which do you take, and what does the correct answer depend on? Connect your reasoning to how a trading firm evaluates strategies that repeat thousands of times per day.",
-    "kind": "answer",
-    "solution": "EV of A is $10; EV of B is 0.5*30 + 0.5*(-5) = $12.50, so a risk-neutral player takes B. The correct choice depends on bankroll and repetition count: a single play with real downside favors A, while over thousands of repetitions the law of large numbers makes B's edge dominate and variance washes out. Firms think exactly this way: a market maker accepts small per-trade risk all day because the bet repeats ten thousand times daily and the edge compounds, while a slow strategy needs a much higher Sharpe to survive the drawdowns between payoffs. The formal bridge from EV to sizing is the Kelly criterion or mean-variance utility — maximize growth rate, not raw EV. Follow-up trap: positive EV with oversized bets still ruins you — EV alone never answers the sizing question.",
-    "votes": {
-      "up": 47,
-      "down": 2
     }
   },
   {
@@ -717,63 +548,6 @@ registerProblems([
     "votes": {
       "up": 38,
       "down": 4
-    }
-  },
-  {
-    "id": "iq-155",
-    "track": "interview",
-    "branch": "Quant & Trading",
-    "title": "Fat Tails and Broken Risk Models",
-    "difficulty": "easy",
-    "tags": [
-      "fat tails",
-      "Jane-Street-style"
-    ],
-    "summary": "The once-in-14,000-years move that happens every decade: why variance-based risk measures underprice crashes.",
-    "statement": "What does it mean that market returns have fat tails, and why does that break standard risk models? Give one concrete number showing how wrong the normal distribution is, and name one market phenomenon that exists because of fat tails.",
-    "kind": "answer",
-    "solution": "Fat tails — excess kurtosis — mean extreme moves occur far more often than a normal distribution predicts. The classic number: under a normal model, a five-sigma daily move should happen about once in 14,000 years, yet equity indices have produced several in living memory, and October 1987 was around twenty sigma — statistically impossible under normality. It breaks risk models because variance-based measures like VaR and standard deviation treat tails as negligible, systematically underpricing crash risk and the options that insure against it. That mispricing is exactly why the volatility smile exists: the market prices out-of-the-money puts far above their normal-model value. Practical consequences: use fat-tailed distributions like Student-t, expect drawdowns beyond any Gaussian estimate, and treat leverage with respect because ruin lives in the tails. Follow-up trap: six-sigma events every few years is not the model being slightly off — it is the model being the wrong shape entirely.",
-    "votes": {
-      "up": 45,
-      "down": 2
-    }
-  },
-  {
-    "id": "iq-156",
-    "track": "interview",
-    "branch": "Quant & Trading",
-    "title": "Fermi Estimation, Structured",
-    "difficulty": "easy",
-    "tags": [
-      "Fermi",
-      "SIG-style"
-    ],
-    "summary": "Estimate a mid-cap's daily dollar volume with an explicit decomposition, and what separates strong Fermi answers from weak ones.",
-    "statement": "Estimate the daily dollar trading volume of a mid-cap US stock, showing your structure out loud. What makes a Fermi answer strong versus weak in an interview, and how should you react when the interviewer challenges one of your factors?",
-    "kind": "answer",
-    "solution": "Structure: name an anchor, decompose multiplicatively, then sanity-check. Anchor: a mid-cap has market cap around $10B; typical daily turnover for a mid-cap is 0.5 to 1 percent of shares outstanding; so daily dollar volume is roughly $10B times 0.007, about $70M — call it $50-100M. Cross-check: at a $50 share price that is about 1.5 million shares a day, matching the reported order of magnitude for real mid-caps. A strong answer states assumptions explicitly, uses round numbers, propagates honest uncertainty ('confident within 3x either way'), and ends with a sanity check against a known reference. Follow-up: the interviewer cares about the decomposition and your composure — if a factor is challenged, update it and recompute quickly instead of defending it; the estimate itself is almost beside the point.",
-    "votes": {
-      "up": 40,
-      "down": 3
-    }
-  },
-  {
-    "id": "iq-157",
-    "track": "interview",
-    "branch": "Quant & Trading",
-    "title": "Mental Math Under Time Pressure",
-    "difficulty": "easy",
-    "tags": [
-      "mental math",
-      "Optiver-style"
-    ],
-    "summary": "Compute 17x24, 15% of 280, and 3/7 fast — and the general techniques that make speed and reliability coexist.",
-    "statement": "Optiver-style warm-up: compute 17 times 24, 15 percent of 280, and 3/7 as a decimal — fast. What general techniques make mental arithmetic both faster and more reliable under time pressure, and when is a quick approximation better than a slow exact answer?",
-    "kind": "answer",
-    "solution": "Decompose into friendly parts: 17 x 24 = 17 x 25 - 17 = 425 - 17 = 408, using quarters because 25 is 100/4. Convert percentages to fraction shortcuts: 15% of 280 = 10% + 5% = 28 + 14 = 42. Memorize the sevenths cycle: 1/7 = 0.142857 repeating and the digits merely rotate, so 3/7 = 0.428571... — about 0.429. The meta-technique is estimating first (17 x 24 is near 400) so digit errors are caught instantly, and drilling reflexes — squares to 25, fraction-decimal tables, complements to 100 — until they bypass subvocalization. Reliability comes from writing intermediate results down immediately, because working memory, not arithmetic, is the bottleneck under pressure. Follow-up: interviewers reward a fast approximation with stated error bounds over a slow exact answer — 'about 0.43' in two seconds beats '0.428571' in ten.",
-    "votes": {
-      "up": 43,
-      "down": 2
     }
   },
   {

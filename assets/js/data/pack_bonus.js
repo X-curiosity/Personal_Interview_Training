@@ -1,4 +1,5 @@
 /* Bonus round: one fresh problem per track, all machine-verified against reference implementations. */
+/* Easy math and quant drills were retired: these tracks start at medium. */
 registerProblems([
  {
   "id": "cpu-801",
@@ -122,33 +123,6 @@ registerProblems([
   "kind": "code",
   "languages": [
    "python"
-  ]
- },
- {
-  "id": "quant-801",
-  "track": "quant",
-  "branch": "Expected Value",
-  "title": "Bookmaker Overround",
-  "difficulty": "easy",
-  "tags": [
-   "odds",
-   "implied probability",
-   "arbitrage"
-  ],
-  "summary": "Convert decimal odds to implied probabilities and measure the bookmaker's margin.",
-  "statement": "A bookmaker quotes decimal odds of 2.50, 3.40, and 3.20 on the three mutually exclusive outcomes of a match. The implied probability of an outcome is 1 / odds. The overround is the amount by which the summed implied probabilities exceed 1, expressed as a percentage of 1. Compute the overround as a percentage, rounded to two decimals.",
-  "kind": "answer",
-  "answer": "0.66",
-  "hints": [
-   "Sum 1/2.50 + 1/3.40 + 1/3.20 first; each term is that outcome's implied probability.",
-   "The excess over 1.0 is the margin: 0.4 + 0.294117... + 0.3125 = 1.006617..."
-  ],
-  "solution": "1/2.50 = 0.4, 1/3.40 = 0.294118, 1/3.20 = 0.3125. Sum = 1.006618, so the overround is 0.66 percent. The book pays out as if probabilities summed to more than 1; the excess is the guaranteed margin when action is balanced.",
-  "references": [
-   {
-    "label": "Mathematics of bookmaking",
-    "url": "https://en.wikipedia.org/wiki/Mathematics_of_bookmaking"
-   }
   ]
  },
  {

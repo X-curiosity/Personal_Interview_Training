@@ -1,7 +1,7 @@
 /* ==========================================================================
    leaderboard.js — weighted leaderboard.
    "You" row is computed live from solved problems (Easy 1 / Medium 3 /
-   Hard 5 points). Friends can be added manually with their per-difficulty
+   Hard 5 / Very hard 8 points). Friends can be added manually with their per-difficulty
    solve counts; everything persists in localStorage.
    ========================================================================== */
 
@@ -23,6 +23,7 @@
         easy: stats.easy,
         medium: stats.medium,
         hard: stats.hard,
+        expert: stats.expert,
         points: stats.points
       };
     }
@@ -37,8 +38,9 @@
             easy: r.easy | 0,
             medium: r.medium | 0,
             hard: r.hard | 0,
+            expert: r.expert | 0,
             points: PIT_STORE.pointsFor({
-              easy: r.easy | 0, medium: r.medium | 0, hard: r.hard | 0
+              easy: r.easy | 0, medium: r.medium | 0, hard: r.hard | 0, expert: r.expert | 0
             })
           };
         })
@@ -47,7 +49,7 @@
       list.sort(function (a, b) {
         if (b.points !== a.points) return b.points - a.points;
         if (b.hard !== a.hard) return b.hard - a.hard;
-        return (b.easy + b.medium + b.hard) - (a.easy + a.medium + a.hard);
+        return (b.easy + b.medium + b.hard + b.expert) - (a.easy + a.medium + a.hard + a.expert);
       });
       return list;
     }
@@ -66,7 +68,7 @@
     function render() {
       var list = entries();
       tbody.innerHTML = list.map(function (e, i) {
-        var total = e.easy + e.medium + e.hard;
+        var total = e.easy + e.medium + e.hard + e.expert;
         return (
           "<tr" + (e.you ? ' class="row-you"' : "") + ">" +
             '<td class="col-rank">' + medal(i + 1) + "</td>" +
@@ -75,6 +77,7 @@
             '<td class="col-num diff-easy">' + e.easy + "</td>" +
             '<td class="col-num diff-medium">' + e.medium + "</td>" +
             '<td class="col-num diff-hard">' + e.hard + "</td>" +
+            '<td class="col-num diff-expert">' + e.expert + "</td>" +
             '<td class="col-num col-pts">' + e.points + "</td>" +
             "<td class=\"col-del\">" +
               (e.you
@@ -151,6 +154,7 @@
               '<td class="col-num diff-easy">' + e.easy + "</td>" +
               '<td class="col-num diff-medium">' + e.medium + "</td>" +
               '<td class="col-num diff-hard">' + e.hard + "</td>" +
+              '<td class="col-num diff-expert">' + (e.expert | 0) + "</td>" +
               '<td class="col-num col-pts">' + e.points + "</td>" +
             "</tr>"
           );

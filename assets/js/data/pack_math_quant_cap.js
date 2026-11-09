@@ -1,89 +1,6 @@
 /* math quant cap — references/images enriched. */
+/* Easy math and quant drills were retired: these tracks start at medium. */
 registerProblems([
- {
-  "id": "math-201",
-  "track": "math",
-  "branch": "Number Theory",
-  "title": "Implement Euclid’s GCD",
-  "difficulty": "easy",
-  "tags": [
-   "python",
-   "gcd",
-   "Euclid"
-  ],
-  "summary": "Write an iterative Python GCD for arbitrary nonnegative integers.",
-  "statement": "Implement `gcd(a, b)` in Python. Both inputs are nonnegative integers, not both zero. Return their greatest common divisor without importing math.gcd.",
-  "kind": "code",
-  "solution": "Repeatedly replace `(a,b)` with `(b,a % b)` until `b` is zero; the remaining `a` is the GCD.",
-  "languages": [
-   "python"
-  ],
-  "starter": {
-   "python": "def gcd(a, b):\n    \"\"\"Return the greatest common divisor of a and b.\"\"\"\n    # TODO\n    raise NotImplementedError\n"
-  },
-  "tests": {
-   "python": "assert gcd(462, 1071) == 21\nassert gcd(54, 24) == 6\nassert gcd(0, 9) == 9\nassert gcd(99991, 7919) == 1\n"
-  }
- },
- {
-  "id": "math-202",
-  "track": "math",
-  "branch": "Number Theory",
-  "title": "GCD of 12348 and 6780",
-  "difficulty": "easy",
-  "tags": [
-   "gcd",
-   "Euclid"
-  ],
-  "summary": "Compute gcd(12348, 6780) using Euclid’s algorithm.",
-  "statement": "Find the greatest common divisor of 12348 and 6780. Give the exact positive integer and use Euclid’s algorithm rather than factoring both numbers completely.",
-  "kind": "answer",
-  "answer": "12",
-  "tolerance": 0,
-  "solution": "Euclid’s algorithm repeatedly replaces (a,b) by (b,a mod b). Running it on (12348,6780) terminates at 12, so the GCD is 12."
- },
- {
-  "id": "math-205",
-  "track": "math",
-  "branch": "Number Theory",
-  "title": "Implement Least Common Multiple",
-  "difficulty": "easy",
-  "tags": [
-   "python",
-   "lcm",
-   "gcd"
-  ],
-  "summary": "Compute LCM safely from a Euclidean GCD helper.",
-  "statement": "Implement `lcm(a, b)` in Python for nonnegative integers. Return zero if either input is zero; otherwise return the least common multiple. Do not enumerate multiples.",
-  "kind": "code",
-  "solution": "Use Euclid’s algorithm for `gcd`, then return `a // gcd(a,b) * b`; dividing before multiplying avoids unnecessary growth.",
-  "languages": [
-   "python"
-  ],
-  "starter": {
-   "python": "def lcm(a, b):\n    \"\"\"Return the least common multiple of nonnegative a and b.\"\"\"\n    # TODO\n    raise NotImplementedError\n"
-  },
-  "tests": {
-   "python": "assert lcm(84, 126) == 252\nassert lcm(144, 210) == 5040\nassert lcm(0, 7) == 0\nassert lcm(13, 17) == 221\n"
-  }
- },
- {
-  "id": "math-206",
-  "track": "math",
-  "branch": "Number Theory",
-  "title": "LCM of 144 and 210",
-  "difficulty": "easy",
-  "tags": [
-   "lcm",
-   "gcd"
-  ],
-  "summary": "Find lcm(144, 210) exactly.",
-  "statement": "Compute the least common multiple of 144 and 210. Use the identity lcm(a,b)·gcd(a,b)=a·b and return the exact integer.",
-  "kind": "answer",
-  "answer": "5040",
-  "tolerance": 0,
-  "solution": "gcd(144,210)=6. Therefore lcm=144×210/6=5040."
- },
  {
   "id": "math-209",
   "track": "math",
@@ -166,89 +83,6 @@ registerProblems([
   "answer": "24",
   "tolerance": 0,
   "solution": "756=2^2 × 3^3 × 7^1. Multiplying one plus each exponent gives 3×4×2=24 divisors."
- },
- {
-  "id": "math-217",
-  "track": "math",
-  "branch": "Sequences",
-  "title": "Arithmetic Progression Sum",
-  "difficulty": "easy",
-  "tags": [
-   "python",
-   "arithmetic-sequence"
-  ],
-  "summary": "Compute an arithmetic-series sum exactly.",
-  "statement": "Implement `arithmetic_sum(first, difference, count)` in Python. Return the exact integer sum of `count` terms beginning at `first` with common difference `difference`. `count` is nonnegative.",
-  "kind": "code",
-  "solution": "Use `count * (2*first + (count-1)*difference) // 2`; the product is always even for integer progressions.",
-  "languages": [
-   "python"
-  ],
-  "starter": {
-   "python": "def arithmetic_sum(first, difference, count):\n    \"\"\"Return the sum of an arithmetic progression.\"\"\"\n    # TODO\n    raise NotImplementedError\n"
-  },
-  "tests": {
-   "python": "assert arithmetic_sum(3, 5, 40) == 4020\nassert arithmetic_sum(17, 7, 25) == 2525\nassert arithmetic_sum(-4, 9, 30) == 3795\nassert arithmetic_sum(10, 3, 0) == 0\n"
-  }
- },
- {
-  "id": "math-218",
-  "track": "math",
-  "branch": "Sequences",
-  "title": "Arithmetic Series with 25 Terms",
-  "difficulty": "easy",
-  "tags": [
-   "arithmetic sequence",
-   "summation"
-  ],
-  "summary": "Sum 25 terms starting at 17 with common difference 7.",
-  "statement": "An arithmetic sequence starts at 17 and has common difference 7. What is the exact sum of its first 25 terms?",
-  "kind": "answer",
-  "answer": "2525",
-  "tolerance": 0,
-  "solution": "Use S=n(2a+(n−1)d)/2. Substitution gives 25×(2×17+(25−1)×7)/2=2525."
- },
- {
-  "id": "math-221",
-  "track": "math",
-  "branch": "Sequences",
-  "title": "Iterative Fibonacci",
-  "difficulty": "easy",
-  "tags": [
-   "python",
-   "Fibonacci",
-   "iteration"
-  ],
-  "summary": "Compute Fibonacci in linear time and constant space.",
-  "statement": "Implement `fibonacci(n)` in Python with `F(0)=0`, `F(1)=1`, and `F(n)=F(n-1)+F(n-2)`. `n` is nonnegative. Use iteration and O(1) auxiliary space.",
-  "kind": "code",
-  "solution": "Track the current and next Fibonacci values as a pair and update it `n` times. This avoids recursion and stores only two integers.",
-  "languages": [
-   "python"
-  ],
-  "starter": {
-   "python": "def fibonacci(n):\n    \"\"\"Return F(n) for nonnegative n.\"\"\"\n    # TODO\n    raise NotImplementedError\n"
-  },
-  "tests": {
-   "python": "assert fibonacci(0) == 0\nassert fibonacci(1) == 1\nassert fibonacci(20) == 6765\nassert fibonacci(35) == 9227465\n"
-  }
- },
- {
-  "id": "math-222",
-  "track": "math",
-  "branch": "Sequences",
-  "title": "Fibonacci Term F(25)",
-  "difficulty": "easy",
-  "tags": [
-   "Fibonacci",
-   "iteration"
-  ],
-  "summary": "Compute F(25) with F(0)=0 and F(1)=1.",
-  "statement": "Let F(0)=0, F(1)=1, and F(k)=F(k−1)+F(k−2). Compute the exact value of F(25).",
-  "kind": "answer",
-  "answer": "75025",
-  "tolerance": 0,
-  "solution": "Iterating the recurrence while retaining only the previous two values produces F(25)=75025."
  },
  {
   "id": "math-225",
@@ -479,91 +313,6 @@ registerProblems([
   "solution": "C_12=binom(24,12)/(12+1)=2704156/13=208012."
  },
  {
-  "id": "quant-201",
-  "track": "quant",
-  "branch": "Expected Value",
-  "title": "Expected Sum of 2d6",
-  "difficulty": "easy",
-  "tags": [
-   "expected value",
-   "dice"
-  ],
-  "summary": "Find the expected total of 2 fair 6-sided dice.",
-  "statement": "Roll 2 independent fair dice, each labeled 1 through 6. What is the expected value of their sum?",
-  "kind": "answer",
-  "answer": "7",
-  "tolerance": 0.0001,
-  "solution": "One die has expectation (6+1)/2=3.5. Linearity gives 2×(6+1)/2=7."
- },
- {
-  "id": "quant-202",
-  "track": "quant",
-  "branch": "Expected Value",
-  "title": "Expected Sum of 3d8",
-  "difficulty": "easy",
-  "tags": [
-   "expected value",
-   "dice"
-  ],
-  "summary": "Find the expected total of 3 fair 8-sided dice.",
-  "statement": "Roll 3 independent fair dice, each labeled 1 through 8. What is the expected value of their sum?",
-  "kind": "answer",
-  "answer": "13.5",
-  "tolerance": 0.0001,
-  "solution": "One die has expectation (8+1)/2=4.5. Linearity gives 3×(8+1)/2=13.5."
- },
- {
-  "id": "quant-203",
-  "track": "quant",
-  "branch": "Expected Value",
-  "title": "Expected Sum of 4d10",
-  "difficulty": "easy",
-  "tags": [
-   "expected value",
-   "dice"
-  ],
-  "summary": "Find the expected total of 4 fair 10-sided dice.",
-  "statement": "Roll 4 independent fair dice, each labeled 1 through 10. What is the expected value of their sum?",
-  "kind": "answer",
-  "answer": "22",
-  "tolerance": 0.0001,
-  "solution": "One die has expectation (10+1)/2=5.5. Linearity gives 4×(10+1)/2=22."
- },
- {
-  "id": "quant-204",
-  "track": "quant",
-  "branch": "Expected Value",
-  "title": "Expected Sum of 5d12",
-  "difficulty": "easy",
-  "tags": [
-   "expected value",
-   "dice"
-  ],
-  "summary": "Find the expected total of 5 fair 12-sided dice.",
-  "statement": "Roll 5 independent fair dice, each labeled 1 through 12. What is the expected value of their sum?",
-  "kind": "answer",
-  "answer": "32.5",
-  "tolerance": 0.0001,
-  "solution": "One die has expectation (12+1)/2=6.5. Linearity gives 5×(12+1)/2=32.5."
- },
- {
-  "id": "quant-205",
-  "track": "quant",
-  "branch": "Expected Value",
-  "title": "Expected Sum of 7d4",
-  "difficulty": "easy",
-  "tags": [
-   "expected value",
-   "dice"
-  ],
-  "summary": "Find the expected total of 7 fair 4-sided dice.",
-  "statement": "Roll 7 independent fair dice, each labeled 1 through 4. What is the expected value of their sum?",
-  "kind": "answer",
-  "answer": "17.5",
-  "tolerance": 0.0001,
-  "solution": "One die has expectation (4+1)/2=2.5. Linearity gives 7×(4+1)/2=17.5."
- },
- {
   "id": "quant-206",
   "track": "quant",
   "branch": "Expected Value",
@@ -647,40 +396,6 @@ registerProblems([
   "answer": "6.46875",
   "tolerance": 0.001,
   "solution": "P(max=k)=(k/8)^3−((k−1)/8)^3. Summing k·P(max=k) from 1 to 8 gives 6.46875."
- },
- {
-  "id": "quant-211",
-  "track": "quant",
-  "branch": "Dice & Coins",
-  "title": "Exactly 3 Heads in 8 Flips",
-  "difficulty": "easy",
-  "tags": [
-   "binomial",
-   "coins"
-  ],
-  "summary": "Compute P(exactly 3 heads in 8 fair flips).",
-  "statement": "A fair coin is flipped independently 8 times. What is the probability of seeing exactly 3 heads? Give a decimal to at least four places.",
-  "kind": "answer",
-  "answer": "0.21875",
-  "tolerance": 0.001,
-  "solution": "There are C(8,3)=56 favorable sequences among 2^8=256 equally likely sequences, so the probability is 0.21875."
- },
- {
-  "id": "quant-212",
-  "track": "quant",
-  "branch": "Dice & Coins",
-  "title": "Exactly 5 Heads in 10 Flips",
-  "difficulty": "easy",
-  "tags": [
-   "binomial",
-   "coins"
-  ],
-  "summary": "Compute P(exactly 5 heads in 10 fair flips).",
-  "statement": "A fair coin is flipped independently 10 times. What is the probability of seeing exactly 5 heads? Give a decimal to at least four places.",
-  "kind": "answer",
-  "answer": "0.246094",
-  "tolerance": 0.001,
-  "solution": "There are C(10,5)=252 favorable sequences among 2^10=1024 equally likely sequences, so the probability is 0.246094."
  },
  {
   "id": "quant-213",
@@ -1132,24 +847,6 @@ registerProblems([
   ]
  },
  {
-  "id": "math-302",
-  "track": "math",
-  "branch": "AI Traps",
-  "title": "Months With 28 Days",
-  "difficulty": "easy",
-  "tags": [
-   "trap",
-   "hidden-assumption",
-   "calendar"
-  ],
-  "summary": "The hidden assumption: 'have 28 days' does not mean 'have exactly 28 days'.",
-  "statement": "How many months of the year have 28 days?",
-  "kind": "answer",
-  "answer": "12",
-  "tolerance": 0,
-  "solution": "Every month has at least 28 days, so all 12 months 'have 28 days'. The familiar answer 1 smuggles in the unstated assumption 'exactly 28 days' — the question never said 'exactly'."
- },
- {
   "id": "math-303",
   "track": "math",
   "branch": "AI Traps",
@@ -1203,30 +900,6 @@ registerProblems([
   ]
  },
  {
-  "id": "math-305",
-  "track": "math",
-  "branch": "AI Traps",
-  "title": "The Contradictory Brief",
-  "difficulty": "easy",
-  "tags": [
-   "trap",
-   "contradiction",
-   "instructions"
-  ],
-  "summary": "One word AND a detailed explanation cannot both be satisfied.",
-  "statement": "A client briefs you: \"Answer in exactly one word, and also explain your reasoning in detail.\" Can a single response fully satisfy both requirements at once? Answer yes or no.",
-  "kind": "answer",
-  "answer": "no",
-  "tolerance": 0,
-  "solution": "The requirements are mutually exclusive: a one-word answer cannot contain a detailed explanation. The correct move is to notice the contradiction (and ask which requirement wins), not to silently satisfy one and pretend both were met.",
-  "references": [
-   {
-    "label": "Contradiction",
-    "url": "https://en.wikipedia.org/wiki/Contradiction"
-   }
-  ]
- },
- {
   "id": "math-306",
   "track": "math",
   "branch": "AI Traps",
@@ -1275,24 +948,6 @@ registerProblems([
   ]
  },
  {
-  "id": "math-308",
-  "track": "math",
-  "branch": "AI Traps",
-  "title": "All But Nine",
-  "difficulty": "easy",
-  "tags": [
-   "trap",
-   "long-context",
-   "distraction"
-  ],
-  "summary": "A paragraph of noise hides a one-line question — 'all but 9' means 9 survive.",
-  "statement": "A shepherd keeps his flock on a hillside above the village. The flock grazes on rye grass in spring and clover in autumn. The shepherd's grandfather tended the same hillside for forty years, and the village holds a wool festival every June. This year the shepherd counted his sheep twice to be sure: 17 sheep, every one tagged and recorded in the parish ledger. One night, a storm frightens the flock, and all but 9 sheep run off into the hills. How many sheep remain with the shepherd?",
-  "kind": "answer",
-  "answer": "9",
-  "tolerance": 0,
-  "solution": "'All but 9 ran off' means 9 did not run off — the answer is 9. Everything else (17 sheep, the grandfather, the festival, the ledger) is long-context distraction designed to bait you into computing 17 − 9 = 8."
- },
- {
   "id": "math-309",
   "track": "math",
   "branch": "AI Traps",
@@ -1339,24 +994,6 @@ registerProblems([
     "url": "https://en.wikipedia.org/wiki/Prompt_injection"
    }
   ]
- },
- {
-  "id": "math-311",
-  "track": "math",
-  "branch": "AI Traps",
-  "title": "Count the R's",
-  "difficulty": "easy",
-  "tags": [
-   "trap",
-   "counting",
-   "letters"
-  ],
-  "summary": "Letter-by-letter counting — the classic strawberry test.",
-  "statement": "How many times does the lowercase letter 'r' appear in the word: strawberry",
-  "kind": "answer",
-  "answer": "3",
-  "tolerance": 0,
-  "solution": "s-t-r-a-w-b-e-r-r-y: r appears at positions 3, 8, and 9 — three times. Language models are famously wrong here because they read whole words as tokens instead of letters; counting character by character is the only reliable method."
  },
  {
   "id": "math-312",

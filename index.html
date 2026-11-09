@@ -20,6 +20,7 @@
         <ul>
           <li><a href="index.html" aria-current="page">Home</a></li>
           <li><a href="problems.html">Problems</a></li>
+          <li><a href="builds.html">Builds</a></li>
           <li><a href="interview.html">Mock Interview</a></li>
           <li><a href="leaderboard.html">Leaderboard</a></li>
           <li><a href="submit.html">Contribute</a></li>
@@ -68,6 +69,7 @@
         <div class="stat"><div class="stat-value diff-easy" data-stat="easy">0</div><div class="stat-label">Easy</div></div>
         <div class="stat"><div class="stat-value diff-medium" data-stat="medium">0</div><div class="stat-label">Medium</div></div>
         <div class="stat"><div class="stat-value diff-hard" data-stat="hard">0</div><div class="stat-label">Hard</div></div>
+        <div class="stat"><div class="stat-value diff-expert" data-stat="expert">0</div><div class="stat-label">Very hard</div></div>
         <div class="stat"><div class="stat-value" data-stat="pct">0%</div><div class="stat-label">Complete</div></div>
       </div>
     </section>
@@ -75,7 +77,7 @@
     <section class="section" aria-labelledby="tracks-heading">
       <div class="section-head">
         <h2 id="tracks-heading">Training tracks</h2>
-        <p>Eight tracks, with in browser Python, judged C/C++, Verilog simulation, and instant answer checks for math and concept questions.</p>
+        <p>Ten tracks and five build arcs, with in browser Python, judged C/C++, Verilog simulation, and instant answer checks for math and concept questions. Difficulty now runs Easy, Medium, Hard and Very hard; math, quant and interview practice start at Medium.</p>
       </div>
       <div class="grid">
         <a class="card accent-cpu" href="problems.html#cpu">
@@ -126,7 +128,27 @@
           <p>Practice arrays, sliding windows, stacks, intervals and graph traversal with runnable edge case tests.</p>
           <span class="card-meta" data-track-count="python" data-suffix=" problems · tested Python">…</span>
         </a>
+        <a class="card accent-fpga" href="problems.html#fpga">
+          <div class="glyph" aria-hidden="true">▦</div>
+          <h3>FPGA Implementation</h3>
+          <p>Go from a first heartbeat to a working UART loopback: clock dividers, synchronizers, debouncing and serial framing.</p>
+          <span class="card-meta" data-track-count="fpga" data-suffix=" problems · Verilog">…</span>
+        </a>
+        <a class="card accent-hpc" href="problems.html#hpc">
+          <div class="glyph" aria-hidden="true">⬢</div>
+          <h3>High Performance Computing</h3>
+          <p>Blocked multiply, tiled transposes, halo exchange, parallel scaling and roofline reasoning you can verify.</p>
+          <span class="card-meta" data-track-count="hpc" data-suffix=" problems · tested Python">…</span>
+        </a>
       </div>
+    </section>
+
+    <section class="section" aria-labelledby="builds-heading">
+      <div class="section-head">
+        <h2 id="builds-heading">Build a whole system</h2>
+        <p>Five ordered arcs where each step is a real module of one working design. Solve them in order and the pieces assemble: a CPU simulator, an edge detector, an FPGA bring-up, a stack VM, an HPC kernel suite.</p>
+      </div>
+      <p><a class="btn" href="builds.html">Open the build arcs</a></p>
     </section>
 
     <section class="section" id="bored" aria-labelledby="bored-heading">
@@ -177,6 +199,8 @@
   <script src="assets/js/data/pack_bonus.js"></script>
   <script src="assets/js/data/pack_ml.js"></script>
   <script src="assets/js/data/pack_python.js"></script>
+  <script src="assets/js/data/pack_arcs.js"></script>
+  <script src="assets/js/data/pack_expert.js"></script>
   <script src="assets/js/store.js"></script>
   <script src="assets/js/main.js"></script>
 </body>

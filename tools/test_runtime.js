@@ -47,18 +47,19 @@ for (const file of fs.readdirSync(path.join(ROOT, "assets/js/data")).filter(f =>
 }
 dataSource += "\n" + read("assets/js/store.js");
 dataSource += "\n" + read("assets/js/problem.js");
-dataSource += "\nwindow.__TEST_EXPORTS = { PROBLEMS, TRACKS, ROLES };";
+dataSource += "\nwindow.__TEST_EXPORTS = { PROBLEMS, TRACKS, ROLES, ARCS };";
 window.eval(dataSource);
 window.PIT_RUNNER = { run: () => Promise.resolve({ ok: true, stdout: "ALL TESTS PASSED", stderr: "", code: 0 }) };
 
-const { PROBLEMS, TRACKS, ROLES } = window.__TEST_EXPORTS;
+const { PROBLEMS, TRACKS, ROLES, ARCS } = window.__TEST_EXPORTS;
 const { PIT_STORE, PIT_PROBLEM } = window;
-assert.strictEqual(PROBLEMS.length, 532, `database cap requires exactly 532 problems; got ${PROBLEMS.length}`);
+assert.strictEqual(PROBLEMS.length, 520, `database cap requires exactly 520 problems; got ${PROBLEMS.length}`);
 for (const key of ["ml", "python"]) {
   assert(TRACKS[key], `${key} track missing`);
   const problems = PROBLEMS.filter(p => p.track === key);
-  assert.strictEqual(problems.length, 6, `${key} must contain exactly six new problems`);
-  assert(problems.every(p => p.kind === "code" && p.languages.includes("python") && p.tests.python && p.statement.length > 200),
+  assert(problems.length >= 6, `${key} must keep its detailed Python problems`);
+  assert(problems.every(p => p.kind === "code" && p.languages.includes("python") &&
+    p.tests.python && p.statement.length > 200),
     `${key} problems must have detailed statements and runnable Python tests`);
 }
 assert.strictEqual(new Set(PROBLEMS.map(p => p.id)).size, PROBLEMS.length, "problem ids must be unique");
@@ -116,6 +117,34 @@ for (const [key, role] of Object.entries(ROLES)) {
   assert(pool.length >= role.count, `${key} has only ${pool.length}/${role.count} questions`);
 }
 
+// Difficulty tiers: easy work was retired from math, quant and interview.
+for (const track of ["math", "quant", "interview"]) {
+  const easy = PROBLEMS.filter(p => p.track === track && p.difficulty === "easy");
+  assert.strictEqual(easy.length, 0, `${track} must not contain easy problems`);
+}
+assert(PROBLEMS.some(p => p.difficulty === "expert"), "very hard problems must exist");
+for (const track of ["hpc", "fpga"]) {
+  assert(TRACKS[track], `${track} track missing`);
+  assert(PROBLEMS.filter(p => p.track === track).length >= 5, `${track} needs content`);
+}
+
+// Build arcs assemble into complete systems.
+const arcIds = Object.keys(ARCS);
+assert(arcIds.length >= 5, "at least five build arcs");
+for (const id of arcIds) {
+  const steps = PROBLEMS.filter(p => p.arc && p.arc.id === id)
+    .sort((a, b) => a.arc.step - b.arc.step);
+  assert.strictEqual(steps.length, ARCS[id].steps, `${id}: wrong step count`);
+  steps.forEach((p, i) => {
+    assert.strictEqual(p.arc.step, i + 1, `${id}: steps must be contiguous`);
+    assert.strictEqual(p.track, ARCS[id].track, `${id}: step in wrong track`);
+    assert(p.statement.length > 900, `${id} step ${p.arc.step}: statement too thin`);
+  });
+}
+const builds = read("builds.html");
+assert(builds.includes('assets/js/builds.js'), "builds page must load builds.js");
+assert(builds.includes('data-builds'), "builds page must render arcs");
+
 // The server scoring registry must stay in exact sync with client packs.
 const { DIFF: SERVER_DIFFICULTIES, pointsFor } = require(path.join(ROOT, "api/_points.js"));
 assert.strictEqual(Object.keys(SERVER_DIFFICULTIES).length, PROBLEMS.length, "server difficulty registry is stale");
@@ -128,9 +157,13 @@ assert.strictEqual(pointsFor(["ml-901", "py-901"]).points, 4, "new track points 
 window.localStorage.clear();
 PIT_STORE.toggleSolved("cpu-101"); // easy = 1 point
 PIT_STORE.toggleSolved("cpu-103"); // medium = 3 points
+const expertProblem = PROBLEMS.find(p => p.difficulty === "expert");
+assert(expertProblem, "an expert problem must exist for the scoring test");
+PIT_STORE.toggleSolved(expertProblem.id); // very hard = 8 points
 const stats = PIT_STORE.statsFor(PROBLEMS, PIT_STORE.getSolved());
-assert.strictEqual(stats.solved, 2);
-assert.strictEqual(stats.points, 4);
+assert.strictEqual(stats.solved, 3);
+assert.strictEqual(stats.points, 1 + 3 + 8);
+assert.strictEqual(stats.expert, 1, "expert tier must be counted separately");
 
 // Every local script referenced by an HTML page exists.
 for (const html of fs.readdirSync(ROOT).filter(f => f.endsWith(".html"))) {

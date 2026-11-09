@@ -21,7 +21,16 @@ const TRACKS = {
     platform: "LeetSilicon style",
     home: "https://leetsilicon.com/problems",
     blurb: "Hardware interview prep: RTL design, verification, architecture.",
-    branches: ["RTL Design", "Verification", "Computer Architecture", "CDC & Timing"]
+    branches: ["RTL Design", "Verification", "Computer Architecture", "CDC & Timing", "Build: Vision Pipeline"]
+  },
+  "fpga": {
+    name: "FPGA Implementation",
+    short: "FPGA",
+    glyph: "▦",
+    platform: "Build: FPGA Bring-up",
+    home: "builds.html#fpga-bringup",
+    blurb: "Board-level Verilog that actually runs on a part: clocks, synchronizers, debouncing, serial framing.",
+    branches: ["Build: FPGA Bring-up", "Clocking & Reset", "Interfaces"]
   },
   "systems": {
     name: "Systems C/C++",
@@ -30,7 +39,7 @@ const TRACKS = {
     platform: "PIT Judge",
     home: "problems.html#systems",
     blurb: "Low-level C and C++: bit manipulation, pointers, memory, data structures.",
-    branches: ["Bit Manipulation", "Pointers & Memory", "Data Structures", "Concurrency & OS"]
+    branches: ["Bit Manipulation", "Pointers & Memory", "Data Structures", "Concurrency & OS", "Build: CPU Simulator"]
   },
   "math": {
     name: "Mathematics",
@@ -66,7 +75,16 @@ const TRACKS = {
     platform: "Interview Red",
     home: "problems.html#python",
     blurb: "Classic coding interview patterns with executable Python tests.",
-    branches: ["Arrays & Hashing", "Sliding Window", "Stack", "Intervals", "Graph Traversal"]
+    branches: ["Arrays & Hashing", "Sliding Window", "Stack", "Intervals", "Graph Traversal", "Build: Stack VM"]
+  },
+  "hpc": {
+    name: "High Performance Computing",
+    short: "HPC",
+    glyph: "⬢",
+    platform: "Build a kernel suite",
+    home: "builds.html#hpc-kernels",
+    blurb: "Blocking, tiling, halo exchange, scaling and roofline reasoning, written as one kernel suite.",
+    branches: ["Build: HPC Kernels"]
   },
   "interview": {
     name: "Interview Questions",
@@ -79,13 +97,59 @@ const TRACKS = {
   }
 };
 
-const TRACK_ORDER = ["cpu", "silicon", "systems", "ml", "python", "math", "quant", "interview"];
+const TRACK_ORDER = ["cpu", "silicon", "fpga", "systems", "ml", "python", "hpc", "math", "quant", "interview"];
+
+/* Build arcs: ordered problem series that assemble into one working system.
+   Each problem carries arc: { id, name, step, total }; this registry holds the
+   presentation data so the Builds page can render before problems load. */
+const ARCS = {
+  "cpu-sim": {
+    name: "Build a CPU simulator in C",
+    language: "C",
+    track: "systems",
+    blurb: "An RV32I subset that actually runs programs: decode, ALU and registers, byte-addressed memory, the instruction step with branches and jumps, then a direct-mapped cache that turns instructions into cycles.",
+    outcome: "A simulator that executes a small assembly program and reports its cycle count.",
+    steps: 5
+  },
+  "vision-pipe": {
+    name: "Build an edge detector in Verilog",
+    language: "Verilog",
+    track: "silicon",
+    blurb: "A streaming image pipeline like the front end of an FPGA ISP: RGB to luma, a 3x3 line buffer, Sobel gradients, magnitude and threshold, then the integrated block with a real handshake and an end-to-end testbench.",
+    outcome: "Hardware that turns a pixel stream into an edge map at one pixel per clock.",
+    steps: 5
+  },
+  "fpga-bringup": {
+    name: "Build an FPGA bring-up design",
+    language: "Verilog",
+    track: "fpga",
+    blurb: "The ladder every board bring-up follows: make a heartbeat with a real clock, get async signals safely into your domain, clean up a bouncing button, speak UART out, receive and detect framing errors, then echo bytes back end to end.",
+    outcome: "A synthesizable design that echoes serial input, verified stage by stage in simulation.",
+    steps: 5
+  },
+  "stack-vm": {
+    name: "Build a stack VM in Python",
+    language: "Python",
+    track: "python",
+    blurb: "A complete little language: tokenizer, Pratt parser, bytecode compiler, the VM loop with jumps, then functions, recursion and the assembled run_source pipeline.",
+    outcome: "A working interpreter that evaluates factorial and fibonacci from source.",
+    steps: 5
+  },
+  "hpc-kernels": {
+    name: "Build an HPC kernel suite",
+    language: "Python",
+    track: "hpc",
+    blurb: "Performance thinking with deterministic, countable work: blocked matrix multiply, tiled transpose and memory traffic, halo exchange for a stencil, a parallel reduction with a scaling model, and a roofline report that classifies every kernel.",
+    outcome: "A suite plus a performance model that says whether a kernel is compute or bandwidth bound.",
+    steps: 5
+  }
+};
 
 /* Mock-interview roles: which tracks feed them, how many questions, how long. */
 const ROLES = {
   "ml-engineer": {
     name: "ML Engineer", icon: "🧠",
-    tracks: ["ml", "python", "systems", "math", "quant"],
+    tracks: ["ml", "python", "hpc", "systems", "math", "quant"],
     difficulties: ["medium", "hard"],
     count: 6, minutes: 45,
     blurb: "Numerical reasoning, production systems and the probability questions ML interviews love."
@@ -166,6 +230,14 @@ function registerProblems(arr) {
       tolerance: typeof p.tolerance === "number" ? p.tolerance : 0,
       solution: p.solution || null,
       hints: Array.isArray(p.hints) ? p.hints.map(String) : [],  // free progressive hints
+      arc: p.arc && p.arc.id
+        ? {
+            id: String(p.arc.id),
+            name: String(p.arc.name || (ARCS[p.arc.id] && ARCS[p.arc.id].name) || p.arc.id),
+            step: Number(p.arc.step) || 0,
+            total: Number(p.arc.total) || 0
+          }
+        : null,
       image: p.image || null,             // optional { url, alt } illustration
       references: Array.isArray(p.references)   // optional [{ label, url }]
         ? p.references.map(function (r) {
@@ -186,6 +258,7 @@ function findProblem(id) {
 }
 
 Object.freeze(TRACKS);
+Object.freeze(ARCS);
 Object.freeze(TRACK_ORDER);
 Object.freeze(ROLES);
 Object.values(TRACKS).forEach(function (t) { Object.freeze(t.branches); Object.freeze(t); });

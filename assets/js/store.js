@@ -1,6 +1,6 @@
 /* ==========================================================================
    store.js — local progress (localStorage) + weighted scoring.
-   Weights: easy = 1 pt, medium = 3 pts, hard = 5 pts.
+   Weights: easy = 1 pt, medium = 3, hard = 5, very hard (expert) = 8.
    Everything is client-side; nothing leaves the browser.
    ========================================================================== */
 
@@ -11,7 +11,7 @@
   var RIVALS_KEY = "pit.rivals.v1";
   var FORFEITS_KEY = "pit.forfeits.v1";
 
-  var POINTS = { easy: 1, medium: 3, hard: 5 };
+  var POINTS = { easy: 1, medium: 3, hard: 5, expert: 8 };
 
   /* ---------- solved set ---------- */
 
@@ -92,7 +92,7 @@
   function statsFor(problems, solvedSet) {
     var stats = {
       solved: 0, total: problems.length,
-      easy: 0, medium: 0, hard: 0,
+      easy: 0, medium: 0, hard: 0, expert: 0,
       points: 0, maxPoints: 0
     };
     problems.forEach(function (p) {
@@ -110,7 +110,8 @@
   function pointsFor(counts) {
     return (counts.easy || 0) * POINTS.easy +
            (counts.medium || 0) * POINTS.medium +
-           (counts.hard || 0) * POINTS.hard;
+           (counts.hard || 0) * POINTS.hard +
+           (counts.expert || 0) * POINTS.expert;
   }
 
   /* ---------- rivals (manual leaderboard entries) ---------- */
