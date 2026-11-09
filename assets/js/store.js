@@ -15,9 +15,15 @@
 
   /* ---------- solved set ---------- */
 
-  function getSolved() {
+  /* localStorage is synchronous and JSON parsing 500+ ids on every row of a
+     problem table makes the page janky, so each set is read once and cached.
+     Every write refreshes the cache; another tab's write invalidates it. */
+  var solvedCache = null;
+  var forfeitCache = null;
+
+  function readSet(key) {
     try {
-      var raw = localStorage.getItem(SOLVED_KEY);
+      var raw = localStorage.getItem(key);
       var arr = raw ? JSON.parse(raw) : [];
       return new Set(Array.isArray(arr) ? arr : []);
     } catch (e) {
@@ -25,14 +31,29 @@
     }
   }
 
+  function solvedRef() {
+    if (!solvedCache) solvedCache = readSet(SOLVED_KEY);
+    return solvedCache;
+  }
+
+  function forfeitRef() {
+    if (!forfeitCache) forfeitCache = readSet(FORFEITS_KEY);
+    return forfeitCache;
+  }
+
+  function getSolved() {
+    return new Set(solvedRef());
+  }
+
   function saveSolved(set) {
+    solvedCache = new Set(set);
     try {
-      localStorage.setItem(SOLVED_KEY, JSON.stringify(Array.from(set)));
+      localStorage.setItem(SOLVED_KEY, JSON.stringify(Array.from(solvedCache)));
     } catch (e) { /* private mode etc. — progress just won't persist */ }
   }
 
   function isSolved(id) {
-    return getSolved().has(id);
+    return solvedRef().has(id);
   }
 
   /* Returns the new state (true = now solved). */
@@ -46,23 +67,18 @@
   /* ---------- forfeits (solution viewed: no credit, sticky) ---------- */
 
   function getForfeits() {
-    try {
-      var raw = localStorage.getItem(FORFEITS_KEY);
-      var arr = raw ? JSON.parse(raw) : [];
-      return new Set(Array.isArray(arr) ? arr : []);
-    } catch (e) {
-      return new Set();
-    }
+    return new Set(forfeitRef());
   }
 
   function isForfeited(id) {
-    return getForfeits().has(id);
+    return forfeitRef().has(id);
   }
 
   /* Viewing the solution forfeits credit permanently. If the problem was
      already solved, it becomes unsolved (the stored rule). */
   function addForfeit(id) {
-    var set = getForfeits();
+    var set = forfeitRef();
+    if (set.has(id)) return;
     set.add(id);
     try {
       localStorage.setItem(FORFEITS_KEY, JSON.stringify(Array.from(set)));
@@ -119,19 +135,32 @@
 
   var VOTES_PREFIX = "pit.votes.v1.";
 
-  function getVotes(ns) {
-    try {
-      var raw = localStorage.getItem(VOTES_PREFIX + ns);
-      var obj = raw ? JSON.parse(raw) : {};
-      return obj && typeof obj === "object" ? obj : {};
-    } catch (e) {
-      return {};
+  /* Vote maps are read once per namespace: the problem table asks for a tally
+     for every interview row, so parsing the same JSON per row was costly. */
+  var voteCache = {};
+
+  function voteRef(ns) {
+    if (!voteCache[ns]) {
+      try {
+        var raw = localStorage.getItem(VOTES_PREFIX + ns);
+        var obj = raw ? JSON.parse(raw) : {};
+        voteCache[ns] = obj && typeof obj === "object" ? obj : {};
+      } catch (e) {
+        voteCache[ns] = {};
+      }
     }
+    return voteCache[ns];
+  }
+
+  function getVotes(ns) {
+    var copy = {};
+    Object.keys(voteRef(ns)).forEach(function (key) { copy[key] = voteRef(ns)[key]; });
+    return copy;
   }
 
   /* choice: "up" | "down" | null (retract). */
   function setVote(ns, id, choice) {
-    var map = getVotes(ns);
+    var map = voteRef(ns);
     if (choice === "up" || choice === "down") map[id] = choice;
     else delete map[id];
     try {
@@ -141,7 +170,7 @@
 
   /* Displayed tally = seeded community counts + your local vote. */
   function tally(ns, id, seed) {
-    var mine = getVotes(ns)[id] || null;
+    var mine = voteRef(ns)[id] || null;
     var up = (seed && seed.up ? seed.up : 0) + (mine === "up" ? 1 : 0);
     var down = (seed && seed.down ? seed.down : 0) + (mine === "down" ? 1 : 0);
     var total = up + down;
@@ -150,6 +179,17 @@
       pct: total ? Math.round((100 * up) / total) : null
     };
   }
+
+  try {
+    window.addEventListener("storage", function (e) {
+      if (e.key === SOLVED_KEY) solvedCache = null;
+      if (e.key === FORFEITS_KEY) forfeitCache = null;
+      if (e.key && e.key.indexOf(VOTES_PREFIX) === 0) delete voteCache[e.key.slice(VOTES_PREFIX.length)];
+      if (e.key === SOLVED_KEY || e.key === FORFEITS_KEY) {
+        if (window.PIT && window.PIT.refreshStats) window.PIT.refreshStats();
+      }
+    });
+  } catch (e) { /* storage events unavailable */ }
 
   window.PIT_STORE = {
     POINTS: POINTS,

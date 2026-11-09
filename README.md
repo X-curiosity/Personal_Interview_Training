@@ -15,6 +15,8 @@ The editor separates **Run tests** from **Submit**: running is practice and neve
 
 The built-in editor auto-indents: `Enter` after a Python colon (`if`, `for`, `while`, `def`, `class`, `else`, `try`) or an opening brace opens a new level, and `Tab` / `Shift+Tab` indent and outdent whole selections (press `Escape` first if you want `Tab` to move focus).
 
+Progress, forfeits and votes are cached in memory, so filtering a 500+ row table no longer parses `localStorage` for every row, and the table rebuilds only when typing pauses. A performance test guards both behaviours.
+
 Browse by language (Python, C, C++, Verilog, answer-only) and difficulty, or combine both with a track; the selection is stored in the URL so filtered views can be bookmarked and shared.
 
 Create a free profile to sync progress across devices and join the global leaderboard. Solving is earned by correct submissions only; hard problems offer free hints, but viewing a solution forfeits credit for that problem. Twelve **project problems** (cache simulator, FIFO, arena allocator, arbiter, Karatsuba, Monte Carlo pricer and more) are multi-hour builds with full edge-case test suites.

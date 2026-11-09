@@ -187,6 +187,8 @@ async function main() {
     const search = bdoc.querySelector("[data-search]");
     search.value = "verilog";
     search.dispatchEvent(new bad.window.Event("input", { bubbles: true }));
+    /* search is debounced so typing stays responsive; wait for the rebuild */
+    await waitFor(() => rows(bdoc).length < PROBLEMS.length, "debounced search");
     const found = rows(bdoc);
     assert(found.length > 0 && found.length < PROBLEMS.length, "search narrows the list");
     assert(found.every((r) => rowLangs(r).includes("Verilog") || r.textContent.toLowerCase().includes("verilog")),

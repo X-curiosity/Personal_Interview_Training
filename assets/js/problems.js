@@ -210,6 +210,34 @@
       );
     }
 
+    /* Tags and language badges are static per problem, so their markup is
+       built once instead of on every keystroke or filter change. */
+    var cellCache = {};
+
+    function tagsCell(p) {
+      var key = "tags:" + p.id;
+      if (cellCache[key]) return cellCache[key];
+      var shown = p.tags.slice(0, 4);
+      var html = shown.map(function (tag) {
+        return '<span class="tag">' + esc(tag) + "</span>";
+      }).join("");
+      if (p.tags.length > shown.length) {
+        html += '<span class="tag">+' + (p.tags.length - shown.length) + "</span>";
+      }
+      cellCache[key] = html;
+      return html;
+    }
+
+    function langCell(p) {
+      var key = "lang:" + p.id;
+      if (cellCache[key]) return cellCache[key];
+      var html = langKeys(p).map(function (l) {
+        return '<span class="badge lang">' + LANG_LABELS[l] + "</span>";
+      }).join(" ");
+      cellCache[key] = html;
+      return html;
+    }
+
     function rowHtml(p, index, solvedSet) {
       var t = window.PIT.trackMeta(p.track);
       var solved = solvedSet.has(p.id);
@@ -233,14 +261,8 @@
               ? '<span class="vote" data-vote-widget="' + p.id + '">' + voteHtml(p) + "</span>"
               : "") +
           "</td>" +
-          '<td class="col-tags">' +
-            p.tags.map(function (tag) { return '<span class="tag">' + esc(tag) + "</span>"; }).join("") +
-          "</td>" +
-          '<td class="col-lang">' +
-            langKeys(p).map(function (l) {
-              return '<span class="badge lang">' + LANG_LABELS[l] + "</span>";
-            }).join(" ") +
-          "</td>" +
+          '<td class="col-tags">' + tagsCell(p) + "</td>" +
+          '<td class="col-lang">' + langCell(p) + "</td>" +
           '<td class="col-diff"><span class="diff diff-' + p.difficulty + '">' +
             p.difficulty.charAt(0).toUpperCase() + p.difficulty.slice(1) + "</span></td>" +
           '<td class="col-link">' +
@@ -323,12 +345,20 @@
 
     /* ---------- search, language & difficulty ---------- */
 
-    if (searchInput) {
-      searchInput.addEventListener("input", function () {
-        state.query = searchInput.value.trim();
+    /* Searching a 500+ row table is not instant, so the input stays responsive
+       and the table is rebuilt once the typing pauses. */
+    var searchTimer = null;
+    function scheduleSearchRender() {
+      var next = searchInput.value.trim();
+      if (searchTimer) window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(function () {
+        searchTimer = null;
+        if (next === state.query) return;
+        state.query = next;
         render();
-      });
+      }, 120);
     }
+    if (searchInput) searchInput.addEventListener("input", scheduleSearchRender);
 
     diffChips.forEach(function (chip) {
       chip.addEventListener("click", function () {
@@ -361,6 +391,7 @@
         state.difficulty = "all";
         state.query = "";
         state.langs = [];
+        if (searchTimer) { window.clearTimeout(searchTimer); searchTimer = null; }
         if (searchInput) searchInput.value = "";
         diffChips.forEach(function (c) {
           c.setAttribute("aria-pressed", c.getAttribute("data-diff-filter") === "all" ? "true" : "false");

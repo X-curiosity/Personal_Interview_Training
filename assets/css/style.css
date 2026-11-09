@@ -801,7 +801,10 @@ tr.row-flash { animation: rowflash 1.8s steps(6); }
   letter-spacing: 0.1em; margin-bottom: 0.75rem;
 }
 .shield-msg { font-family: var(--font-ui); font-size: 0.85rem; color: var(--text-dim); }
-body.shielded > *:not(.shield-overlay) { filter: blur(14px); }
+/* Hiding is far cheaper than a full-page blur(14px), which forces the
+   compositor to re-blur a very large layer and can stall the tab on long
+   tables. The overlay is opaque, so content is never visible anyway. */
+body.shielded > *:not(.shield-overlay) { visibility: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
