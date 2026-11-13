@@ -4,8 +4,12 @@
    at the included Icarus runner to enable it. Contract:
 
      POST <url>
-     { "language": "verilog", "code": "...", "tests": "..." }
-     → 200 { "stdout": "...", "stderr": "...", "code": 0 }
+     { "language": "verilog", "code": "...", "tests": "...", "dump": true }
+     → 200 { "stdout": "...", "stderr": "...", "code": 0, "vcd": "<VCD text>" }
+
+   When "dump" is true the runner injects $dumpfile/$dumpvars into the
+   testbench and returns the value-change dump, which the site draws as a
+   timing diagram (assets/js/wave.js).
 
    Leave null to show the "simulator not connected" guidance.
    ========================================================================== */
@@ -18,6 +22,9 @@ window.PIT_CONFIG = {
      use it only for private/internal deployments. Public deployments should
      put authenticated API/rate-limit infrastructure in front of the runner. */
   runnerKey: null,
+  /* Ask the Verilog runner for a VCD so waveforms can be drawn.
+     Set false to save bandwidth on a slow connection. */
+  waveforms: true,
   /* Judge0 CE public judge for C/C++ (no key; fair-use rate limits).
      Language ids: 50 = C (GCC), 54 = C++ (GCC). */
   judge0Url: "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",

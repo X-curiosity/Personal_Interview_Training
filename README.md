@@ -21,6 +21,8 @@ Five **build arcs** turn individual problems into whole systems. Each arc is an 
 
 Difficulty runs **Easy 1, Medium 3, Hard 5, Very hard 8** points. Math, probability and interview practice deliberately start at Medium: the recall drills were retired in favour of depth, and the very hard tier is reserved for exact derivations.
 
+Verilog problems can show **waveforms**: the runner returns a value-change dump and the site draws an interactive timing diagram, clocks highlighted, buses as hex boxes, wheel to zoom, drag to pan, and a `.vcd` download. This needs a connected simulator (see `runner-service/`), because a static site cannot simulate Verilog by itself.
+
 Create a free profile to sync progress across devices and join the global leaderboard. Solving is earned by correct submissions only, hints are free, and viewing a solution forfeits credit for that problem. Twelve standalone project problems (cache simulator, FIFO, arena allocator, arbiter, Karatsuba, Monte Carlo pricer and more) are multi-hour builds with full edge-case test suites.
 
 ## Run locally

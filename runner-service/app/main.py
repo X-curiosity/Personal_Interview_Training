@@ -49,6 +49,7 @@ class Config:
     compile_timeout: float      # seconds
     run_timeout: float          # seconds
     max_output_bytes: int       # per-stream truncation
+    max_vcd_bytes: int          # waveform dump cap
     max_concurrent: int
 
 
@@ -76,6 +77,10 @@ def get_config() -> Config:
         run_timeout=_clamp(int(os.environ.get("RUN_TIMEOUT", "10")), 1, 60),
         max_output_bytes=_clamp(
             int(os.environ.get("MAX_OUTPUT_BYTES", 64 * KIB)), KIB, 64 * KIB
+        ),
+        # a VCD is bigger than text output but still bounded
+        max_vcd_bytes=_clamp(
+            int(os.environ.get("MAX_VCD_BYTES", 1024 * KIB)), 16 * KIB, 4096 * KIB
         ),
         max_concurrent=_clamp(int(os.environ.get("MAX_CONCURRENT", "4")), 1, 32),
     )
@@ -134,12 +139,15 @@ class ExecuteRequest(BaseModel):
     # byte-level bounds are enforced in the handler (combined code+tests)
     code: str = ""
     tests: str = ""
+    # ask for a value-change dump so the UI can draw waveforms
+    dump: bool = False
 
 
 class ExecuteResponse(BaseModel):
     stdout: str
     stderr: str
     code: int
+    vcd: str | None = None
 
 
 # --------------------------------------------------------------------------
@@ -181,10 +189,33 @@ def _truncate(data: bytes, limit: int) -> str:
     return data.decode("utf-8", errors="replace")
 
 
-def _execute(language: str, code: str, tests: str, config: Config) -> ExecuteResponse:
+def inject_dump(tests: str) -> str:
+    """Add VCD dumping to a testbench without touching a user's sources.
+
+    The dump is injected inside the last module (the testbench), because
+    $dumpvars only records what is elaborated beneath its calling scope."""
+    marker = "endmodule"
+    index = tests.rfind(marker)
+    if index == -1:
+        return tests
+    hook = (
+        "initial begin\n"
+        "  $dumpfile(\"pit.vcd\");\n"
+        "  $dumpvars(0);\n"
+        "end\n"
+    )
+    return tests[:index] + hook + tests[index:]
+
+
+def _execute(
+    language: str, code: str, tests: str, config: Config, dump: bool = False
+) -> ExecuteResponse:
     """Compile and run inside a fresh tempdir; cleaned up on return."""
     with tempfile.TemporaryDirectory(prefix="pit-runner-") as workdir:
         work = Path(workdir)
+
+        if dump and tests:
+            tests = inject_dump(tests)
 
         source = work / "main.v"
         source.write_text(code + ("\n" + tests if tests else "") + "\n")
@@ -202,10 +233,20 @@ def _execute(language: str, code: str, tests: str, config: Config) -> ExecuteRes
             )
 
         run = _run_argv(run_argv, config.run_timeout, workdir)
+        vcd = None
+        dump_file = work / "pit.vcd"
+        if dump and dump_file.exists():
+            data = dump_file.read_bytes()
+            if len(data) > config.max_vcd_bytes:
+                data = data[: config.max_vcd_bytes]
+                vcd = data.decode("utf-8", errors="replace")
+            else:
+                vcd = data.decode("utf-8", errors="replace")
         return ExecuteResponse(
             stdout=_truncate(run.stdout, config.max_output_bytes),
             stderr=_truncate(run.stderr, config.max_output_bytes),
             code=run.code,
+            vcd=vcd,
         )
 
 
@@ -245,6 +286,8 @@ async def execute(
     except asyncio.TimeoutError:
         raise HTTPException(status_code=503, detail="runner busy, try again later")
     try:
-        return await asyncio.to_thread(_execute, payload.language, payload.code, payload.tests, config)
+        return await asyncio.to_thread(
+            _execute, payload.language, payload.code, payload.tests, config, payload.dump
+        )
     finally:
         sem.release()

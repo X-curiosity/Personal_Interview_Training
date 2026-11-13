@@ -7,6 +7,7 @@ also let us assert that commands are invoked as argument arrays with no shell.
 from __future__ import annotations
 
 import subprocess
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -157,7 +158,7 @@ def test_success_response(client, monkeypatch):
     r = post(client, VERILOG_BODY)
     assert r.status_code == 200
     body = r.json()
-    assert body == {"stdout": "hello\n", "stderr": "", "code": 0}
+    assert body == {"stdout": "hello\n", "stderr": "", "code": 0, "vcd": None}
 
 
 def test_output_truncated_to_64kib(client, monkeypatch):
@@ -238,3 +239,66 @@ def test_tests_are_appended_to_source_file(client, monkeypatch, tmp_path):
     assert post(client, body).status_code == 200
     content = next(iter(written.values()))
     assert "// CODE" in content and "// TESTS" in content
+
+
+# --------------------------------------------------------------------------
+# Waveform dumps
+# --------------------------------------------------------------------------
+
+def test_inject_dump_lands_inside_the_testbench():
+    tests = "module tb;\n  reg clk=0;\n  initial begin #5 $finish; end\nendmodule\n"
+    out = main.inject_dump(tests)
+    assert "$dumpfile" in out and "$dumpvars" in out
+    # the hook must sit before the final endmodule, inside the testbench
+    assert out.rindex("$dumpvars") < out.rindex("endmodule")
+    assert out.count("endmodule") == 1
+
+
+def test_inject_dump_without_a_testbench_is_unchanged():
+    assert main.inject_dump("") == ""
+
+
+def test_dump_request_returns_vcd(client, monkeypatch):
+    """A dump request reads the VCD the simulator wrote into the workdir."""
+    vcd = (
+        "$timescale 1ns $end\n$scope module tb $end\n"
+        "$var wire 1 ! clk $end\n$upscope $end\n$enddefinitions $end\n"
+        "#0\n0!\n#5\n1!\n"
+    )
+
+    def fake_run(argv, **kwargs):
+        if argv[0] == "vvp":
+            (Path(kwargs["cwd"]) / "pit.vcd").write_text(vcd)
+        return FakeProc(0, b"ALL TESTS PASSED\n", b"")
+
+    monkeypatch.setattr(main.subprocess, "run", fake_run)
+    r = post(client, dict(VERILOG_BODY, dump=True,
+                          tests="module tb; reg clk=0; endmodule"))
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["code"] == 0
+    assert body["vcd"] == vcd
+
+
+def test_dump_not_requested_returns_null(client, monkeypatch):
+    monkeypatch.setattr(main.subprocess, "run", ok_run)
+    r = post(client, VERILOG_BODY)
+    assert r.status_code == 200
+    assert r.json()["vcd"] is None
+
+
+def test_vcd_is_capped(client, monkeypatch):
+    """A huge dump is truncated to the configured cap instead of returned whole."""
+    big = "#0\n" + ("0!\n" * 200000)
+
+    def fake_run(argv, **kwargs):
+        if argv[0] == "vvp":
+            (Path(kwargs["cwd"]) / "pit.vcd").write_text(big)
+        return FakeProc(0, b"ok\n", b"")
+
+    monkeypatch.setattr(main.subprocess, "run", fake_run)
+    monkeypatch.setenv("MAX_VCD_BYTES", "16384")
+    r = post(client, dict(VERILOG_BODY, dump=True, tests="module tb; endmodule"))
+    assert r.status_code == 200
+    vcd = r.json()["vcd"]
+    assert vcd is not None and len(vcd) <= 16384

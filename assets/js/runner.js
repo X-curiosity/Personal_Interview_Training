@@ -239,16 +239,23 @@
     if (!url) {
       return Promise.resolve({
         ok: false, stdout: "", code: -1,
-        stderr: "No HDL runner connected. Verilog needs a simulator backend (Icarus or Verilator). Set PIT_CONFIG.runners.verilog in assets/js/config.js. Until then, paste the module into your local simulator or EDA Playground."
+        stderr: "No HDL runner connected. Verilog needs a simulator backend (Icarus or Verilator). " +
+          "Set PIT_CONFIG.runners.verilog in assets/js/config.js. A connected runner also returns a " +
+          "value-change dump, so the site draws the waveform of your clock and signals after each run. " +
+          "Until then, paste the module into your local simulator."
       });
     }
     onStatus("Sending to " + lang + " runner…");
     var headers = { "Content-Type": "application/json" };
     if (PIT_CONFIG.runnerKey) headers["X-Runner-Key"] = PIT_CONFIG.runnerKey;
+    var wantWaves = PIT_CONFIG.waveforms !== false;
     return fetchJson(url, {
       method: "POST",
       headers: headers,
-      body: JSON.stringify({ language: lang, code: code, tests: tests || "" })
+      body: JSON.stringify({
+        language: lang, code: code, tests: tests || "",
+        dump: wantWaves
+      })
     }).then(function (reply) {
       var res = reply.body || {};
       if (!reply.ok) {
@@ -265,6 +272,7 @@
            successful compilation is useful feedback—not proof. */
         ok: res.code === 0 && hasTests,
         compileOnly: compileOnly,
+        vcd: res.vcd || null,
         stdout: res.stdout || "",
         stderr: (res.stderr || "") + (compileOnly
           ? "\nCompiled successfully, but this problem has no automated testbench. Review the output and mark it solved manually when verified."

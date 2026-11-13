@@ -891,3 +891,42 @@ body.shielded > *:not(.shield-overlay) { visibility: hidden; }
   color: var(--accent); padding: 0.25rem 0.6rem;
 }
 .arc-banner .arc-nav a:hover { background: var(--bg-hover); text-decoration: none; }
+
+/* ---------- Verilog waveforms ---------- */
+
+.wave-host { margin-top: 0.85rem; }
+.wave-panel {
+  background: var(--bg-panel); border: var(--bw) solid var(--ink);
+  box-shadow: var(--shadow); padding: 0.75rem 0.75rem 0.5rem;
+}
+.wave-toolbar {
+  display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.wave-title {
+  font-family: var(--font-display); font-size: 0.68rem; text-transform: uppercase;
+  color: var(--accent);
+}
+.wave-meta {
+  font-family: var(--font-ui); font-size: 0.72rem; color: var(--text-dim);
+}
+.wave-actions { margin-left: auto; display: flex; gap: 0.35rem; }
+.wave-actions .btn { width: auto; }
+.wave-scroll { overflow-x: hidden; }
+.wave-svg { display: block; touch-action: none; cursor: grab; }
+.wave-svg:active { cursor: grabbing; }
+.wave-label {
+  font-family: var(--mono); font-size: 10px; fill: var(--text);
+}
+.wave-label.wave-clock { fill: var(--accent); font-weight: 700; }
+.wave-width { font-family: var(--mono); font-size: 9px; fill: var(--text-dim); }
+.wave-value { font-family: var(--mono); font-size: 9px; fill: var(--text); }
+.wave-tick { font-family: var(--mono); font-size: 9px; fill: var(--text-dim); }
+.wave-note {
+  font-family: var(--font-ui); font-size: 0.72rem; color: var(--text-dim);
+  margin: 0.4rem 0 0;
+}
+.wave-empty {
+  font-family: var(--mono); font-size: 0.8rem; color: var(--text-dim);
+  padding: 0.75rem; border: 2px solid var(--ink); background: var(--bg-raised);
+}

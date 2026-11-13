@@ -267,6 +267,7 @@
           ' aria-describedby="editor-hint-' + esc(p.id) + '"></textarea>' +
         '<p class="editor-hint" id="editor-hint-' + esc(p.id) + '">' +
           "Tab indents · Shift+Tab outdents · Enter opens blocks · Ctrl/Cmd+Enter runs · Ctrl/Cmd+Shift+Enter submits" +
+          (langs.indexOf("verilog") !== -1 ? " · waveforms appear after a run" : "") +
         "</p>" +
         '<div class="editor-actions">' +
           '<button type="button" class="btn ghost small" data-run>▶ Run tests</button>' +
@@ -275,11 +276,13 @@
           '<span class="run-status" data-status aria-live="polite"></span>' +
         "</div>" +
         '<pre class="run-output" data-output hidden></pre>' +
+        '<div class="wave-host" data-wave hidden></div>' +
       "</div>";
     container.innerHTML = html;
 
     var editor = container.querySelector("[data-editor]");
     var output = container.querySelector("[data-output]");
+    var waveHost = container.querySelector("[data-wave]");
     var status = container.querySelector("[data-status]");
     var runBtn = container.querySelector("[data-run]");
     var submitBtn = container.querySelector("[data-submit]");
@@ -467,6 +470,10 @@
       output.hidden = false;
       output.className = "run-output";
       output.textContent = "";
+      if (waveHost) {
+        waveHost.hidden = true;
+        waveHost.innerHTML = "";
+      }
       status.textContent = mode === "submit" ? "Submitting…" : "Running tests…";
       PIT_RUNNER.run(active, editor.value, p.tests[active] || "", function (msg) {
         status.textContent = msg;
@@ -495,6 +502,27 @@
 
         output.textContent = (text.trim() || "(no output)") +
           (notes.length ? "\n\n" + notes.join("\n") : "");
+
+        if (waveHost && res.vcd && window.PIT_WAVE) {
+          waveHost.hidden = false;
+          try {
+            window.PIT_WAVE.render(waveHost, res.vcd, { maxRows: 24 });
+            var meta = waveHost.querySelector(".wave-toolbar");
+            if (meta) {
+              var link = document.createElement("a");
+              link.className = "btn ghost small";
+              link.textContent = "Download .vcd";
+              link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(res.vcd);
+              link.setAttribute("download", p.id + ".vcd");
+              meta.appendChild(link);
+            }
+          } catch (err) {
+            waveHost.hidden = true;
+            waveHost.textContent = "";
+          }
+        } else if (waveHost) {
+          waveHost.hidden = true;
+        }
         output.classList.add(res.ok && !forfeited ? "ok" : (res.compileOnly ? "neutral" : "ko"));
         status.textContent = mode === "submit"
           ? (res.ok && !forfeited ? "Accepted" : (res.ok ? "Tests passed" : "Submission failed"))
